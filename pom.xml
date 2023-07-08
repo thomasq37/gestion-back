@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.1.1</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>fr.qui</groupId>
+	<artifactId>gestion</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>gestion</name>
+	<description>Demo project for Spring Boot</description>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>jakarta.persistence</groupId>
+		  <artifactId>jakarta.persistence-api</artifactId>
+		</dependency>
+		 <dependency>
+	        <groupId>org.projectlombok</groupId>
+	        <artifactId>lombok</artifactId>
+	        <scope>provided</scope>
+	    </dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			  <plugin>
+			        <groupId>com.github.eirslett</groupId>
+			        <artifactId>frontend-maven-plugin</artifactId>
+			        <!-- Use the latest released version:
+			        https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
+			        <version>1.13.4</version>
+			        <executions>
+				        <execution>
+				            <!-- optional: you don't really need execution ids, but it looks nice in your build log. -->
+				            <id>install node and npm</id>
+				            <goals>
+				                <goal>install-node-and-npm</goal>
+				            </goals>
+				            <!-- optional: default phase is "generate-resources" -->
+				        </execution>
+				        <execution>
+							 <id>build web-app</id>
+							 <phase>generate-resources</phase>
+							 <goals>
+							 	<goal>npm</goal>
+							 </goals>
+							 <configuration>
+							 	<arguments>run-script build</arguments>
+							 </configuration>
+						</execution>
+				    </executions>
+				    <configuration>
+				        <nodeVersion>v4.6.0</nodeVersion>
+				
+				        <!-- optional: with node version greater than 4.0.0 will use npm provided by node distribution -->
+				        
+				        <!-- optional: where to download node and npm from. Defaults to https://nodejs.org/dist/ -->
+				    </configuration>
+			    </plugin>
+		</plugins>
+	</build>
+
+</project>
