@@ -3,11 +3,14 @@ package fr.qui.gestion.appart;
 import java.util.List;
 
 import fr.qui.gestion.frais.Frais;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 
@@ -30,6 +33,9 @@ public class Appartement {
     @OneToMany(mappedBy = "appartement")
     private List<Frais> frais;
     @ElementCollection
+    @CollectionTable(name = "appartement_images",
+            joinColumns = @JoinColumn(name = "appartement_id"))
+    @Column(name = "image_url")
     private List<String> images;
 	protected double calculerRentabiliteNette() {
         double totalLoyer = loyerMensuel * 12;
