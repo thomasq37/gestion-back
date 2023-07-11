@@ -3,6 +3,7 @@ package fr.qui.gestion.appart;
 import java.util.List;
 
 import fr.qui.gestion.frais.Frais;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,7 +29,8 @@ public class Appartement {
     private double prix;
     @OneToMany(mappedBy = "appartement")
     private List<Frais> frais;
-
+    @ElementCollection
+    private List<String> images;
 	protected double calculerRentabiliteNette() {
         double totalLoyer = loyerMensuel * 12;
 
