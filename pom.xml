@@ -51,43 +51,31 @@
 	        <artifactId>lombok</artifactId>
 	        <scope>provided</scope>
 	    </dependency>
+	    <dependency>
+			 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.9.0</version>
+                <scope>compile</scope>             
+		</dependency>
 	</dependencies>
 
 	<build>
-		 <pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.12.3</version>
-        <!-- Override the managed version with the desired version -->
-      </plugin>
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.2.0</version>
-      </plugin>
-      <!-- Other plugins... -->
-    </plugins>
-  </pluginManagement>
-		    <plugins>
-
-		  <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.12.3</version>
-        <!-- Override the managed version with the desired version -->
-      </plugin>
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.2.0</version>
-      </plugin>
-      <!-- Other plugins... -->
-    </plugins>
- 
-  <!-- Rest of the build configuration... -->
-</build>
+        <plugins>
+          
+            <plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-dependency-plugin</artifactId>
+		      <version>3.2.1</version> <!-- Override the managed version with the desired version -->
+		      <executions>
+		        <!-- Add any plugin executions or configuration specific to your project -->
+		      </executions>
+		      <configuration>
+		        <!-- Add plugin configuration specific to your project -->
+		      </configuration>
+		    </plugin>
+            <!-- Add any other plugins you need -->
+        </plugins>
+    </build>
 
 
 </project>
