@@ -35,7 +35,6 @@ public class Appartement {
     @ElementCollection
     @CollectionTable(name = "appartement_images",
             joinColumns = @JoinColumn(name = "appartement_id"))
-    @Column(name = "image_url")
     private List<String> images;
 	protected double calculerRentabiliteNette() {
         double totalLoyer = loyerMensuel * 12;
