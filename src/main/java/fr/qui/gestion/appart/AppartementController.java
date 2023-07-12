@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/api", produces = "application/json")
-@CrossOrigin(origins = "https://gestion-front-7b998d8ddb5b.herokuapp.com")
-//@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(path = "/api/appartements", produces = "application/json")
+@CrossOrigin(origins = "${app.cors.origin}")
 public class AppartementController {
     private final AppartementService appartementService;
 
@@ -18,12 +17,12 @@ public class AppartementController {
     public AppartementController(AppartementService appartementService) {
         this.appartementService = appartementService;
     }
-    @GetMapping("/appartements")
+    @GetMapping("/")
     public List<Appartement> obtenirTousLesAppartements() {
         return appartementService.obtenirTousLesAppartements();
     }
     
-    @GetMapping("/appartements/{id}")
+    @GetMapping("/{id}")
     public Optional<Appartement> obtenirUnAppartementParId(@PathVariable("id") Long id) {
         return appartementService.findById(id);
     }
