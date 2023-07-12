@@ -8,9 +8,6 @@ public class GestionApplication {
 
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(GestionApplication.class);
-    	application.setAdditionalProfiles("heroku");
-
-      
         application.run(args);
 	}
 
