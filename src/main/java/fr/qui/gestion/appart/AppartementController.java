@@ -40,4 +40,10 @@ public class AppartementController {
         double rentabiliteNette = appartementService.calculerRentabiliteNette(id);
         return ResponseEntity.ok(rentabiliteNette);
     }
+    
+    @PostMapping("/{id}/moyenne-benefices")
+    public ResponseEntity<Double> calculerMoyenneBenefices(@PathVariable("id") Long id) throws ClassNotFoundException {
+        double moyenneBenefices = appartementService.calculerMoyenneBenefices(id);
+        return ResponseEntity.ok(moyenneBenefices);
+    }
 }

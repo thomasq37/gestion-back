@@ -44,4 +44,22 @@ public class AppartementService {
             throw new ClassNotFoundException("Appartement non trouvé pour l'ID : " + id);
         }
     }
+    
+    public int calculerMoyenneBenefices(Long id) throws ClassNotFoundException {
+        Optional<Appartement> optionalAppartement = findById(id);
+
+        if (optionalAppartement.isPresent()) {
+            Appartement appartement = optionalAppartement.get();
+            double depensesTotales = 0.0;
+            for (Frais frais : appartement.getFrais()) {
+                double montantAnnuelEquivalent = frais.getFrequence().convertirMontantAnnuel(frais.getMontant());
+                depensesTotales += montantAnnuelEquivalent;
+            }
+            
+            int moyenneBenefices = (int) ((appartement.getLoyerMensuel() * 12 - depensesTotales) / 12);
+            return moyenneBenefices;
+        } else {
+            throw new ClassNotFoundException("Appartement non trouvé pour l'ID : " + id);
+        }
+    }
 }
