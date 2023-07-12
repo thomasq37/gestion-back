@@ -3,6 +3,7 @@ package fr.qui.gestion.appart;
 import java.util.List;
 
 import fr.qui.gestion.frais.Frais;
+import fr.qui.gestion.mouvementappart.MouvementAppartement;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -30,12 +31,18 @@ public class Appartement {
     private boolean loue;
     private double loyerMensuel;
     private double prix;
+    
     @OneToMany(mappedBy = "appartement")
     private List<Frais> frais;
+    
     @ElementCollection
-    @CollectionTable(name = "appartement_images",
-            joinColumns = @JoinColumn(name = "appartement_id"))
+    @CollectionTable(name = "appartement_images", joinColumns = @JoinColumn(name = "appartement_id"))
     private List<String> images;
+    
+    @OneToMany(mappedBy = "appartement")
+    private List<MouvementAppartement> mouvements;
+
+    
 	protected double calculerRentabiliteNette() {
         double totalLoyer = loyerMensuel * 12;
 

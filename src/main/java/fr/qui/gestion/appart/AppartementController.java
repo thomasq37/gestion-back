@@ -1,10 +1,10 @@
 package fr.qui.gestion.appart;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,5 +45,11 @@ public class AppartementController {
     public ResponseEntity<Double> calculerMoyenneBenefices(@PathVariable("id") Long id) throws ClassNotFoundException {
         double moyenneBenefices = appartementService.calculerMoyenneBenefices(id);
         return ResponseEntity.ok(moyenneBenefices);
+    }
+    
+    @GetMapping("/{id}/taux-vacances-locatives")
+    public  ResponseEntity<Double> calculerTauxVacanceLocativeMoyen(@PathVariable("id") Long id) throws ClassNotFoundException {
+        double tauxVacancesLocatives = appartementService.calculerTauxVacancesLocatives(id);
+        return ResponseEntity.ok(tauxVacancesLocatives);
     }
 }
