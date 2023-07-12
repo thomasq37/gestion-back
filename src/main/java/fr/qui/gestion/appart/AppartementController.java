@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/appartements", produces = "application/json")
-@CrossOrigin(origins = "https://gestion-front-7b998d8ddb5b.herokuapp.com")
+@CrossOrigin(origins = "https://gestion-quin-06f134c36699.herokuapp.com/")
 public class AppartementController {
     private final AppartementService appartementService;
 
