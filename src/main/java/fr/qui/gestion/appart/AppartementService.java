@@ -35,7 +35,7 @@ public class AppartementService {
     
     public double calculerRentabiliteNette(Long id) {
         
-            Appartement appartement = findById(id);
+            Appartement appartement = obtenirUnAppartementParId(id);
 
             double depensesTotales = 0.0;
             for (Frais frais : appartement.getFrais()) {
@@ -49,7 +49,7 @@ public class AppartementService {
     }
 
     public int calculerMoyenneBenefices(Long id){
-            Appartement appartement = findById(id);
+            Appartement appartement = obtenirUnAppartementParId(id);
 
             double depensesTotales = 0.0;
             for (Frais frais : appartement.getFrais()) {
@@ -63,7 +63,7 @@ public class AppartementService {
     }
 
 	public double calculerTauxVacancesLocatives(Long appartementId) {
-	    Appartement appartement = findById(appartementId);
+	    Appartement appartement = obtenirUnAppartementParId(appartementId);
 	
 	    List<MouvementAppartement> mouvements = appartement.getMouvements();
 	
