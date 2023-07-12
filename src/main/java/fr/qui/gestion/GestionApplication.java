@@ -8,14 +8,9 @@ public class GestionApplication {
 
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(GestionApplication.class);
+    	application.setAdditionalProfiles("heroku");
 
-        String env = System.getenv("ENVIRONMENT");
-        if(env == null) {
-        	application.setAdditionalProfiles("heroku");
-        }
-        else if (env != null && env.equalsIgnoreCase("local")) {
-            application.setAdditionalProfiles("local");
-        }
+      
         application.run(args);
 	}
 
