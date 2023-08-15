@@ -2,10 +2,11 @@ package fr.qui.gestion.appart;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.mouvementappart.MouvementAppartement;
 import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +33,7 @@ public class Appartement {
     private double loyerMensuel;
     private double prix;
     
+    @JsonIgnore
     @OneToMany(mappedBy = "appartement")
     private List<Frais> frais;
     

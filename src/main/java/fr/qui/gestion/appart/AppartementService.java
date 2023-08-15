@@ -28,6 +28,27 @@ public class AppartementService {
         return appartementRepository.findAll();
     }
     
+    public Appartement ajouterAppartement(Appartement nouvelAppartement) {
+        return appartementRepository.save(nouvelAppartement);
+    }
+    
+    public Appartement modifierAppartement(Long id, Appartement appartementModifie) {
+        Appartement appartementExist = obtenirUnAppartementParId(id);
+
+        appartementExist.setNumero(appartementModifie.getNumero());
+        appartementExist.setAdresse(appartementModifie.getAdresse());
+        appartementExist.setCodePostal(appartementModifie.getCodePostal());
+        appartementExist.setVille(appartementModifie.getVille());
+        appartementExist.setNombrePieces(appartementModifie.getNombrePieces());
+        appartementExist.setSurface(appartementModifie.getSurface());
+        appartementExist.setBalcon(appartementModifie.isBalcon());
+        appartementExist.setLoue(appartementModifie.isLoue());
+        appartementExist.setLoyerMensuel(appartementModifie.getLoyerMensuel());
+        appartementExist.setPrix(appartementModifie.getPrix());
+
+        return appartementRepository.save(appartementExist);
+    }
+    
     public Appartement obtenirUnAppartementParId(Long id) throws IllegalArgumentException {
         Optional<Appartement> optionalAppartement = appartementRepository.findById(id);
         return optionalAppartement.orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + id));

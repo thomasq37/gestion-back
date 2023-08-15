@@ -20,18 +20,18 @@ public class Frais {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    public double montant;
+    private double montant;
     @Enumerated(EnumType.STRING)
     private Frequence frequence;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "appartement_id")
     private Appartement appartement;
     
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "type_frais_id")
     private TypeFrais typeFrais;
+    
+  
     
 }

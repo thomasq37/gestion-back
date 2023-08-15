@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppartementRepository extends JpaRepository<Appartement, Long> {
     Optional<Appartement> findById(Long id);
-}
+    @Override
+    <S extends Appartement> S save(S entity);}
