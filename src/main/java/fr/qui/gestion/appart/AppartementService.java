@@ -45,6 +45,7 @@ public class AppartementService {
         appartementExist.setLoue(appartementModifie.isLoue());
         appartementExist.setLoyerMensuel(appartementModifie.getLoyerMensuel());
         appartementExist.setPrix(appartementModifie.getPrix());
+        appartementExist.setImages(appartementModifie.getImages());
 
         return appartementRepository.save(appartementExist);
     }
