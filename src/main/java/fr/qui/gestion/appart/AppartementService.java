@@ -54,6 +54,10 @@ public class AppartementService {
         return optionalAppartement.orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + id));
     }
     
+    public void supprimerUnAppartement(Long id) {
+    	appartementRepository.deleteById(id);
+    }
+    
     public double calculerRentabiliteNette(Long id) {
         
             Appartement appartement = obtenirUnAppartementParId(id);

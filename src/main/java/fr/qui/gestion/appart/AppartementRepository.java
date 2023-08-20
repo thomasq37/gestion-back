@@ -12,4 +12,6 @@ public interface AppartementRepository extends JpaRepository<Appartement, Long> 
     
     @Override
     <S extends Appartement> S save(S entity);
+    
+    void deleteById(Long id);
 }
