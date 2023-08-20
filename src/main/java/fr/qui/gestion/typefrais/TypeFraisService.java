@@ -1,11 +1,10 @@
 package fr.qui.gestion.typefrais;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import fr.qui.gestion.appart.Appartement;
-
-import java.util.List;
 
 @Service
 public class TypeFraisService {
@@ -18,6 +17,11 @@ public class TypeFraisService {
     
     public List<TypeFrais> obtenirTousLesTypeDeFrais() {
         return typeFraisRepository.findAll();
+    }
+    
+	public TypeFrais obtenirUnTypeDeFraisParId(Long id) throws IllegalArgumentException {
+        Optional<TypeFrais> optionalTypeDeFrais = typeFraisRepository.findById(id);
+        return optionalTypeDeFrais.orElseThrow(() -> new IllegalArgumentException("Type de Frais not found with ID: " + id));
     }
     
 }

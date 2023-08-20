@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +26,15 @@ private final TypeFraisService typeFraisService;
     public ResponseEntity<List<TypeFrais>> obtenirTousLesTypeDeFrais() {
         List<TypeFrais> fraisList = typeFraisService.obtenirTousLesTypeDeFrais();
         return ResponseEntity.ok(fraisList);
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<TypeFrais> obtenirUnTypeDeFraisParId(@PathVariable("id") Long id) {
+        try {
+        	TypeFrais typeDeFrais = typeFraisService.obtenirUnTypeDeFraisParId(id);
+            return ResponseEntity.ok(typeDeFrais);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
