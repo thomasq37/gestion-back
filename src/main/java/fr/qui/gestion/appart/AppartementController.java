@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,16 +16,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.qui.gestion.frais.FraisService;
+
 @RestController
 @RequestMapping(path = "/api/appartements", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
 
 public class AppartementController {
     private final AppartementService appartementService;
-    
+    private final FraisService fraisService;
     @Autowired
-    public AppartementController(AppartementService appartementService) {
+    public AppartementController(AppartementService appartementService, FraisService fraisService) {
         this.appartementService = appartementService;
+		this.fraisService = fraisService;
     }
     
     @GetMapping("/liste")
@@ -64,7 +68,9 @@ public class AppartementController {
     
     
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<String> supprimerUnAppartement(@PathVariable Long id) {
+    	fraisService.supprimerTousLesFraisParAppartementId(id);
     	appartementService.supprimerUnAppartement(id);
         return new ResponseEntity<>("Appartement deleted successfully", HttpStatus.OK);
     }

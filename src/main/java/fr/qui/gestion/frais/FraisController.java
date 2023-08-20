@@ -75,4 +75,10 @@ private final FraisService fraisService;
         return new ResponseEntity<>("Frais deleted successfully", HttpStatus.OK);
     }
     
+    @DeleteMapping("/appartement/{appartementId}")
+    public ResponseEntity<String> supprimerTousLesFraisParAppartementId(@PathVariable Long appartementId) {
+        fraisService.supprimerTousLesFraisParAppartementId(appartementId);
+        return ResponseEntity.ok("Tous les frais de l'appartement ont été supprimés avec succès");
+    }
+    
 }

@@ -18,4 +18,6 @@ public interface FraisRepository extends JpaRepository<Frais, Long> {
     
     void deleteById(Long id);
     
+    void deleteAllByAppartementId(Long appartementId);
+    
 }
