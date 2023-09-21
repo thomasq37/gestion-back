@@ -23,6 +23,7 @@ import fr.qui.gestion.frais.FraisService;
 @CrossOrigin(origins = "${app.cors.origin}")
 
 public class AppartementController {
+
     private final AppartementService appartementService;
     private final FraisService fraisService;
     @Autowired
