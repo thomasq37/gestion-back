@@ -14,7 +14,7 @@ public class AuthenticationService {
 	@Value("${api.key}")
 	private static String apiKey;
     private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
-    private static final String AUTH_TOKEN = "blah";
+    private static final String AUTH_TOKEN = "hG5kR3lP2yT8oF1sA7qL9jD4ehgds1";
 
     public static Authentication getAuthentication(HttpServletRequest request) {
     	System.out.println(apiKey);
