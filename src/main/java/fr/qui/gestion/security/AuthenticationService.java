@@ -4,22 +4,27 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 
-
+@Service
 public class AuthenticationService {
 
-	@Value("${api.key}")
-	private static String apiKey;
-    private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
-    private static final String AUTH_TOKEN = "hG5kR3lP2yT8oF1sA7qL9jD4ehgds1";
+	private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
+
+    private static String authToken;
+
+    // Utilisation de @Value pour injecter la valeur de la propriété
+    @Value("${api.key}")
+    public void setAuthToken(String authToken) {
+    	AuthenticationService.authToken = authToken;
+    }
 
     public static Authentication getAuthentication(HttpServletRequest request) {
-    	System.out.println(apiKey);
         String apiKey = request.getHeader(AUTH_TOKEN_HEADER_NAME);
-        if (apiKey == null || !apiKey.equals(AUTH_TOKEN)) {
+        if (apiKey == null || !apiKey.equals(authToken)) {
             throw new BadCredentialsException("Invalid API Key");
         }
 
