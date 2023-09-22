@@ -1,6 +1,7 @@
 package fr.qui.gestion.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,13 +23,14 @@ public class AuthController {
     @Autowired
     private InvitationService invitationService; 
 
-    
+    @Value("${api.key}")
+    private String token;
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User credentials) {
 	  try {
 	      if(authenticationService.authenticate(credentials.getUsername(), credentials.getPassword())) {
-	          return ResponseEntity.ok("fake-jwt-token");
+	          return ResponseEntity.ok(token);
 	      } else {
 	          return ResponseEntity.status(401).body("Invalid credentials");
 	      }
