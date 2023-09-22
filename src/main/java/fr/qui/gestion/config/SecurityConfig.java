@@ -14,12 +14,13 @@ import fr.qui.gestion.security.AuthenticationFilter;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
+	@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf()
           .disable()
           .authorizeRequests()
-          .requestMatchers("/**")
+          .requestMatchers("/api/auth/login", "/api/auth/createUser").permitAll() // Permettre l'accès à /api/auth/login
+          .anyRequest()
           .authenticated()
           .and()
           .httpBasic()

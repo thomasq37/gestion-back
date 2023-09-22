@@ -17,11 +17,20 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class AuthenticationFilter extends GenericFilterBean {
 
-    @Override
+	@Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
       throws IOException, ServletException {
+
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        String requestURI = httpRequest.getRequestURI();
+
+        if(requestURI.equals("/api/auth/login") || requestURI.equals("/api/auth/createUser")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
-            Authentication authentication = AuthenticationService.getAuthentication((HttpServletRequest) request);
+            Authentication authentication = AuthenticationService.getAuthentication(httpRequest);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception exp) {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -31,6 +40,7 @@ public class AuthenticationFilter extends GenericFilterBean {
             writer.print(exp.getMessage());
             writer.flush();
             writer.close();
+            return;
         }
 
         filterChain.doFilter(request, response);
