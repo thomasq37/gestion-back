@@ -24,7 +24,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String requestURI = httpRequest.getRequestURI();
 
-        if(requestURI.equals("/api/auth/login") || requestURI.equals("/api/auth/createUser")) {
+        if(requestURI.equals("/api/auth/login") || requestURI.equals("/api/auth/create")) {
             filterChain.doFilter(request, response);
             return;
         }

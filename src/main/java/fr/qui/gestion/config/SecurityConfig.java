@@ -19,7 +19,7 @@ public class SecurityConfig {
         http.csrf()
           .disable()
           .authorizeRequests()
-          .requestMatchers("/api/auth/login", "/api/auth/createUser").permitAll() // Permettre l'accès à /api/auth/login
+          .requestMatchers("/api/auth/login", "/api/auth/create").permitAll() // Permettre l'accès à /api/auth/login
           .anyRequest()
           .authenticated()
           .and()

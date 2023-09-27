@@ -16,6 +16,9 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
     
+    @Autowired
+    private InvitationRepository invitationRepository;
+    
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public User createUser(String username, String password) {
@@ -34,6 +37,16 @@ public class AuthService {
         if(optionalUser.isPresent()) {
             User user = optionalUser.get();
             return passwordEncoder.matches(password, user.getPassword());
+        }
+        return false;
+    }
+    
+    public boolean validateInvitation(String token) {
+        Invitation invitation = invitationRepository.findByToken(token);
+        if(invitation != null && !invitation.isUsed()) {
+        	invitation.setUsed(true);
+            invitationRepository.save(invitation);
+            return true;
         }
         return false;
     }

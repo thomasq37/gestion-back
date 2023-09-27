@@ -1,4 +1,4 @@
-package fr.qui.gestion.invit;
+package fr.qui.gestion.auth;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
