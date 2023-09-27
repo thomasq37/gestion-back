@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class UserRequest {
-    private User user;
+    private AppUser user;
     private String token;
 }

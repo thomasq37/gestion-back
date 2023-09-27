@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.qui.gestion.user.User;
+import fr.qui.gestion.user.AppUser;
 import fr.qui.gestion.user.UserRequest;
 
 @RestController
@@ -28,10 +28,10 @@ public class AuthController {
     public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest) {
     	
         try {
-            User user = userRequest.getUser();
+            AppUser user = userRequest.getUser();
             String token = userRequest.getToken();
             if(authenticationService.validateInvitation(token)) {
-            	 User createdUser = authenticationService.createUser(user.getUsername(), user.getPassword());
+            	 AppUser createdUser = authenticationService.createUser(user.getUsername(), user.getPassword());
                  return ResponseEntity.ok("Compte créé avec succès : id = " + createdUser.getUsername());
             }
             else {
@@ -44,7 +44,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User credentials) {
+    public ResponseEntity<String> login(@RequestBody AppUser credentials) {
 	  try {
 	      if(authenticationService.authenticate(credentials.getUsername(), credentials.getPassword())) {
 	          return ResponseEntity.ok(token);
