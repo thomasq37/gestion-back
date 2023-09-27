@@ -25,7 +25,6 @@ public class AuthController {
     private String token;
     
     @PostMapping("/create")
-    @CrossOrigin(origins = "${app.cors.origin}")
     public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest) {
     	
         try {
@@ -39,7 +38,8 @@ public class AuthController {
             	return ResponseEntity.status(400).body("Invalide token invitation");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+        	System.out.println(e.getMessage());
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 
