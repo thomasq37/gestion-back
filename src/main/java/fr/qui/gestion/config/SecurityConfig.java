@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 
 import fr.qui.gestion.security.AuthenticationFilter;
 
@@ -19,6 +20,7 @@ public class SecurityConfig {
         http.csrf()
           .disable()
           .authorizeRequests()
+          .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // Autoriser les requêtes OPTIONS
           .requestMatchers("/api/auth/login", "/api/auth/create").permitAll() // Permettre l'accès à /api/auth/login
           .anyRequest()
           .authenticated()

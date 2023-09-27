@@ -21,7 +21,6 @@ import fr.qui.gestion.frais.FraisService;
 @RestController
 @RequestMapping(path = "/api/appartements", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
-
 public class AppartementController {
 
     private final AppartementService appartementService;

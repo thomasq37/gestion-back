@@ -21,8 +21,14 @@ public class AuthenticationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
       throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
         String requestURI = httpRequest.getRequestURI();
+        String requestMethod = httpRequest.getMethod();
+
+        if ("OPTIONS".equalsIgnoreCase(requestMethod)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if(requestURI.equals("/api/auth/login") || requestURI.equals("/api/auth/create")) {
             filterChain.doFilter(request, response);
