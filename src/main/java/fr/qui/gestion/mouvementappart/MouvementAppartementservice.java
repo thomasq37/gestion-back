@@ -49,4 +49,8 @@ public class MouvementAppartementservice {
 		mouvementAppartementRepository.deleteById(id);
 		
 	}
+
+	public MouvementAppartement ajouterMouvementAppartement(MouvementAppartement nouveauMouvementAppartement) {
+		return mouvementAppartementRepository.save(nouveauMouvementAppartement);
+	}
 }
