@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.qui.gestion.frais.FraisService;
+import fr.qui.gestion.mouvementappart.MouvementAppartement;
 
 @RestController
 @RequestMapping(path = "/api/appartements", produces = "application/json")
