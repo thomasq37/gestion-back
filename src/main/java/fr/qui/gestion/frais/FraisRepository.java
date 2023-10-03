@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import fr.qui.gestion.periodlocation.PeriodLocation;
+
 @Repository
 public interface FraisRepository extends JpaRepository<Frais, Long> {
 	
@@ -17,6 +19,8 @@ public interface FraisRepository extends JpaRepository<Frais, Long> {
     <S extends Frais> S save(S entity);
     
     void deleteById(Long id);
+    
+    void delete(Frais frais);
     
     void deleteAllByAppartementId(Long appartementId);
     

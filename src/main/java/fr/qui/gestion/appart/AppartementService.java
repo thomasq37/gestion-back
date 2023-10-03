@@ -1,7 +1,5 @@
 package fr.qui.gestion.appart;
 
-import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,23 +7,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.frais.Frais;
-import fr.qui.gestion.mouvementappart.MouvementAppartement;
-import fr.qui.gestion.mouvementappart.MouvementAppartementRepository;
+import fr.qui.gestion.frais.FraisRepository;
+import fr.qui.gestion.periodlocation.PeriodLocation;
+import fr.qui.gestion.periodlocation.PeriodLocationRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class AppartementService {
-    private final AppartementRepository appartementRepository;
+    
+
     
     @Autowired
-    public AppartementService(
-    		AppartementRepository appartementRepository, 
-    		MouvementAppartementRepository mouvementAppartementRepository) 
-    {
-        this.appartementRepository = appartementRepository;
-    }
+    private FraisRepository fraisRepository;
+    
+    @Autowired
+    private PeriodLocationRepository periodLocationRepository;
+    
+    @Autowired
+    private AppartementRepository appartementRepository;
     
     public List<Appartement> obtenirTousLesAppartements() {
         return appartementRepository.findAll();
+    }
+    
+    public List<AdresseDTO> obtenirToutesLesAdressesAppartements(){
+    	return appartementRepository.findAllAdresses();
     }
     
     public Appartement ajouterAppartement(Appartement nouvelAppartement) {
@@ -42,14 +48,12 @@ public class AppartementService {
         appartementExist.setNombrePieces(appartementModifie.getNombrePieces());
         appartementExist.setSurface(appartementModifie.getSurface());
         appartementExist.setBalcon(appartementModifie.isBalcon());
-        appartementExist.setLoue(appartementModifie.isLoue());
-        appartementExist.setLoyerMensuel(appartementModifie.getLoyerMensuel());
         appartementExist.setPrix(appartementModifie.getPrix());
         appartementExist.setImages(appartementModifie.getImages());
 
         return appartementRepository.save(appartementExist);
     }
-    
+
     public Appartement obtenirUnAppartementParId(Long id) throws IllegalArgumentException {
         Optional<Appartement> optionalAppartement = appartementRepository.findById(id);
         return optionalAppartement.orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + id));
@@ -59,59 +63,79 @@ public class AppartementService {
     	appartementRepository.deleteById(id);
     }
     
-    public double calculerRentabiliteNette(Long id) {
-        
-            Appartement appartement = obtenirUnAppartementParId(id);
+    // Frais
+    
+    @Transactional
+    public Frais mettreAJourUnFraisPourAppartement(Long appartementId, Long fraisId, Frais fraisMisAJour) {
+    	
+        Frais fraisActuel = fraisRepository.findById(fraisId)
+                .orElseThrow(() -> new RuntimeException("Frais non trouvé"));
+        if (!fraisActuel.getAppartement().getId().equals(appartementId)) {
+            throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
+        }
+        fraisActuel.setMontant(fraisMisAJour.getMontant());
+        fraisActuel.setFrequence(fraisMisAJour.getFrequence());
+        fraisActuel.setTypeFrais(fraisMisAJour.getTypeFrais());
+        return fraisRepository.save(fraisActuel);
+    }
+    
+    @Transactional
+    public Frais ajouterUnFraisPourAppartement(Long appartementId, Frais newFrais) {
+        Appartement appartement = appartementRepository.findById(appartementId)
+                .orElseThrow(() -> new RuntimeException("Appartement not found"));
 
-            double depensesTotales = 0.0;
-            for (Frais frais : appartement.getFrais()) {
-                double montantAnnuelEquivalent = frais.getFrequence().convertirMontantAnnuel(frais.getMontant());
-                depensesTotales += montantAnnuelEquivalent;
-            }
+        newFrais.setAppartement(appartement);
+        return fraisRepository.save(newFrais);
+    }
+    
+    @Transactional
+    public void supprimerFraisPourAppartement(Long appartementId, Long fraisId) {
+        Frais frais = fraisRepository.findById(fraisId)
+                .orElseThrow(() -> new RuntimeException("Frais non trouvé"));
 
-            double rentabiliteNette = ((appartement.getLoyerMensuel() * 12 - depensesTotales) / appartement.getPrix()) * 100;
-            return rentabiliteNette;
-        
+        if (!frais.getAppartement().getId().equals(appartementId)) {
+            throw new RuntimeException("Le frais ne appartient pas à l'appartement donné");
+        }
+        fraisRepository.delete(frais);
     }
 
-    public int calculerMoyenneBenefices(Long id){
-            Appartement appartement = obtenirUnAppartementParId(id);
+	@Transactional
+	public void supprimerTousLesFraisParAppartementId(Long appartementId) {
+       fraisRepository.deleteAllByAppartementId(appartementId);
+   }
 
-            double depensesTotales = 0.0;
-            for (Frais frais : appartement.getFrais()) {
-                double montantAnnuelEquivalent = frais.getFrequence().convertirMontantAnnuel(frais.getMontant());
-                depensesTotales += montantAnnuelEquivalent;
-            }
+	
+	public PeriodLocation mettreAJourUnePeriodePourAppartement(Long appartementId, Long periodLocationId,
+			PeriodLocation periodLocationMisAJour) {
+		PeriodLocation periodLocationActuel = periodLocationRepository.findById(periodLocationId)
+                .orElseThrow(() -> new RuntimeException("periodLocation non trouvé"));
+        if (!periodLocationActuel.getAppartement().getId().equals(appartementId)) {
+            throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
+        }
+        periodLocationActuel.setEstEntree(periodLocationMisAJour.getEstEntree());
+        periodLocationActuel.setEstSortie(periodLocationMisAJour.getEstSortie());
+        periodLocationActuel.setLocVac(periodLocationMisAJour.isLocVac());
+        periodLocationActuel.setPrix(periodLocationMisAJour.getPrix());
+        return periodLocationRepository.save(periodLocationActuel);
+	}
 
-            int moyenneBenefices = (int) ((appartement.getLoyerMensuel() * 12 - depensesTotales) / 12);
-            return moyenneBenefices;
-        
-    }
+	public PeriodLocation ajouterUnePeriodePourAppartement(Long appartementId, PeriodLocation newPeriodLocation) {
+		Appartement appartement = appartementRepository.findById(appartementId)
+                .orElseThrow(() -> new RuntimeException("Appartement not found"));
 
-	public double calculerTauxVacancesLocatives(Long appartementId) {
-	    Appartement appartement = obtenirUnAppartementParId(appartementId);
-	
-	    List<MouvementAppartement> mouvements = appartement.getMouvements();
-	
-	    mouvements.sort(Comparator.comparing(MouvementAppartement::getDate));
-	
-	    long totalJours = 0;
-	    long joursVacances = 0;
-	
-	    for (int i = 0; i < mouvements.size() - 1; i++) {
-	        MouvementAppartement courant = mouvements.get(i);
-	        MouvementAppartement suivant = mouvements.get(i+1);
-	
-	        long joursEntre = ChronoUnit.DAYS.between(courant.getDate(), suivant.getDate());
-	        totalJours += joursEntre;
-	
-	        if (!courant.isEstEntree()) {
-	            joursVacances += joursEntre;
-	        }
-	    }
-	
-	    if (totalJours == 0) return 0.0;
-	    double tauxVacances = (double) joursVacances / totalJours * 100;
-	    return Math.round(tauxVacances * 100.0) / 100.0;
+		newPeriodLocation.setAppartement(appartement);
+        return periodLocationRepository.save(newPeriodLocation);
+	}
+
+	@Transactional
+	public void supprimerPeriodePourAppartement(Long appartementId, Long periodLocationId) {
+		PeriodLocation periodLocation = periodLocationRepository.findById(periodLocationId)
+	                .orElseThrow(() -> new RuntimeException("PeriodLocation non trouvé"));
+
+        if (!periodLocation.getAppartement().getId().equals(appartementId)) {
+            throw new RuntimeException("La periode de location n'appartient pas à l'appartement donné");
+        }
+        periodLocationRepository.delete(periodLocation);
+		
 	}
 }

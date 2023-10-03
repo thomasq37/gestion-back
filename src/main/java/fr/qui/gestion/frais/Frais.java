@@ -3,10 +3,12 @@ package fr.qui.gestion.frais;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import fr.qui.gestion.appart.Appartement;
+import fr.qui.gestion.periodlocation.PeriodLocation;
 import fr.qui.gestion.typefrais.TypeFrais;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +28,14 @@ public class Frais {
 
     @ManyToOne
     @JoinColumn(name = "appartement_id")
+    @JsonIgnore
     private Appartement appartement;
+  
+
+    @ManyToOne
+    @JoinColumn(name = "period_location_id")
+    @JsonIgnore
+    private PeriodLocation periodLocation;
     
     @ManyToOne
     @JoinColumn(name = "type_frais_id")

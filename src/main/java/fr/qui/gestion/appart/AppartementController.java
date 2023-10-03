@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.qui.gestion.frais.FraisService;
-import fr.qui.gestion.mouvementappart.MouvementAppartement;
+import fr.qui.gestion.frais.Frais;
+import fr.qui.gestion.periodlocation.PeriodLocation;
 
 @RestController
 @RequestMapping(path = "/api/appartements", produces = "application/json")
@@ -25,12 +25,12 @@ import fr.qui.gestion.mouvementappart.MouvementAppartement;
 public class AppartementController {
 
     private final AppartementService appartementService;
-    private final FraisService fraisService;
     @Autowired
-    public AppartementController(AppartementService appartementService, FraisService fraisService) {
+    public AppartementController(AppartementService appartementService) {
         this.appartementService = appartementService;
-		this.fraisService = fraisService;
     }
+    
+    // Appartements
     
     @GetMapping("/liste")
     public List<Appartement> obtenirTousLesAppartements() {
@@ -67,42 +67,92 @@ public class AppartementController {
         }
     }
     
-    
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<String> supprimerUnAppartement(@PathVariable Long id) {
-    	fraisService.supprimerTousLesFraisParAppartementId(id);
+    	appartementService.supprimerTousLesFraisParAppartementId(id);
     	appartementService.supprimerUnAppartement(id);
         return new ResponseEntity<>("Appartement deleted successfully", HttpStatus.OK);
     }
+    
+    @GetMapping("/adresses")
+    public ResponseEntity<List<AdresseDTO>> obtenirToutesLesAdressesAppartements() {
+    	try {
+    		List<AdresseDTO> adresses = appartementService.obtenirToutesLesAdressesAppartements();
+    		return ResponseEntity.ok(adresses) ;
+    	} catch (IllegalArgumentException e) {
+    		return ResponseEntity.notFound().build();
+	    }
+    }
+    
+    
+    // Frais
+    
+    @PutMapping("/{appartementId}/frais/{fraisId}")
+    public ResponseEntity<Frais> mettreAJourUnFraisPourAppartement(@PathVariable Long appartementId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
+        try {
+            Frais frais = appartementService.mettreAJourUnFraisPourAppartement(appartementId, fraisId, fraisMisAJour);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
-    @GetMapping("/{id}/calcul-rentabilite")
-    public ResponseEntity<Double> calculerRentabiliteNette(@PathVariable("id") Long id) {
+    @PostMapping("/{appartementId}/frais")
+    public ResponseEntity<Frais> ajouterUnFraisPourAppartement(
+            @PathVariable Long appartementId,
+            @RequestBody Frais newFrais) {
         try {
-            double rentabiliteNette = appartementService.calculerRentabiliteNette(id);
-            return ResponseEntity.ok(rentabiliteNette);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+            Frais frais = appartementService.ajouterUnFraisPourAppartement(appartementId, newFrais);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/{appartementId}/frais/{fraisId}")
+    @Transactional
+    public ResponseEntity<?> supprimerFraisPourAppartement(@PathVariable Long appartementId, @PathVariable Long fraisId) {
+        try {
+            appartementService.supprimerFraisPourAppartement(appartementId, fraisId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     
-    @GetMapping("/{id}/moyenne-benefices")
-    public ResponseEntity<Double> calculerMoyenneBenefices(@PathVariable("id") Long id) {
+    // Periode
+    
+    @PutMapping("/{appartementId}/periodes/{periodLocationId}")
+    public ResponseEntity<PeriodLocation> mettreAJourUnePeriodePourAppartement(@PathVariable Long appartementId, @PathVariable Long periodLocationId, @RequestBody PeriodLocation periodLocationMisAJour) {
         try {
-            double moyenneBenefices = appartementService.calculerMoyenneBenefices(id);
-            return ResponseEntity.ok(moyenneBenefices);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+            PeriodLocation periodLocation = appartementService.mettreAJourUnePeriodePourAppartement(appartementId, periodLocationId, periodLocationMisAJour);
+            return ResponseEntity.ok(periodLocation);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-    
-    @GetMapping("/{id}/taux-vacances-locatives")
-    public ResponseEntity<Double> calculerTauxVacancesLocativeMoyen(@PathVariable("id") Long id) {
+
+    @PostMapping("/{appartementId}/periodes")
+    public ResponseEntity<PeriodLocation> ajouterUnePeriodePourAppartement(
+            @PathVariable Long appartementId,
+            @RequestBody PeriodLocation newPeriodLocation) {
         try {
-            double tauxVacancesLocatives = appartementService.calculerTauxVacancesLocatives(id);
-            return ResponseEntity.ok(tauxVacancesLocatives);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+        	PeriodLocation periodLocation = appartementService.ajouterUnePeriodePourAppartement(appartementId, newPeriodLocation);
+            return ResponseEntity.ok(periodLocation);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/{appartementId}/periodes/{periodLocationId}")
+    @Transactional
+    public ResponseEntity<?> supprimerPeriodePourAppartement(@PathVariable Long appartementId, @PathVariable Long periodLocationId) {
+        try {
+            appartementService.supprimerPeriodePourAppartement(appartementId, periodLocationId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
