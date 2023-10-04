@@ -56,7 +56,7 @@ public class AppartementController {
         }
     }
     
-    @PutMapping("/modifier/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Appartement> modifierAppartement(@PathVariable Long id, @RequestBody Appartement appartementModifie) {
         try {
             Appartement appartement = appartementService.modifierAppartement(id, appartementModifie);
