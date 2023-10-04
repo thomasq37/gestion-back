@@ -29,4 +29,7 @@ public class AppUserService {
 		}
 	}
 
+	public Appartement findAppartementByAppUserIdAndId(Long userId, Long apartmentId) {
+        return userRepository.findAppartementByAppUserIdAndId(userId, apartmentId).orElse(null);
+    }
 }
