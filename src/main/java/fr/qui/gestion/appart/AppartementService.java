@@ -35,18 +35,6 @@ public class AppartementService {
         return appartementRepository.findAll();
     }
     
-    public List<AdresseDTO> obtenirToutesLesAdressesAppartements(){
-    	return appartementRepository.findAllAdresses();
-    }
-    
-    public List<AdresseDTO> obtenirAdressesAppartementsParUserToken(String userToken) {
-        return appartementRepository.findAdressesByUserToken(userToken);      
-    }
-    
-    public List<AdresseDTO> obtenirAdressesAppartementsParUserId(Long userId) {
-        return appartementRepository.findAdressesByUserId(userId);      
-    }
-    
     public Appartement ajouterAppartement(Appartement nouvelAppartement) {
         return appartementRepository.save(nouvelAppartement);
     }

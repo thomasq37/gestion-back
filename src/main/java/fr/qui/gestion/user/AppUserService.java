@@ -18,16 +18,9 @@ public class AppUserService {
 	public Optional<AppUser> findByUserToken(String userToken) {
 		return userRepository.findByUserToken(userToken);
 	}
-	public Long getUserIdByUserToken(String userToken) {
-		Optional<AppUser> user = userRepository.findByUserToken(userToken);
-        if (user.isPresent()) {
-            return user.get().getId();
-        } else {
-            throw new IllegalArgumentException("User not found for the provided token.");
-        }
-    }
-	public List<Appartement> obtenirAppartementsParUserToken(String userToken) {
-		Optional<AppUser> optionalUser = userRepository.findByUserToken(userToken);
+
+	public List<Appartement> obtenirAppartementsParUserId(Long userId) {
+		Optional<AppUser> optionalUser = userRepository.findById(userId);
 		if(optionalUser.isPresent()) {
 			return optionalUser.get().getAppartements();
 		}

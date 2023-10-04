@@ -53,12 +53,12 @@ public class AuthController {
         try {
             Map<String, Object> response = authenticationService.authenticate(credentials.getUsername(), credentials.getPassword());
             
-            // Check if response contains the key "appUserId"
-            String appUserId = (String) response.get("userToken");
-            // Check if appUserId is not zero
-            if(appUserId != "") {
+            String userToken = (String) response.get("userToken");
+            Long userId = (Long) response.get("userId");
+            if(userId != -1 && userToken != "") {
                 Map<String, Object> credForFront = new HashMap<>();
-                credForFront.put("userToken", appUserId);
+                credForFront.put("userId", userId);
+                credForFront.put("userToken", userToken);
                 credForFront.put("token", token);
                 return ResponseEntity.ok(credForFront);
             } else {

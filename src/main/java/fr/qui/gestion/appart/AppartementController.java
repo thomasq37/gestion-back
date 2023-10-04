@@ -99,45 +99,6 @@ public class AppartementController {
     	appartementService.supprimerUnAppartement(id);
         return new ResponseEntity<>("Appartement deleted successfully", HttpStatus.OK);
     }
-    
-    @GetMapping("/adresses")
-    public ResponseEntity<List<AdresseDTO>> obtenirToutesLesAdressesAppartements() {
-    	try {
-    		List<AdresseDTO> adresses = appartementService.obtenirToutesLesAdressesAppartements();
-    		return ResponseEntity.ok(adresses) ;
-    	} catch (IllegalArgumentException e) {
-    		return ResponseEntity.notFound().build();
-	    }
-    }
-    
-    /*@GetMapping("/adresses/{userId}")
-    public ResponseEntity<List<AdresseDTO>> obtenirAdressesAppartementsParUserId(@PathVariable Long userId) {
-        try {
-            List<AdresseDTO> adresses = appartementService.obtenirAdressesAppartementsParUserId(userId);
-            if(adresses.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(adresses);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }*/
-    @GetMapping("/adresses/{userToken}")
-    public ResponseEntity<List<AdresseDTO>> obtenirAdressesAppartementsParUserToken(@PathVariable String userToken) {
-        try {
-            List<AdresseDTO> adresses = appartementService.obtenirAdressesAppartementsParUserToken(userToken);
-            if(adresses.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(adresses);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 
     
     

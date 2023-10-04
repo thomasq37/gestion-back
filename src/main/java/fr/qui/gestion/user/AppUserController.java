@@ -20,9 +20,9 @@ public class AppUserController {
 		this.appUserService = appUserService;
 	}
 	
-	@GetMapping("/{userToken}/appartements")
-	public List<Appartement> obtenirAppartementsParUserToken(@PathVariable String userToken){
-		return appUserService.obtenirAppartementsParUserToken(userToken);
+	@GetMapping("/{userId}/appartements")
+	public List<Appartement> obtenirAppartementsParUserId(@PathVariable long userId){
+		return appUserService.obtenirAppartementsParUserId(userId);
 		
 	}
 }

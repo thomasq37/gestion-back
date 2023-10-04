@@ -45,13 +45,15 @@ public class AuthService {
         Optional<AppUser> optionalUser = userRepository.findByUsername(username);
         Map<String, Object> response = new HashMap<>();
         if(optionalUser.isPresent()) {
-            AppUser user = optionalUser.get();
-            response.put("userToken", user.getUserToken());
-            response.put("isAuthentificated", passwordEncoder.matches(password, user.getPassword()));
+	        AppUser user = optionalUser.get();
+	        response.put("userId", user.getId());
+	        response.put("userToken", user.getUserToken());
+	        response.put("isAuthentificated", passwordEncoder.matches(password, user.getPassword()));
         }
         else {
-        	  response.put("userToken", "");
-              response.put("isAuthentificated", false);
+      	  response.put("userId", -1);	
+    	  response.put("userToken", "");
+          response.put("isAuthentificated", false);
         }
 		return response;
 
