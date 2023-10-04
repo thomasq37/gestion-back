@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import jakarta.persistence.CascadeType;
@@ -57,6 +58,9 @@ public class Appartement {
     @OneToMany(mappedBy = "appartement", fetch = FetchType.LAZY)
     private List<Frais> fraisFixe;
     
+    @OneToMany(mappedBy = "appartement", fetch = FetchType.LAZY)
+    private List<Contact> contacts;
+    
     @ElementCollection
     @CollectionTable(name = "appartement_images", joinColumns = @JoinColumn(name = "appartement_id"))
     private List<String> images;
@@ -64,7 +68,6 @@ public class Appartement {
     @OneToMany(mappedBy = "appartement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PeriodLocation> periodLocation;
 
-    
     protected double calculerRentabiliteNette() {
         double revenus = 0.0;
         double depensesTotales = 0.0;
@@ -120,7 +123,6 @@ public class Appartement {
         moyenneBeneficesNetParMois = Math.round(moyenneBeneficesNetParMois * 100.0) / 100.0;
         return moyenneBeneficesNetParMois;
     }
-
 
     protected double calculerTauxVacanceLocative() {
         List<PeriodLocation> periodLocations = this.getPeriodLocation();

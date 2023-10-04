@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.qui.gestion.appart.Appartement;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import fr.qui.gestion.typefrais.TypeFrais;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,13 +27,13 @@ public class Frais {
     private Frequence frequence;
 
     @ManyToOne
-    @JoinColumn(name = "appartement_id")
+    @JoinColumn(name = "appartement_id", nullable = true)
     @JsonIgnore
     private Appartement appartement;
   
 
     @ManyToOne
-    @JoinColumn(name = "period_location_id")
+    @JoinColumn(name = "period_location_id", nullable = true)
     @JsonIgnore
     private PeriodLocation periodLocation;
     

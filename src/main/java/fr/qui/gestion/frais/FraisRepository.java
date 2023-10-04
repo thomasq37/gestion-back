@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
-import fr.qui.gestion.periodlocation.PeriodLocation;
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface FraisRepository extends JpaRepository<Frais, Long> {
@@ -24,4 +25,7 @@ public interface FraisRepository extends JpaRepository<Frais, Long> {
     
     void deleteAllByAppartementId(Long appartementId);
     
+    @Modifying
+    @Transactional
+    void deleteByPeriodLocationId(Long periodLocationId);    
 }

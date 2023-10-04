@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 
@@ -156,14 +157,71 @@ public class AppartementController {
         }
     }
     
-    @PostMapping("/{appartementId}/periodes/{periodeId}/frais")
+    // Frais Periodes
+    
+    @PostMapping("/periodes/{periodeId}/frais")
     public ResponseEntity<Frais> ajouterUnFraisPourPeriode(
-            @PathVariable Long appartementId,
             @PathVariable Long periodeId,
             @RequestBody Frais newFrais) {
         try {
-            Frais frais = appartementService.ajouterUnFraisPourPeriode(appartementId, periodeId, newFrais);
+            Frais frais = appartementService.ajouterUnFraisPourPeriode(periodeId, newFrais);
             return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @PutMapping("/periodes/{periodeId}/frais/{fraisId}")
+    public ResponseEntity<Frais> mettreAJourUnFraisPourPeriode(@PathVariable Long periodeId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
+        try {
+            Frais frais = appartementService.mettreAJourUnFraisPourPeriode(periodeId, fraisId, fraisMisAJour);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/periodes/{periodeId}/frais/{fraisId}")
+    @Transactional
+    public ResponseEntity<?> supprimerFraisPourPeriode(@PathVariable Long periodeId, @PathVariable Long fraisId) {
+        try {
+            appartementService.supprimerFraisPourPeriode(periodeId, fraisId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    // Contacts
+    
+    @GetMapping("/{appartementId}/contacts")
+    public ResponseEntity<List<Contact>> obtenirContactsPourAppartement(@PathVariable Long appartementId) {
+        try {
+            List<Contact> contacts = appartementService.obtenirContactsPourAppartement(appartementId);
+            return ResponseEntity.ok(contacts);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    
+    
+    @PostMapping("/{appartementId}/contacts")
+    public ResponseEntity<Contact> ajouterUnContactPourAppartement(
+            @PathVariable Long appartementId,
+            @RequestBody Contact newContact) {
+        try {
+        	Contact contact = appartementService.ajouterUnContactPourAppartement(appartementId, newContact);
+            return ResponseEntity.ok(contact);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @PutMapping("/{appartementId}/contacts/{contactId}")
+    public ResponseEntity<Contact> mettreAJourUnContactPourAppartement(@PathVariable Long appartementId, @PathVariable Long contactId, @RequestBody Contact contactMisAJour) {
+        try {
+        	Contact contact = appartementService.mettreAJourUnContactPourAppartement(appartementId, contactId, contactMisAJour);
+            return ResponseEntity.ok(contact);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
