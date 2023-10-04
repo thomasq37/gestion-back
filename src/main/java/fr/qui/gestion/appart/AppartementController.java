@@ -155,4 +155,17 @@ public class AppartementController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    
+    @PostMapping("/{appartementId}/periodes/{periodeId}/frais")
+    public ResponseEntity<Frais> ajouterUnFraisPourPeriode(
+            @PathVariable Long appartementId,
+            @PathVariable Long periodeId,
+            @RequestBody Frais newFrais) {
+        try {
+            Frais frais = appartementService.ajouterUnFraisPourPeriode(appartementId, periodeId, newFrais);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

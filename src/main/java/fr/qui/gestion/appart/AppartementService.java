@@ -94,7 +94,7 @@ public class AppartementService {
                 .orElseThrow(() -> new RuntimeException("Frais non trouvé"));
 
         if (!frais.getAppartement().getId().equals(appartementId)) {
-            throw new RuntimeException("Le frais ne appartient pas à l'appartement donné");
+            throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
         }
         fraisRepository.delete(frais);
     }
@@ -116,6 +116,7 @@ public class AppartementService {
         periodLocationActuel.setEstSortie(periodLocationMisAJour.getEstSortie());
         periodLocationActuel.setLocVac(periodLocationMisAJour.isLocVac());
         periodLocationActuel.setPrix(periodLocationMisAJour.getPrix());
+        periodLocationActuel.setFrais(periodLocationMisAJour.getFrais());
         return periodLocationRepository.save(periodLocationActuel);
 	}
 
@@ -137,5 +138,18 @@ public class AppartementService {
         }
         periodLocationRepository.delete(periodLocation);
 		
+	}
+	
+	@Transactional
+	public Frais ajouterUnFraisPourPeriode(Long appartementId, Long periodeId, Frais newFrais) {
+		PeriodLocation periodLocation = periodLocationRepository.findById(periodeId)
+				.orElseThrow(() -> new RuntimeException("PeriodLocation not found"));
+		
+		Appartement appartement = appartementRepository.findById(appartementId)
+                .orElseThrow(() -> new RuntimeException("Appartement not found"));
+
+        newFrais.setAppartement(appartement);
+        newFrais.setPeriodLocation(periodLocation);
+        return fraisRepository.save(newFrais);
 	}
 }
