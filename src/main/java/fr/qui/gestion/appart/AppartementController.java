@@ -86,6 +86,22 @@ public class AppartementController {
 	    }
     }
     
+    @GetMapping("/adresses/{userId}")
+    public ResponseEntity<List<AdresseDTO>> obtenirAdressesAppartementsParUserId(@PathVariable Long userId) {
+        try {
+            List<AdresseDTO> adresses = appartementService.obtenirAdressesAppartementsParUserId(userId);
+            if(adresses.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(adresses);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    
     
     // Frais
     

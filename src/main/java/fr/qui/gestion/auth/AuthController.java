@@ -1,5 +1,8 @@
 package fr.qui.gestion.auth;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -44,10 +47,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AppUser credentials) {
+    public ResponseEntity<Object> login(@RequestBody AppUser credentials) {
 	  try {
-	      if(authenticationService.authenticate(credentials.getUsername(), credentials.getPassword())) {
-	          return ResponseEntity.ok(token);
+		  Map<String, Object> response = authenticationService.authenticate(credentials.getUsername(), credentials.getPassword());
+	      if((Long)response.get("appUserId") != 0) {
+	    	  Map<String, Object> credForFront = new HashMap<>();
+	    	  credForFront.put("appUserId", response.get("appUserId"));
+	    	  credForFront.put("token", token);
+              return ResponseEntity.ok(credForFront);
 	      } else {
 	          return ResponseEntity.status(401).body("Invalid credentials");
 	      }

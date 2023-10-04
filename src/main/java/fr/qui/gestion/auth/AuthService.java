@@ -1,8 +1,11 @@
 package fr.qui.gestion.auth;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +34,20 @@ public class AuthService {
     }
 
 
-    public boolean authenticate(String username, String password) {
+    public Map<String, Object> authenticate(String username, String password) {
         Optional<AppUser> optionalUser = userRepository.findByUsername(username);
-
+        Map<String, Object> response = new HashMap<>();
         if(optionalUser.isPresent()) {
             AppUser user = optionalUser.get();
-            return passwordEncoder.matches(password, user.getPassword());
+            response.put("appUserId", user.getId());
+            response.put("isAuthentificated", passwordEncoder.matches(password, user.getPassword()));
         }
-        return false;
+        else {
+        	  response.put("appUserId", 0);
+              response.put("isAuthentificated", false);
+        }
+		return response;
+
     }
     
     public boolean validateInvitation(String token) {

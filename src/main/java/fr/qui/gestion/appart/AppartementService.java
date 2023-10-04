@@ -39,6 +39,10 @@ public class AppartementService {
     	return appartementRepository.findAllAdresses();
     }
     
+    public List<AdresseDTO> obtenirAdressesAppartementsParUserId(Long userId) {
+        return appartementRepository.findAdressesByUserId(userId);      
+    }
+    
     public Appartement ajouterAppartement(Appartement nouvelAppartement) {
         return appartementRepository.save(nouvelAppartement);
     }
@@ -55,6 +59,7 @@ public class AppartementService {
         appartementExist.setBalcon(appartementModifie.isBalcon());
         appartementExist.setPrix(appartementModifie.getPrix());
         appartementExist.setImages(appartementModifie.getImages());
+        appartementExist.setAppUser(appartementModifie.getAppUser());
 
         return appartementRepository.save(appartementExist);
     }
