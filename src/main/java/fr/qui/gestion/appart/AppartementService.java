@@ -39,6 +39,10 @@ public class AppartementService {
     	return appartementRepository.findAllAdresses();
     }
     
+    public List<AdresseDTO> obtenirAdressesAppartementsParUserToken(String userToken) {
+        return appartementRepository.findAdressesByUserToken(userToken);      
+    }
+    
     public List<AdresseDTO> obtenirAdressesAppartementsParUserId(Long userId) {
         return appartementRepository.findAdressesByUserId(userId);      
     }

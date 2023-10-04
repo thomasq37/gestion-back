@@ -1,6 +1,7 @@
 package fr.qui.gestion.appart;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.periodlocation.PeriodLocation;
+import fr.qui.gestion.user.AppUser;
+import fr.qui.gestion.user.AppUserService;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(path = "/api/appartements", produces = "application/json")
@@ -26,9 +30,13 @@ import fr.qui.gestion.periodlocation.PeriodLocation;
 public class AppartementController {
 
     private final AppartementService appartementService;
+    
+    private final AppUserService appUserService;
+    
     @Autowired
-    public AppartementController(AppartementService appartementService) {
+    public AppartementController(AppartementService appartementService, AppUserService appUserService) {
         this.appartementService = appartementService;
+        this.appUserService = appUserService;
     }
     
     // Appartements
@@ -59,14 +67,30 @@ public class AppartementController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Appartement> obtenirUnAppartementParId(@PathVariable("id") Long id) {
+    public ResponseEntity<Appartement> obtenirUnAppartementParId(@PathVariable("id") Long id, HttpServletRequest request) {
         try {
+            // Extract the user token from the header
+            String userToken = request.getHeader("X-API-USER-KEY");
+
+            // Fetch the AppUser based on the user token
+            Optional<AppUser> user = appUserService.findByUserToken(userToken);
+            if(!user.isPresent()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Token is invalid
+            }
+
             Appartement appartement = appartementService.obtenirUnAppartementParId(id);
+
+            // Check if the apartment belongs to the user
+            if(!appartement.getAppUser().getId().equals(user.get().getId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Apartment doesn't belong to user
+            }
+
             return ResponseEntity.ok(appartement);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
     
     @DeleteMapping("/{id}")
     @Transactional
@@ -86,10 +110,24 @@ public class AppartementController {
 	    }
     }
     
-    @GetMapping("/adresses/{userId}")
+    /*@GetMapping("/adresses/{userId}")
     public ResponseEntity<List<AdresseDTO>> obtenirAdressesAppartementsParUserId(@PathVariable Long userId) {
         try {
             List<AdresseDTO> adresses = appartementService.obtenirAdressesAppartementsParUserId(userId);
+            if(adresses.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(adresses);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }*/
+    @GetMapping("/adresses/{userToken}")
+    public ResponseEntity<List<AdresseDTO>> obtenirAdressesAppartementsParUserToken(@PathVariable String userToken) {
+        try {
+            List<AdresseDTO> adresses = appartementService.obtenirAdressesAppartementsParUserToken(userToken);
             if(adresses.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }

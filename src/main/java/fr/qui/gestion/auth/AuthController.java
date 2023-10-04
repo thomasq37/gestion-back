@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,8 @@ public class AuthController {
 	
     @Autowired
     private AuthService authenticationService;
-    
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
 
     @Value("${api.key}")
     private String token;
@@ -48,20 +50,26 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody AppUser credentials) {
-	  try {
-		  Map<String, Object> response = authenticationService.authenticate(credentials.getUsername(), credentials.getPassword());
-	      if((Long)response.get("appUserId") != 0) {
-	    	  Map<String, Object> credForFront = new HashMap<>();
-	    	  credForFront.put("appUserId", response.get("appUserId"));
-	    	  credForFront.put("token", token);
-              return ResponseEntity.ok(credForFront);
-	      } else {
-	          return ResponseEntity.status(401).body("Invalid credentials");
-	      }
-       } catch (Exception e) {
-          return ResponseEntity.status(500).body(e.getMessage());
-       }
+        try {
+            Map<String, Object> response = authenticationService.authenticate(credentials.getUsername(), credentials.getPassword());
+            
+            // Check if response contains the key "appUserId"
+            String appUserId = (String) response.get("userToken");
+            // Check if appUserId is not zero
+            if(appUserId != "") {
+                Map<String, Object> credForFront = new HashMap<>();
+                credForFront.put("userToken", appUserId);
+                credForFront.put("token", token);
+                return ResponseEntity.ok(credForFront);
+            } else {
+                return ResponseEntity.status(401).body("Invalid credentials");
+            }
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
     }
+
     
     
 }
