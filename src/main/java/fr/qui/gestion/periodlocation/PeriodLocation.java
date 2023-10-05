@@ -37,12 +37,6 @@ public class PeriodLocation {
     // si loc vac le prix est par jour
     @Column(name = "is_loc_vac")
     private boolean isLocVac;
-
-    
-    @Transient
-    public Long getAppartementId() {
-        return (this.appartement != null) ? this.appartement.getId() : null;
-    }
     
     @Column(name = "est_entree")
     private LocalDate estEntree;

@@ -28,9 +28,6 @@ public class AppartementService {
     @Autowired
     private AppartementRepository appartementRepository;
     
-    @Autowired
-    private ContactRepository contactRepository;
-    
     public List<Appartement> obtenirTousLesAppartements() {
         return appartementRepository.findAll();
     }
@@ -67,40 +64,6 @@ public class AppartementService {
     
     // Frais
     
-    @Transactional
-    public Frais mettreAJourUnFraisPourAppartement(Long appartementId, Long fraisId, Frais fraisMisAJour) {
-    	
-        Frais fraisActuel = fraisRepository.findById(fraisId)
-                .orElseThrow(() -> new RuntimeException("Frais non trouvé"));
-        if (!fraisActuel.getAppartement().getId().equals(appartementId)) {
-            throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
-        }
-        fraisActuel.setMontant(fraisMisAJour.getMontant());
-        fraisActuel.setFrequence(fraisMisAJour.getFrequence());
-        fraisActuel.setTypeFrais(fraisMisAJour.getTypeFrais());
-        return fraisRepository.save(fraisActuel);
-    }
-    
-    @Transactional
-    public Frais ajouterUnFraisPourAppartement(Long appartementId, Frais newFrais) {
-        Appartement appartement = appartementRepository.findById(appartementId)
-                .orElseThrow(() -> new RuntimeException("Appartement not found"));
-
-        newFrais.setAppartement(appartement);
-        return fraisRepository.save(newFrais);
-    }
-    
-    @Transactional
-    public void supprimerFraisPourAppartement(Long appartementId, Long fraisId) {
-        Frais frais = fraisRepository.findById(fraisId)
-                .orElseThrow(() -> new RuntimeException("Frais non trouvé"));
-
-        if (!frais.getAppartement().getId().equals(appartementId)) {
-            throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
-        }
-        fraisRepository.delete(frais);
-    }
-
 	@Transactional
 	public void supprimerTousLesFraisParAppartementId(Long appartementId) {
        fraisRepository.deleteAllByAppartementId(appartementId);
@@ -175,33 +138,5 @@ public class AppartementService {
 		
 	}
 	
-	// Contacts
-	
-	public List<Contact> obtenirContactsPourAppartement(Long appartementId) {
-	    Appartement appartement = appartementRepository.findById(appartementId)
-	        .orElseThrow(() -> new RuntimeException("Appartement non trouvé"));
 
-	    return appartement.getContacts();
-	}
-	
-    @Transactional
-    public Contact ajouterUnContactPourAppartement(Long appartementId, Contact newContact) {
-        Appartement appartement = appartementRepository.findById(appartementId)
-                .orElseThrow(() -> new RuntimeException("Appartement not found"));
-
-        newContact.setAppartement(appartement);
-        return contactRepository.save(newContact);
-    }
-
-	public Contact mettreAJourUnContactPourAppartement(Long appartementId, Long contactId, Contact contactMisAJour) {
-		Contact contactActuel = contactRepository.findById(contactId)
-                .orElseThrow(() -> new RuntimeException("Contact non trouvé"));
-        if (!contactActuel.getAppartement().getId().equals(appartementId)) {
-            throw new RuntimeException("Le contact n'appartient pas à l'appartement donné");
-        }
-        contactActuel.setPseudo(contactMisAJour.getPseudo());
-        contactActuel.setEmail(contactMisAJour.getEmail());
-        contactActuel.setPhoneNumber(contactMisAJour.getPhoneNumber());
-        return contactRepository.save(contactActuel);
-	}
 }

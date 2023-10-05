@@ -25,7 +25,7 @@ import fr.qui.gestion.user.AppUserService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping(path = "/api/appartements", produces = "application/json")
+@RequestMapping(path = "/api/utilisateurs/{userId}/appartements", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
 public class AppartementController {
 
@@ -41,11 +41,6 @@ public class AppartementController {
     
     // Appartements
     
-    @GetMapping("/liste")
-    public List<Appartement> obtenirTousLesAppartements() {
-        return appartementService.obtenirTousLesAppartements();
-    }
-    
     @PostMapping("/ajouter")
     public ResponseEntity<Appartement> ajouterAppartement(@RequestBody Appartement nouvelAppartement) {
         try {
@@ -56,121 +51,26 @@ public class AppartementController {
         }
     }
     
-    @PutMapping("/{id}")
-    public ResponseEntity<Appartement> modifierAppartement(@PathVariable Long id, @RequestBody Appartement appartementModifie) {
+    @PutMapping("/{appartId}")
+    public ResponseEntity<Appartement> modifierAppartement(@PathVariable Long appartId, @RequestBody Appartement appartementModifie) {
         try {
-            Appartement appartement = appartementService.modifierAppartement(id, appartementModifie);
+            Appartement appartement = appartementService.modifierAppartement(appartId, appartementModifie);
             return ResponseEntity.ok(appartement);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<Appartement> obtenirUnAppartementParId(@PathVariable("id") Long id, HttpServletRequest request) {
-        try {
-            // Extract the user token from the header
-            String userToken = request.getHeader("X-API-USER-KEY");
 
-            // Fetch the AppUser based on the user token
-            Optional<AppUser> user = appUserService.findByUserToken(userToken);
-            if(!user.isPresent()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Token is invalid
-            }
-
-            Appartement appartement = appartementService.obtenirUnAppartementParId(id);
-
-            // Check if the apartment belongs to the user
-            if(!appartement.getAppUser().getId().equals(user.get().getId())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Apartment doesn't belong to user
-            }
-
-            return ResponseEntity.ok(appartement);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{appartId}")
     @Transactional
-    public ResponseEntity<String> supprimerUnAppartement(@PathVariable Long id) {
-    	appartementService.supprimerTousLesFraisParAppartementId(id);
-    	appartementService.supprimerUnAppartement(id);
+    public ResponseEntity<String> supprimerUnAppartement(@PathVariable Long appartId) {
+    	appartementService.supprimerTousLesFraisParAppartementId(appartId);
+    	appartementService.supprimerUnAppartement(appartId);
         return new ResponseEntity<>("Appartement deleted successfully", HttpStatus.OK);
-    }
-
-    
-    
-    // Frais
-    
-    @PutMapping("/{appartementId}/frais/{fraisId}")
-    public ResponseEntity<Frais> mettreAJourUnFraisPourAppartement(@PathVariable Long appartementId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
-        try {
-            Frais frais = appartementService.mettreAJourUnFraisPourAppartement(appartementId, fraisId, fraisMisAJour);
-            return ResponseEntity.ok(frais);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PostMapping("/{appartementId}/frais")
-    public ResponseEntity<Frais> ajouterUnFraisPourAppartement(
-            @PathVariable Long appartementId,
-            @RequestBody Frais newFrais) {
-        try {
-            Frais frais = appartementService.ajouterUnFraisPourAppartement(appartementId, newFrais);
-            return ResponseEntity.ok(frais);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @DeleteMapping("/{appartementId}/frais/{fraisId}")
-    @Transactional
-    public ResponseEntity<?> supprimerFraisPourAppartement(@PathVariable Long appartementId, @PathVariable Long fraisId) {
-        try {
-            appartementService.supprimerFraisPourAppartement(appartementId, fraisId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
     }
     
     // Periode
-    
-    @PutMapping("/{appartementId}/periodes/{periodLocationId}")
-    public ResponseEntity<PeriodLocation> mettreAJourUnePeriodePourAppartement(@PathVariable Long appartementId, @PathVariable Long periodLocationId, @RequestBody PeriodLocation periodLocationMisAJour) {
-        try {
-            PeriodLocation periodLocation = appartementService.mettreAJourUnePeriodePourAppartement(appartementId, periodLocationId, periodLocationMisAJour);
-            return ResponseEntity.ok(periodLocation);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 
-    @PostMapping("/{appartementId}/periodes")
-    public ResponseEntity<PeriodLocation> ajouterUnePeriodePourAppartement(
-            @PathVariable Long appartementId,
-            @RequestBody PeriodLocation newPeriodLocation) {
-        try {
-        	PeriodLocation periodLocation = appartementService.ajouterUnePeriodePourAppartement(appartementId, newPeriodLocation);
-            return ResponseEntity.ok(periodLocation);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @DeleteMapping("/{appartementId}/periodes/{periodLocationId}")
-    @Transactional
-    public ResponseEntity<?> supprimerPeriodePourAppartement(@PathVariable Long appartementId, @PathVariable Long periodLocationId) {
-        try {
-            appartementService.supprimerPeriodePourAppartement(appartementId, periodLocationId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
     
     // Frais Periodes
     
@@ -203,42 +103,6 @@ public class AppartementController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-    
-    // Contacts
-    
-    @GetMapping("/{appartementId}/contacts")
-    public ResponseEntity<List<Contact>> obtenirContactsPourAppartement(@PathVariable Long appartementId) {
-        try {
-            List<Contact> contacts = appartementService.obtenirContactsPourAppartement(appartementId);
-            return ResponseEntity.ok(contacts);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    
-    
-    @PostMapping("/{appartementId}/contacts")
-    public ResponseEntity<Contact> ajouterUnContactPourAppartement(
-            @PathVariable Long appartementId,
-            @RequestBody Contact newContact) {
-        try {
-        	Contact contact = appartementService.ajouterUnContactPourAppartement(appartementId, newContact);
-            return ResponseEntity.ok(contact);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-    
-    @PutMapping("/{appartementId}/contacts/{contactId}")
-    public ResponseEntity<Contact> mettreAJourUnContactPourAppartement(@PathVariable Long appartementId, @PathVariable Long contactId, @RequestBody Contact contactMisAJour) {
-        try {
-        	Contact contact = appartementService.mettreAJourUnContactPourAppartement(appartementId, contactId, contactMisAJour);
-            return ResponseEntity.ok(contact);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
