@@ -22,10 +22,6 @@ public interface AppartementRepository extends JpaRepository<Appartement, Long> 
     
     @Query("select new fr.qui.gestion.appart.AdresseDTO(a.id, a.numero, a.adresse, a.codePostal, a.ville) from Appartement a where a.appUser.userToken = :userToken")
     List<AdresseDTO> findAdressesByUserToken(@Param("userToken") String userToken);
-
-    
-    @Override
-    <S extends Appartement> S save(S entity);
     
     void deleteById(Long id);
 }

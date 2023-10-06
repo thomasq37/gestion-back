@@ -48,7 +48,7 @@ public class PeriodLocationController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-//    
+    
     @PutMapping("/{periodeId}")
     public ResponseEntity<PeriodLocation> mettreAJourUnePeriodePourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId, @RequestBody PeriodLocation periodeMisAJour) {
         try {

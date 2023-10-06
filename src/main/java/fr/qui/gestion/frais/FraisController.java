@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/utilisateurs/{userId}/appartements/{appartId}/frais", produces = "application/json")
+@RequestMapping(path = "/api/utilisateurs/{userId}", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
 public class FraisController {
 	
@@ -29,7 +29,7 @@ public class FraisController {
         this.fraisService = fraisService;
     }
     
-    @GetMapping()
+    @GetMapping("/appartements/{appartId}/frais")
     public ResponseEntity<List<Frais>> obtenirFraisFixesPourAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
         List<Frais> frais = fraisService.obtenirFraisFixesPourAppartement(appartId);
         if(frais.isEmpty()) {
@@ -38,7 +38,16 @@ public class FraisController {
         return ResponseEntity.ok(frais);
     }
     
-    @PostMapping()
+    @GetMapping("/appartements/{appartId}/periodes/{periodeId}/frais")
+    public ResponseEntity<List<Frais>> obtenirFraisFixesPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId) {
+        List<Frais> frais = fraisService.obtenirFraisFixesPourPeriode(periodeId);
+        if(frais.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(frais);
+    }
+    
+    @PostMapping("/appartements/{appartId}/frais")
     public ResponseEntity<Frais> ajouterUnFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody Frais newFrais) {
         try {
             Frais frais = fraisService.ajouterUnFraisPourAppartement(appartId, newFrais);
@@ -48,7 +57,7 @@ public class FraisController {
         }
     }
     
-    @DeleteMapping("/{fraisId}")
+    @DeleteMapping("/appartements/{appartId}/frais/{fraisId}")
     public ResponseEntity<String> supprimerFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long fraisId) {
         try {
             fraisService.supprimerFraisPourAppartement(fraisId);
@@ -58,7 +67,7 @@ public class FraisController {
         }
     }
     
-    @PutMapping("/{fraisId}")
+    @PutMapping("/appartements/{appartId}/frais/{fraisId}")
     public ResponseEntity<Frais> mettreAJourUnFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
         try {
             Frais frais = fraisService.mettreAJourUnFraisPourAppartement(appartId, fraisId, fraisMisAJour);

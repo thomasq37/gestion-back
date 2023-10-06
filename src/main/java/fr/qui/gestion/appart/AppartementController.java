@@ -1,15 +1,11 @@
 package fr.qui.gestion.appart;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,12 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
-import fr.qui.gestion.periodlocation.PeriodLocation;
-import fr.qui.gestion.user.AppUser;
 import fr.qui.gestion.user.AppUserService;
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(path = "/api/utilisateurs/{userId}/appartements", produces = "application/json")
@@ -52,9 +44,9 @@ public class AppartementController {
     }
     
     @PutMapping("/{appartId}")
-    public ResponseEntity<Appartement> modifierAppartement(@PathVariable Long appartId, @RequestBody Appartement appartementModifie) {
+    public ResponseEntity<Appartement> mettreAJourUnAppartementPourUtilisateur(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody Appartement appartModifie) {
         try {
-            Appartement appartement = appartementService.modifierAppartement(appartId, appartementModifie);
+            Appartement appartement = appartementService.mettreAJourUnAppartementPourUtilisateur(userId, appartId, appartModifie);
             return ResponseEntity.ok(appartement);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

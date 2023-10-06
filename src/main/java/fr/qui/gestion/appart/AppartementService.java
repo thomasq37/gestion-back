@@ -1,13 +1,14 @@
 package fr.qui.gestion.appart;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.qui.gestion.contact.Contact;
-import fr.qui.gestion.contact.ContactRepository;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.frais.FraisRepository;
 import fr.qui.gestion.periodlocation.PeriodLocation;
@@ -36,9 +37,11 @@ public class AppartementService {
         return appartementRepository.save(nouvelAppartement);
     }
     
-    public Appartement modifierAppartement(Long id, Appartement appartementModifie) {
-        Appartement appartementExist = obtenirUnAppartementParId(id);
-
+    public Appartement mettreAJourUnAppartementPourUtilisateur(Long userId, Long appartId, Appartement appartementModifie) {
+        Appartement appartementExist = obtenirUnAppartementParId(appartId);
+        if (appartementExist.getAppUser().getId() != userId) {
+            throw new SecurityException("L'utilisateur n'est pas autorisé à mettre à jour cet appartement.");
+        }
         appartementExist.setNumero(appartementModifie.getNumero());
         appartementExist.setAdresse(appartementModifie.getAdresse());
         appartementExist.setCodePostal(appartementModifie.getCodePostal());
@@ -48,8 +51,6 @@ public class AppartementService {
         appartementExist.setBalcon(appartementModifie.isBalcon());
         appartementExist.setPrix(appartementModifie.getPrix());
         appartementExist.setImages(appartementModifie.getImages());
-        appartementExist.setAppUser(appartementModifie.getAppUser());
-
         return appartementRepository.save(appartementExist);
     }
 
@@ -68,42 +69,6 @@ public class AppartementService {
 	public void supprimerTousLesFraisParAppartementId(Long appartementId) {
        fraisRepository.deleteAllByAppartementId(appartementId);
    }
-
-	
-	public PeriodLocation mettreAJourUnePeriodePourAppartement(Long appartementId, Long periodLocationId,
-			PeriodLocation periodLocationMisAJour) {
-		PeriodLocation periodLocationActuel = periodLocationRepository.findById(periodLocationId)
-                .orElseThrow(() -> new RuntimeException("periodLocation non trouvé"));
-        if (!periodLocationActuel.getAppartement().getId().equals(appartementId)) {
-            throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
-        }
-        periodLocationActuel.setEstEntree(periodLocationMisAJour.getEstEntree());
-        periodLocationActuel.setEstSortie(periodLocationMisAJour.getEstSortie());
-        periodLocationActuel.setLocVac(periodLocationMisAJour.isLocVac());
-        periodLocationActuel.setPrix(periodLocationMisAJour.getPrix());
-        periodLocationActuel.setFrais(periodLocationMisAJour.getFrais());
-        return periodLocationRepository.save(periodLocationActuel);
-	}
-
-	public PeriodLocation ajouterUnePeriodePourAppartement(Long appartementId, PeriodLocation newPeriodLocation) {
-		Appartement appartement = appartementRepository.findById(appartementId)
-                .orElseThrow(() -> new RuntimeException("Appartement not found"));
-
-		newPeriodLocation.setAppartement(appartement);
-        return periodLocationRepository.save(newPeriodLocation);
-	}
-
-	@Transactional
-	public void supprimerPeriodePourAppartement(Long appartementId, Long periodLocationId) {
-		PeriodLocation periodLocation = periodLocationRepository.findById(periodLocationId)
-	                .orElseThrow(() -> new RuntimeException("PeriodLocation non trouvé"));
-	    if (!periodLocation.getAppartement().getId().equals(appartementId)) {
-            throw new RuntimeException("La periode de location n'appartient pas à l'appartement donné");
-        }
-	    fraisRepository.deleteByPeriodLocationId(periodLocationId);
-        periodLocationRepository.delete(periodLocation);
-		
-	}
 	
 	@Transactional
 	public Frais ajouterUnFraisPourPeriode(Long periodeId, Frais newFrais) {

@@ -12,7 +12,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface FraisRepository extends JpaRepository<Frais, Long> {
 	
-    List<Frais> findByAppartementId(Long appartementId);
+    List<Frais> findByAppartementId(Long appartId);
+    
+    List<Frais> findByPeriodLocationId(Long periodeId);
     
     Optional<Frais> findById(Long id);
     

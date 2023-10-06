@@ -19,6 +19,10 @@ public class FraisService {
     public List<Frais> obtenirFraisFixesPourAppartement(Long appartId) {
         return fraisRepository.findByAppartementId(appartId);
     }
+    
+    public List<Frais> obtenirFraisFixesPourPeriode(Long periodeId) {
+        return fraisRepository.findByPeriodLocationId(periodeId);
+    }
 
 	public Frais ajouterUnFraisPourAppartement(Long appartId, Frais newFrais) {
 	    Appartement appartement = appartementRepository.findById(appartId)
