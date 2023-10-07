@@ -55,17 +55,17 @@ public class Appartement {
         this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
     }
     
-    @OneToMany(mappedBy = "appartement", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Frais> fraisFixe;
     
-    @OneToMany(mappedBy = "appartement", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Contact> contacts;
     
     @ElementCollection
     @CollectionTable(name = "appartement_images", joinColumns = @JoinColumn(name = "appartement_id"))
     private List<String> images;
     
-    @OneToMany(mappedBy = "appartement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<PeriodLocation> periodLocation;
     
     @ManyToOne

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/utilisateurs/{userId}", produces = "application/json")
+@RequestMapping(path = "/api/utilisateurs/{userId}/appartements/{appartId}", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
 public class FraisController {
 	
@@ -29,7 +29,7 @@ public class FraisController {
         this.fraisService = fraisService;
     }
     
-    @GetMapping("/appartements/{appartId}/frais")
+    @GetMapping("/frais")
     public ResponseEntity<List<Frais>> obtenirFraisFixesPourAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
         List<Frais> frais = fraisService.obtenirFraisFixesPourAppartement(appartId);
         if(frais.isEmpty()) {
@@ -38,7 +38,7 @@ public class FraisController {
         return ResponseEntity.ok(frais);
     }
     
-    @GetMapping("/appartements/{appartId}/periodes/{periodeId}/frais")
+    @GetMapping("/periodes/{periodeId}/frais")
     public ResponseEntity<List<Frais>> obtenirFraisFixesPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId) {
         List<Frais> frais = fraisService.obtenirFraisFixesPourPeriode(periodeId);
         if(frais.isEmpty()) {
@@ -47,7 +47,7 @@ public class FraisController {
         return ResponseEntity.ok(frais);
     }
     
-    @PostMapping("/appartements/{appartId}/frais")
+    @PostMapping("/frais")
     public ResponseEntity<Frais> ajouterUnFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody Frais newFrais) {
         try {
             Frais frais = fraisService.ajouterUnFraisPourAppartement(appartId, newFrais);
@@ -57,7 +57,17 @@ public class FraisController {
         }
     }
     
-    @DeleteMapping("/appartements/{appartId}/frais/{fraisId}")
+    @PostMapping("/periodes/{periodeId}/frais")
+    public ResponseEntity<Frais> ajouterUnFraisPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId, @RequestBody Frais newFrais) {
+        try {
+            Frais frais = fraisService.ajouterUnFraisPourPeriode(appartId, periodeId, newFrais);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @DeleteMapping("/frais/{fraisId}")
     public ResponseEntity<String> supprimerFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long fraisId) {
         try {
             fraisService.supprimerFraisPourAppartement(fraisId);
@@ -67,10 +77,20 @@ public class FraisController {
         }
     }
     
-    @PutMapping("/appartements/{appartId}/frais/{fraisId}")
+    @PutMapping("/frais/{fraisId}")
     public ResponseEntity<Frais> mettreAJourUnFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
         try {
             Frais frais = fraisService.mettreAJourUnFraisPourAppartement(appartId, fraisId, fraisMisAJour);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+        	System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PutMapping("/periodes/{periodeId}/frais/{fraisId}")
+    public ResponseEntity<Frais> mettreAJourUnFraisPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
+        try {
+            Frais frais = fraisService.mettreAJourUnFraisPourPeriode(appartId, periodeId, fraisId, fraisMisAJour);
             return ResponseEntity.ok(frais);
         } catch (RuntimeException e) {
         	System.out.println(e.getMessage());
