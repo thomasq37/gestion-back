@@ -55,10 +55,12 @@ public class AuthController {
             
             String userToken = (String) response.get("userToken");
             Long userId = (Long) response.get("userId");
+            String userRole = (String) response.get("userRole");
             if(userId != -1 && userToken != "") {
                 Map<String, Object> credForFront = new HashMap<>();
                 credForFront.put("userId", userId);
                 credForFront.put("userToken", userToken);
+                credForFront.put("userRole", userRole);
                 credForFront.put("token", token);
                 return ResponseEntity.ok(credForFront);
             } else {

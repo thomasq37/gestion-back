@@ -1,11 +1,8 @@
 package fr.qui.gestion.appart;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +10,7 @@ import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.frais.FraisRepository;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import fr.qui.gestion.periodlocation.PeriodLocationRepository;
+import fr.qui.gestion.user.AppUser;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -102,6 +100,30 @@ public class AppartementService {
         fraisRepository.delete(frais);
 		
 	}
+	
+	public AppartementForGestionDTO convertToDTO(Appartement appartement) {
+		AppartementForGestionDTO dto = new AppartementForGestionDTO();
+		dto.setId(appartement.getId());
+		dto.setNumero(appartement.getNumero());
+	    dto.setAdresse(appartement.getAdresse());
+	    dto.setCodePostal(appartement.getCodePostal());
+	    dto.setVille(appartement.getVille());
+	    dto.setNombrePieces(appartement.getNombrePieces());
+	    dto.setSurface(appartement.getSurface());
+	    dto.setBalcon(appartement.isBalcon());
+	    dto.setImages(appartement.getImages());
+	    dto.setPeriodLocation(appartement.getPeriodLocation());
+	    dto.setAppartProprioUsername(appartement.getAppUser().getUsername());
+	    dto.setAppartProprioEmail(appartement.getAppUser().getEmail());
+	    dto.setAppartProprioPhoneNumber(appartement.getAppUser().getPhoneNumber());
+
+	    return dto;
+	}
+	
+	public boolean estGestionnaireDeAppartement(AppUser user, Appartement appartement) {
+	    return appartement.getGestionnaires().contains(user);
+	}
+
 	
 
 }

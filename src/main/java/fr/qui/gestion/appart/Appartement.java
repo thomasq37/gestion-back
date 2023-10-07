@@ -18,6 +18,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PostLoad;
@@ -71,6 +73,16 @@ public class Appartement {
     @ManyToOne
     @JoinColumn(name = "app_user_id")
     private AppUser appUser;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "appartement_gestionnaires", 
+        joinColumns = @JoinColumn(name = "appartement_id"), 
+        inverseJoinColumns = @JoinColumn(name = "gestionnaire_id")
+    )
+    private List<AppUser> gestionnaires;
+    
+    
 
     protected double calculerRentabiliteNette() {
         double revenus = 0.0;

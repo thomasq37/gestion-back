@@ -48,12 +48,11 @@ public class AuthService {
 	        AppUser user = optionalUser.get();
 	        response.put("userId", user.getId());
 	        response.put("userToken", user.getUserToken());
-	        response.put("isAuthentificated", passwordEncoder.matches(password, user.getPassword()));
+	        response.put("userRole", user.getRole().getName());
         }
         else {
       	  response.put("userId", -1);	
     	  response.put("userToken", "");
-          response.put("isAuthentificated", false);
         }
 		return response;
 
