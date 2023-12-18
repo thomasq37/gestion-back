@@ -1,6 +1,7 @@
 package fr.qui.gestion.auth;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +9,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.qui.gestion.appart.Appartement;
+import fr.qui.gestion.appart.AppartementService;
 import fr.qui.gestion.user.AppUser;
 import fr.qui.gestion.user.UserRequest;
 
@@ -23,6 +27,9 @@ public class AuthController {
 	
     @Autowired
     private AuthService authenticationService;
+    
+    @Autowired
+    private AppartementService appartementService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
@@ -38,6 +45,30 @@ public class AuthController {
             if(authenticationService.validateInvitation(token)) {
             	 AppUser createdUser = authenticationService.createUser(user.getUsername(), user.getPassword());
                  return ResponseEntity.ok("Compte créé avec succès : id = " + createdUser.getUsername());
+            }
+            else {
+            	return ResponseEntity.status(400).body("Invalide token invitation");
+            }
+        } catch (Exception e) {
+        	System.out.println(e.getMessage());
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+    
+    @PostMapping("utilisateurs/{userId}/appartements/{appartId}/gestionnaire/ajouter")
+    public ResponseEntity<String> createGestionnaire(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody UserRequest userRequest) {
+    	
+        try {
+            AppUser user = userRequest.getUser();
+            String token = userRequest.getToken();
+            if(authenticationService.validateInvitation(token)) {
+            	Appartement currentAppart = appartementService.obtenirUnAppartementParId(appartId);
+            	AppUser createdUser = authenticationService.createUser(user.getUsername(), user.getPassword());
+            	List<AppUser> appUserList = currentAppart.getGestionnaires();
+            	appUserList.add(createdUser);
+            	currentAppart.setGestionnaires(appUserList);
+            	appartementService.mettreAJourUnAppartementPourUtilisateur(userId, appartId, currentAppart);
+                return ResponseEntity.ok("Compte créé avec succès : id = " + createdUser.getId());
             }
             else {
             	return ResponseEntity.status(400).body("Invalide token invitation");

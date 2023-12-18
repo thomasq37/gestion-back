@@ -1,11 +1,14 @@
 package fr.qui.gestion.appart;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.qui.gestion.frais.Frais;
-import fr.qui.gestion.user.AppUserService;
+import fr.qui.gestion.user.AppUserDTO;
 
 @RestController
 @RequestMapping(path = "/api/utilisateurs/{userId}/appartements", produces = "application/json")
@@ -23,12 +26,10 @@ public class AppartementController {
 
     private final AppartementService appartementService;
     
-    private final AppUserService appUserService;
     
     @Autowired
-    public AppartementController(AppartementService appartementService, AppUserService appUserService) {
+    public AppartementController(AppartementService appartementService) {
         this.appartementService = appartementService;
-        this.appUserService = appUserService;
     }
     
     // Appartements
@@ -96,5 +97,15 @@ public class AppartementController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+    
+    @GetMapping("/{appartId}/gestionnaires")
+    public ResponseEntity<List<AppUserDTO>> obtenirGestionnairesParAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
+		
+    	List<AppUserDTO> appartGestionnaires = appartementService.obtenirGestionnairesParAppartement(appartId); 
+        if(appartGestionnaires.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(appartGestionnaires);
     }
 }

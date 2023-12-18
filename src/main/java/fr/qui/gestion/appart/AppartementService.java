@@ -2,6 +2,7 @@ package fr.qui.gestion.appart;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import fr.qui.gestion.frais.FraisRepository;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import fr.qui.gestion.periodlocation.PeriodLocationRepository;
 import fr.qui.gestion.user.AppUser;
+import fr.qui.gestion.user.AppUserDTO;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -120,8 +122,46 @@ public class AppartementService {
 	    return dto;
 	}
 	
+	public AppartementForProprioDTO convertToPrioprioDTO(Appartement appartement) {
+		AppartementForProprioDTO dto = new AppartementForProprioDTO();
+		dto.setId(appartement.getId());
+		dto.setNumero(appartement.getNumero());
+	    dto.setAdresse(appartement.getAdresse());
+	    dto.setCodePostal(appartement.getCodePostal());
+	    dto.setVille(appartement.getVille());
+	    dto.setNombrePieces(appartement.getNombrePieces());
+	    dto.setSurface(appartement.getSurface());
+	    dto.setBalcon(appartement.isBalcon());
+	    dto.setImages(appartement.getImages());
+	    dto.setPeriodLocation(appartement.getPeriodLocation());
+	    dto.setAppUser(convertToDTO(appartement.getAppUser()));
+		List<AppUserDTO> appUserDTOs = appartement.getGestionnaires().stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+	    dto.setGestionnaires(appUserDTOs);
+	    return dto;
+	}
+	
 	public boolean estGestionnaireDeAppartement(AppUser user, Appartement appartement) {
 	    return appartement.getGestionnaires().contains(user);
+	}
+
+	public AppUserDTO convertToDTO(AppUser appUser) {
+		AppUserDTO dto = new AppUserDTO();
+		dto.setId(appUser.getId());
+		dto.setUsername(appUser.getUsername());
+	    dto.setEmail(appUser.getEmail());
+	    dto.setPhoneNumber(appUser.getPhoneNumber());
+	    return dto;
+	}
+
+	public List<AppUserDTO> obtenirGestionnairesParAppartement(Long appartId) {
+        Optional<Appartement> optionalAppartement = appartementRepository.findById(appartId);
+        if(!optionalAppartement.isPresent()) {
+        	throw new IllegalArgumentException("Appart not found");
+        }
+		List<AppUserDTO> appUserDTOs = optionalAppartement.get().getGestionnaires().stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+		return appUserDTOs;
 	}
 
 	

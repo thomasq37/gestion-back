@@ -30,7 +30,7 @@ public class AppUserController {
 	}
 	
 	@GetMapping("/{userId}/appartements")
-	public ResponseEntity<Object> obtenirAppartementsParUserId(@PathVariable long userId, HttpServletRequest request){
+	public ResponseEntity<Object> obtenirAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request){
 		String userToken = request.getHeader("X-API-USER-KEY");
 		
         Optional<AppUser> user = appUserService.findByUserToken(userToken);
@@ -81,7 +81,7 @@ public class AppUserController {
 	        if (!appartement.getAppUser().getId().equals(currentUser.getId())) {
 	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Apartment doesn't belong to user
 	        }
-	        return ResponseEntity.ok(appartement);
+	        return ResponseEntity.ok(appartementService.convertToPrioprioDTO(appartement));
 	    } else if ("GESTIONNAIRE".equals(currentUser.getRole().getName())) {
 	        if (appartementService.estGestionnaireDeAppartement(currentUser, appartement)) {
 	            AppartementForGestionDTO dto = appartementService.convertToDTO(appartement);

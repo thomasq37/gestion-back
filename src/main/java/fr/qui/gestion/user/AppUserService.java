@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.appart.Appartement;
+import fr.qui.gestion.appart.AppartementForGestionDTO;
 
 @Service
 public class AppUserService {
@@ -32,4 +33,5 @@ public class AppUserService {
 	public Appartement findAppartementByAppUserIdAndId(Long userId, Long apartmentId) {
         return userRepository.findAppartementByAppUserIdAndId(userId, apartmentId).orElse(null);
     }
+	
 }
