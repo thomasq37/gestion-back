@@ -57,7 +57,7 @@ public class AuthController {
     }
     
     @PostMapping("utilisateurs/{userId}/appartements/{appartId}/gestionnaire/ajouter")
-    public ResponseEntity<String> createGestionnaire(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody UserRequest userRequest) {
+    public ResponseEntity<Map<String,String>> createGestionnaire(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody UserRequest userRequest) {
     	
         try {
             AppUser user = userRequest.getUser();
@@ -69,14 +69,14 @@ public class AuthController {
             	appUserList.add(createdUser);
             	currentAppart.setGestionnaires(appUserList);
             	appartementService.mettreAJourUnAppartementPourUtilisateur(userId, appartId, currentAppart);
-                return ResponseEntity.ok("Compte créé avec succès : id = " + createdUser.getId());
+                return ResponseEntity.ok(Collections.singletonMap("message", "Compte créé avec succès : Nom d'utilisateur = " + createdUser.getUsername()));
             }
             else {
-            	return ResponseEntity.status(400).body("Invalide token invitation");
+            	return ResponseEntity.status(400).body(Collections.singletonMap("message", "Token d'invitation invalide"));
             }
         } catch (Exception e) {
         	System.out.println(e.getMessage());
-            return ResponseEntity.status(500).body(e.getMessage());
+            return ResponseEntity.status(500).body(Collections.singletonMap("message", e.getMessage()));
         }
     }
 
