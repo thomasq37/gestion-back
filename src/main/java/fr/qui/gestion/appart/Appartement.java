@@ -13,6 +13,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,6 +42,8 @@ public class Appartement {
     private double surface;
     private boolean balcon;
     private double prix;
+    @Enumerated(EnumType.STRING)
+    private Pays pays;
     
     @Transient
     private double rentabiliteNette;

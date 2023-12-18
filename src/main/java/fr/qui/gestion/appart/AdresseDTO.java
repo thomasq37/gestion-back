@@ -9,12 +9,14 @@ public class AdresseDTO {
     private String adresse;
     private String codePostal;
     private String ville;
+    private Pays pays;
 
-    public AdresseDTO(Long id, int numero, String adresse, String codePostal, String ville) {
+    public AdresseDTO(Long id, int numero, String adresse, String codePostal, String ville, Pays pays) {
     	this.id = id;
         this.numero = numero;
         this.adresse = adresse;
         this.codePostal = codePostal;
         this.ville = ville;
+        this.pays = pays;
     }
 }
