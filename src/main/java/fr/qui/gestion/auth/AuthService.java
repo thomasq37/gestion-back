@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.user.AppUser;
+import fr.qui.gestion.user.Role;
+import fr.qui.gestion.user.RoleRepository;
 import fr.qui.gestion.user.UserRepository;
 
 @Service
@@ -21,17 +23,31 @@ public class AuthService {
     private UserRepository userRepository;
     
     @Autowired
+    private RoleRepository roleRepository;
+    
+    @Autowired
     private InvitationRepository invitationRepository;
     
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public AppUser createUser(String username, String password) {
-    	System.out.println("auth_service");
-    	
+    public AppUser createUser(String username, String password, String role) {
+    	// Check if the role already exists
+        Optional<Role> optionalRole = roleRepository.findByName(role);
+        Role defaultRole;
+        if(optionalRole.isPresent()) {
+        	defaultRole = optionalRole.get();
+        }
+        else {
+        	defaultRole = new Role();
+        	defaultRole.setName(role);
+            roleRepository.save(defaultRole);
+        }
+        
         AppUser user = new AppUser();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setUserToken(generateRandomToken(24));
+        user.setRole(defaultRole);
         return userRepository.save(user);
     }
     public String generateRandomToken(int byteLength) {

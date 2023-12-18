@@ -1,5 +1,6 @@
 package fr.qui.gestion.auth;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import fr.qui.gestion.user.AppUser;
 import fr.qui.gestion.user.UserRequest;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(value = "/api/auth", produces = { "application/json" })
 @CrossOrigin(origins = "${app.cors.origin}")
 public class AuthController {
 	
@@ -37,21 +38,21 @@ public class AuthController {
     private String token;
     
     @PostMapping("/create")
-    public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<Map<String,String>> createUser(@RequestBody UserRequest userRequest) {
     	
         try {
             AppUser user = userRequest.getUser();
             String token = userRequest.getToken();
             if(authenticationService.validateInvitation(token)) {
-            	 AppUser createdUser = authenticationService.createUser(user.getUsername(), user.getPassword());
-                 return ResponseEntity.ok("Compte créé avec succès : id = " + createdUser.getUsername());
+            	 AppUser createdUser = authenticationService.createUser(user.getUsername(), user.getPassword(), "PROPRIETAIRE");
+            	 return ResponseEntity.ok(Collections.singletonMap("message", "Compte créé avec succès : Nom d'utilisateur = " + createdUser.getUsername()));
             }
             else {
-            	return ResponseEntity.status(400).body("Invalide token invitation");
+            	return ResponseEntity.status(400).body(Collections.singletonMap("message", "Token d'invitation invalide"));
             }
         } catch (Exception e) {
         	System.out.println(e.getMessage());
-            return ResponseEntity.status(500).body(e.getMessage());
+            return ResponseEntity.status(500).body(Collections.singletonMap("message", e.getMessage()));
         }
     }
     
@@ -63,7 +64,7 @@ public class AuthController {
             String token = userRequest.getToken();
             if(authenticationService.validateInvitation(token)) {
             	Appartement currentAppart = appartementService.obtenirUnAppartementParId(appartId);
-            	AppUser createdUser = authenticationService.createUser(user.getUsername(), user.getPassword());
+            	AppUser createdUser = authenticationService.createUser(user.getUsername(), user.getPassword(), "GESTIONNAIRE");
             	List<AppUser> appUserList = currentAppart.getGestionnaires();
             	appUserList.add(createdUser);
             	currentAppart.setGestionnaires(appUserList);
