@@ -140,6 +140,9 @@ public class AppartementService {
 	    dto.setImages(appartement.getImages());
 	    dto.setFraisFixe(appartement.getFraisFixe());
 	    dto.setContacts(appartement.getContacts());
+	    dto.setRentabiliteNette(appartement.getRentabiliteNette());
+	    dto.setMoyenneBeneficesNetParMois(appartement.getMoyenneBeneficesNetParMois());
+	    dto.setTauxVacanceLocative(appartement.getTauxVacanceLocative());
 	    dto.setPeriodLocation(appartement.getPeriodLocation());
 	    dto.setAppUser(convertToDTO(appartement.getAppUser()));
 		List<AppUserDTO> appUserDTOs = appartement.getGestionnaires().stream().map(this::convertToDTO)
