@@ -42,7 +42,8 @@ public class Appartement {
     private double surface;
     private boolean balcon;
     private double prix;
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "pays_id")
     private Pays pays;
     
     @Transient
