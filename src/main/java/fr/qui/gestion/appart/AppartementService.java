@@ -50,6 +50,7 @@ public class AppartementService {
         appartementExist.setSurface(appartementModifie.getSurface());
         appartementExist.setBalcon(appartementModifie.isBalcon());
         appartementExist.setPrix(appartementModifie.getPrix());
+        appartementExist.setPays(appartementModifie.getPays());
         appartementExist.setImages(appartementModifie.getImages());
         appartementExist.setPays(appartementModifie.getPays());
         return appartementRepository.save(appartementExist);

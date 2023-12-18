@@ -3,8 +3,6 @@ package fr.qui.gestion.appart;
 import java.util.List;
 
 import fr.qui.gestion.periodlocation.PeriodLocation;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Data;
 
 @Data
@@ -13,7 +11,6 @@ public class AppartementForGestionDTO {
     private int numero;
     private String adresse;
     private String codePostal;
-    @Enumerated(EnumType.STRING)
     private Pays pays;
     private String ville;
     private int nombrePieces;
