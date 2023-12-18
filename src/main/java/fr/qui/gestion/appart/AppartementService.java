@@ -132,6 +132,7 @@ public class AppartementService {
 	    dto.setNombrePieces(appartement.getNombrePieces());
 	    dto.setSurface(appartement.getSurface());
 	    dto.setBalcon(appartement.isBalcon());
+	    dto.setPrix(appartement.getPrix());
 	    dto.setImages(appartement.getImages());
 	    dto.setPeriodLocation(appartement.getPeriodLocation());
 	    dto.setAppUser(convertToDTO(appartement.getAppUser()));
