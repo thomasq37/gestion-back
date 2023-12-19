@@ -1,4 +1,4 @@
-package fr.qui.gestion.user;
+package fr.qui.gestion.user.appuser;
 
 import lombok.Data;
 

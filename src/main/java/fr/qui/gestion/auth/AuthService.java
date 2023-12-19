@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import fr.qui.gestion.user.AppUser;
-import fr.qui.gestion.user.Role;
-import fr.qui.gestion.user.RoleRepository;
 import fr.qui.gestion.user.UserRepository;
+import fr.qui.gestion.user.appuser.AppUser;
+import fr.qui.gestion.user.role.Role;
+import fr.qui.gestion.user.role.RoleRepository;
 
 @Service
 public class AuthService {

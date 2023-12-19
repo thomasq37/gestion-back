@@ -1,4 +1,4 @@
-package fr.qui.gestion.user;
+package fr.qui.gestion.user.appuser;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.qui.gestion.appart.Appartement;
-import fr.qui.gestion.appart.AppartementForGestionDTO;
 import fr.qui.gestion.appart.AppartementService;
+import fr.qui.gestion.appart.dto.AppartementForGestionDTO;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
@@ -28,35 +28,36 @@ public class AppUserController {
 		this.appUserService = appUserService;
 		this.appartementService = appartementService;
 	}
-	
 	@GetMapping("/{userId}/appartements")
-	public ResponseEntity<Object> obtenirAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request){
-		String userToken = request.getHeader("X-API-USER-KEY");
-		
-        Optional<AppUser> user = appUserService.findByUserToken(userToken);
-        if(!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Token is invalid
-        }
-        AppUser currentUser = user.get();
-        if(currentUser.getId() != userId) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Token and UserId not match
-        }
-        List<Appartement> allAppartements = appartementService.obtenirTousLesAppartements();
-		if ("GESTIONNAIRE".equals(currentUser.getRole().getName())) {
-			List<AppartementForGestionDTO> dtos = allAppartements.stream()
-                    .filter(appart -> appartementService.estGestionnaireDeAppartement(currentUser, appart))
-                    .map(appartementService::convertToDTO)
-                    .collect(Collectors.toList());
+	public ResponseEntity<Object> obtenirAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) {
+	    String userToken = request.getHeader("X-API-USER-KEY");
+
+	    Optional<AppUser> user = appUserService.findByUserToken(userToken);
+	    if (!user.isPresent()) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token invalide.");
+	    }
+	    AppUser currentUser = user.get();
+	    if (!currentUser.getId().equals(userId)) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Le token ne correspond pas à l'ID utilisateur fourni.");
+	    }
+
+	    // Si l'utilisateur est un gestionnaire
+	    if ("GESTIONNAIRE".equals(currentUser.getRole().getName())) {
+	        List<Appartement> appartementsGeres = appartementService.findByGestionnaireId(currentUser.getId());
+	        List<AppartementForGestionDTO> dtos = appartementsGeres.stream()
+	                                                              .map(appartementService::convertToDTO)
+	                                                              .collect(Collectors.toList());
 	        return ResponseEntity.ok(dtos);
-		} 
-		else if ("PROPRIETAIRE".equals(currentUser.getRole().getName())) {
+	    } 
+	    // Si l'utilisateur est un propriétaire
+	    else if ("PROPRIETAIRE".equals(currentUser.getRole().getName())) {
 	        List<Appartement> appartements = appUserService.obtenirAppartementsParUserId(userId);
-			return ResponseEntity.ok(appartements);		
-		}
-		else {
+	        return ResponseEntity.ok(appartements);
+	    } 
+	    // Si l'utilisateur n'a pas les droits nécessaires
+	    else {
 	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vous n'avez pas les droits nécessaires pour accéder à ces informations.");
 	    }
-	
 	}
 	
 	@GetMapping("/{userId}/appartements/{apartmentId}")

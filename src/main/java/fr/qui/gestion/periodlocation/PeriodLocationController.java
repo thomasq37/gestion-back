@@ -1,8 +1,8 @@
 package fr.qui.gestion.periodlocation;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,9 +28,9 @@ public class PeriodLocationController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<PeriodLocation>> obtenirPeriodeLocationParAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
+    public ResponseEntity<Page<PeriodLocation>> obtenirPeriodeLocationParAppartement(@PathVariable Long userId, @PathVariable Long appartId, Pageable pageable) {
 		
-    	List<PeriodLocation> periodLocations = periodLocationService.obtenirPeriodeLocationParAppartement(appartId); 
+    	Page<PeriodLocation> periodLocations = periodLocationService.obtenirPeriodeLocationParAppartement(appartId, pageable); 
         if(periodLocations.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

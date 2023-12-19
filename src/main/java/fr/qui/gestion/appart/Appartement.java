@@ -5,16 +5,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
+import fr.qui.gestion.pays.Pays;
 import fr.qui.gestion.periodlocation.PeriodLocation;
-import fr.qui.gestion.user.AppUser;
+import fr.qui.gestion.user.appuser.AppUser;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

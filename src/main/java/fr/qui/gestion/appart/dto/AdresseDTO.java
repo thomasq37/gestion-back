@@ -1,5 +1,6 @@
-package fr.qui.gestion.appart;
+package fr.qui.gestion.appart.dto;
 
+import fr.qui.gestion.pays.Pays;
 import lombok.Data;
 
 @Data

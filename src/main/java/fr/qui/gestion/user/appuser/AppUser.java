@@ -1,10 +1,11 @@
-package fr.qui.gestion.user;
+package fr.qui.gestion.user.appuser;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import fr.qui.gestion.appart.Appartement;
+import fr.qui.gestion.user.role.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

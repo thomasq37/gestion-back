@@ -1,4 +1,4 @@
-package fr.qui.gestion.user;
+package fr.qui.gestion.user.appuser;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.appart.Appartement;
-import fr.qui.gestion.appart.AppartementForGestionDTO;
+import fr.qui.gestion.appart.dto.AppartementForGestionDTO;
+import fr.qui.gestion.user.UserRepository;
 
 @Service
 public class AppUserService {

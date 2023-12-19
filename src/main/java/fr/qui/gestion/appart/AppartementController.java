@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.qui.gestion.frais.Frais;
-import fr.qui.gestion.user.AppUserDTO;
+import fr.qui.gestion.user.appuser.AppUserDTO;
 
 @RestController
 @RequestMapping(path = "/api/utilisateurs/{userId}/appartements", produces = "application/json")

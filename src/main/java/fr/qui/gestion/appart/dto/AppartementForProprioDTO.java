@@ -1,11 +1,14 @@
-package fr.qui.gestion.appart;
+package fr.qui.gestion.appart.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
+import fr.qui.gestion.pays.Pays;
 import fr.qui.gestion.periodlocation.PeriodLocation;
-import fr.qui.gestion.user.AppUserDTO;
+import fr.qui.gestion.user.appuser.AppUserDTO;
 import lombok.Data;
 
 @Data
@@ -26,6 +29,7 @@ public class AppartementForProprioDTO {
     private List<Frais> fraisFixe;
     private List<Contact> contacts;
     private List<String> images;
+    @JsonIgnore
     private List<PeriodLocation> periodLocation;
     private AppUserDTO appUser;
     private List<AppUserDTO> gestionnaires;

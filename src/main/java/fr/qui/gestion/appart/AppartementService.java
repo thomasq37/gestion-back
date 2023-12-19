@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.qui.gestion.appart.dto.AppartementForGestionDTO;
+import fr.qui.gestion.appart.dto.AppartementForProprioDTO;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.frais.FraisRepository;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import fr.qui.gestion.periodlocation.PeriodLocationRepository;
-import fr.qui.gestion.user.AppUser;
-import fr.qui.gestion.user.AppUserDTO;
+import fr.qui.gestion.user.appuser.AppUser;
+import fr.qui.gestion.user.appuser.AppUserDTO;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -153,6 +155,10 @@ public class AppartementService {
 	
 	public boolean estGestionnaireDeAppartement(AppUser user, Appartement appartement) {
 	    return appartement.getGestionnaires().contains(user);
+	}
+	
+	public List<Appartement> findByGestionnaireId(Long gestionnaireId){
+		return appartementRepository.findByGestionnaireId(gestionnaireId);
 	}
 
 	public AppUserDTO convertToDTO(AppUser appUser) {

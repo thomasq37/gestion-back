@@ -1,4 +1,4 @@
-package fr.qui.gestion.appart;
+package fr.qui.gestion.pays;
 
 import java.util.List;
 

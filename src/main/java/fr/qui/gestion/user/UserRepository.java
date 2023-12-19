@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import fr.qui.gestion.appart.Appartement;
+import fr.qui.gestion.user.appuser.AppUser;
 
 @Repository
 public interface UserRepository extends JpaRepository<AppUser, Long> {

@@ -1,7 +1,8 @@
-package fr.qui.gestion.appart;
+package fr.qui.gestion.appart.dto;
 
 import java.util.List;
 
+import fr.qui.gestion.pays.Pays;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import lombok.Data;
 

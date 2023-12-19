@@ -1,5 +1,6 @@
 package fr.qui.gestion.user;
 
+import fr.qui.gestion.user.appuser.AppUser;
 import lombok.Data;
 
 @Data

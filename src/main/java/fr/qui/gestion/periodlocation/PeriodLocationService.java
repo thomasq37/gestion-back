@@ -1,8 +1,8 @@
 package fr.qui.gestion.periodlocation;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.appart.Appartement;
@@ -17,10 +17,10 @@ public class PeriodLocationService {
 	@Autowired
 	private AppartementRepository appartementRepository;
 
-    public List<PeriodLocation> obtenirPeriodeLocationParAppartement(Long appartId) {
-        return periodLocationRepository.findByAppartementId(appartId);
-    }
-
+	public Page<PeriodLocation> obtenirPeriodeLocationParAppartement(Long appartId, Pageable pageable) {
+	    return periodLocationRepository.findByAppartementId(appartId, pageable);
+	}
+	
 	public PeriodLocation ajouterUnePeriodeLocationPourAppartement(Long appartId, PeriodLocation newPeriodLocation) {
 		 Appartement appartement = appartementRepository.findById(appartId)
                .orElseThrow(() -> new RuntimeException("Appartement not found"));

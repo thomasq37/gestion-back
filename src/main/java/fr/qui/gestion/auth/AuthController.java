@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.qui.gestion.appart.Appartement;
 import fr.qui.gestion.appart.AppartementService;
-import fr.qui.gestion.user.AppUser;
 import fr.qui.gestion.user.UserRequest;
+import fr.qui.gestion.user.appuser.AppUser;
 
 @RestController
 @RequestMapping(value = "/api/auth", produces = { "application/json" })
