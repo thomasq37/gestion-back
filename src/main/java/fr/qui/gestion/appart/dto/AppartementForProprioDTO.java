@@ -22,6 +22,7 @@ public class AppartementForProprioDTO {
     private double surface;
     private boolean balcon;
     private double prix;
+    private String dpe;
     private Pays pays;
     private double rentabiliteNette;
     private double tauxVacanceLocative;

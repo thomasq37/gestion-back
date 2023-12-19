@@ -43,6 +43,7 @@ public class Appartement {
     private double surface;
     private boolean balcon;
     private double prix;
+    private String dpe;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pays_id")
     private Pays pays;
