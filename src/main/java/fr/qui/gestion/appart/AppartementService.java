@@ -13,6 +13,7 @@ import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.frais.FraisRepository;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import fr.qui.gestion.periodlocation.PeriodLocationRepository;
+import fr.qui.gestion.user.UserRepository;
 import fr.qui.gestion.user.appuser.AppUser;
 import fr.qui.gestion.user.appuser.AppUserDTO;
 import jakarta.transaction.Transactional;
@@ -30,6 +31,9 @@ public class AppartementService {
     
     @Autowired
     private AppartementRepository appartementRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
     
     public List<Appartement> obtenirTousLesAppartements() {
         return appartementRepository.findAll();
@@ -155,8 +159,12 @@ public class AppartementService {
 	    return dto;
 	}
 	
-	public boolean estGestionnaireDeAppartement(AppUser user, Appartement appartement) {
-	    return appartement.getGestionnaires().contains(user);
+	public boolean estGestionnaireDeAppartement(Long userId, Appartement appartement) {
+		Optional<AppUser> optionalUser = userRepository.findById(userId);
+		if(optionalUser.isPresent()) {
+		    return appartement.getGestionnaires().contains(optionalUser.get());
+		}
+		return false;
 	}
 	
 	public List<Appartement> findByGestionnaireId(Long gestionnaireId){
@@ -181,6 +189,44 @@ public class AppartementService {
                 .collect(Collectors.toList());
 		return appUserDTOs;
 	}
+
+	public AppUserDTO mettreAJourUnGestionnairePourAppartement(Long userId, Long appartementId, Long gestionnaireId, AppUserDTO modifieGestionnaire) {
+	    Appartement appartement = appartementRepository.findById(appartementId)
+	            .orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + appartementId));
+	    
+	    if (!estGestionnaireDeAppartement(gestionnaireId, appartement)) {
+	        throw new SecurityException("L'utilisateur n'est pas autorisé à modifier ce gestionnaire.");
+	    }
+	    Optional<AppUser> optionalGestionnaire = userRepository.findById(gestionnaireId);
+	    if(!optionalGestionnaire.isPresent()) {
+        	throw new IllegalArgumentException("Gestionnaire not found");
+        }
+    	AppUser gestionnaire = optionalGestionnaire.get();
+    	gestionnaire.setEmail(modifieGestionnaire.getEmail());
+	    gestionnaire.setUsername(modifieGestionnaire.getUsername());
+	    gestionnaire.setPhoneNumber(modifieGestionnaire.getPhoneNumber());
+	    AppUser updatedGestionnaire = userRepository.save(gestionnaire);
+	    return convertToDTO(updatedGestionnaire);
+	    
+	}
+
+
+	public void supprimerUnGestionnairePourAppartement(Long userId, Long appartementId, Long gestionnaireId) {
+	    Appartement appartement = appartementRepository.findById(appartementId)
+	            .orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + appartementId));
+	    
+	    Optional<AppUser> gestionnaireOpt = userRepository.findById(gestionnaireId);
+	    if (!gestionnaireOpt.isPresent()) {
+	        throw new IllegalArgumentException("Gestionnaire not found with ID: " + gestionnaireId);
+	    }
+	    AppUser gestionnaire = gestionnaireOpt.get();
+	    if (!estGestionnaireDeAppartement(gestionnaireId, appartement)) {
+	        throw new SecurityException("L'utilisateur n'est pas autorisé à modifier ce gestionnaire.");
+	    }
+	    appartement.getGestionnaires().remove(gestionnaire);
+	    userRepository.deleteById(gestionnaireId);
+	}
+
 
 	
 

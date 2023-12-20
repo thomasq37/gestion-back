@@ -1,8 +1,9 @@
 package fr.qui.gestion.frais;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
@@ -12,9 +13,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface FraisRepository extends JpaRepository<Frais, Long> {
 	
-    List<Frais> findByAppartementId(Long appartId);
+    Page<Frais> findByAppartementId(Long appartId, Pageable pageable);
     
-    List<Frais> findByPeriodLocationId(Long periodeId);
+    Page<Frais> findByPeriodLocationId(Long periodeId, Pageable pageable);
     
     Optional<Frais> findById(Long id);
     

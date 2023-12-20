@@ -1,8 +1,10 @@
 package fr.qui.gestion.frais;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.appart.Appartement;
@@ -21,12 +23,14 @@ public class FraisService {
 	@Autowired
 	private PeriodLocationRepository periodLocationRepository;
 
-    public List<Frais> obtenirFraisFixesPourAppartement(Long appartId) {
-        return fraisRepository.findByAppartementId(appartId);
+    public Page<Frais> obtenirFraisFixesPourAppartement(Long appartId, Pageable pageable) {
+	    Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+        return fraisRepository.findByAppartementId(appartId, pageableWithSort);
     }
     
-    public List<Frais> obtenirFraisFixesPourPeriode(Long periodeId) {
-        return fraisRepository.findByPeriodLocationId(periodeId);
+    public Page<Frais> obtenirFraisFixesPourPeriode(Long periodeId, Pageable pageable) {
+	    Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
+        return fraisRepository.findByPeriodLocationId(periodeId, pageableWithSort);
     }
 
 	public Frais ajouterUnFraisPourAppartement(Long appartId, Frais newFrais) {

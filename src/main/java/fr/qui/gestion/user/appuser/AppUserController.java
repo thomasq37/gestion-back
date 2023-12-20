@@ -84,7 +84,7 @@ public class AppUserController {
 	        }
 	        return ResponseEntity.ok(appartementService.convertToPrioprioDTO(appartement));
 	    } else if ("GESTIONNAIRE".equals(currentUser.getRole().getName())) {
-	        if (appartementService.estGestionnaireDeAppartement(currentUser, appartement)) {
+	        if (appartementService.estGestionnaireDeAppartement(userId, appartement)) {
 	            AppartementForGestionDTO dto = appartementService.convertToDTO(appartement);
 	            return ResponseEntity.ok(dto);
 	        }

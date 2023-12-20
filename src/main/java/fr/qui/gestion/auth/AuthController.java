@@ -20,6 +20,7 @@ import fr.qui.gestion.appart.Appartement;
 import fr.qui.gestion.appart.AppartementService;
 import fr.qui.gestion.user.UserRequest;
 import fr.qui.gestion.user.appuser.AppUser;
+import fr.qui.gestion.user.appuser.AppUserDTO;
 
 @RestController
 @RequestMapping(value = "/api/auth", produces = { "application/json" })
@@ -57,7 +58,7 @@ public class AuthController {
     }
     
     @PostMapping("utilisateurs/{userId}/appartements/{appartId}/gestionnaire/ajouter")
-    public ResponseEntity<Map<String,String>> createGestionnaire(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody UserRequest userRequest) {
+    public ResponseEntity<Object> createGestionnaire(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody UserRequest userRequest) {
     	
         try {
             AppUser user = userRequest.getUser();
@@ -69,7 +70,8 @@ public class AuthController {
             	appUserList.add(createdUser);
             	currentAppart.setGestionnaires(appUserList);
             	appartementService.mettreAJourUnAppartementPourUtilisateur(userId, appartId, currentAppart);
-                return ResponseEntity.ok(Collections.singletonMap("message", "Compte créé avec succès : Nom d'utilisateur = " + createdUser.getUsername()));
+            	AppUserDTO userDto = authenticationService.convertToDTO(createdUser);
+                return ResponseEntity.ok(userDto);
             }
             else {
             	return ResponseEntity.status(400).body(Collections.singletonMap("message", "Token d'invitation invalide"));

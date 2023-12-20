@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import fr.qui.gestion.appart.Appartement;
+import fr.qui.gestion.appart.dto.AppartementForGestionDTO;
 import fr.qui.gestion.user.UserRepository;
 import fr.qui.gestion.user.appuser.AppUser;
+import fr.qui.gestion.user.appuser.AppUserDTO;
 import fr.qui.gestion.user.role.Role;
 import fr.qui.gestion.user.role.RoleRepository;
 
@@ -83,4 +86,13 @@ public class AuthService {
         }
         return false;
     }
+    
+	public AppUserDTO convertToDTO(AppUser user) {
+		AppUserDTO dto = new AppUserDTO();
+		dto.setId(user.getId());
+		dto.setUsername(user.getUsername());
+		dto.setPhoneNumber(user.getPhoneNumber());
+	    dto.setEmail(user.getEmail());
+	    return dto;
+	}
 }

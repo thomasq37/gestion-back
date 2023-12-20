@@ -2,7 +2,9 @@ package fr.qui.gestion.periodlocation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.appart.Appartement;
@@ -18,7 +20,8 @@ public class PeriodLocationService {
 	private AppartementRepository appartementRepository;
 
 	public Page<PeriodLocation> obtenirPeriodeLocationParAppartement(Long appartId, Pageable pageable) {
-	    return periodLocationRepository.findByAppartementId(appartId, pageable);
+	    Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "estEntree"));
+	    return periodLocationRepository.findByAppartementId(appartId, pageableWithSort);
 	}
 	
 	public PeriodLocation ajouterUnePeriodeLocationPourAppartement(Long appartId, PeriodLocation newPeriodLocation) {

@@ -3,10 +3,10 @@ package fr.qui.gestion.frais;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMessage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +30,8 @@ public class FraisController {
     }
     
     @GetMapping("/frais")
-    public ResponseEntity<List<Frais>> obtenirFraisFixesPourAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
-        List<Frais> frais = fraisService.obtenirFraisFixesPourAppartement(appartId);
+    public ResponseEntity<Page<Frais>> obtenirFraisFixesPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, Pageable pageable) {
+        Page<Frais> frais = fraisService.obtenirFraisFixesPourAppartement(appartId, pageable);
         if(frais.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -39,8 +39,8 @@ public class FraisController {
     }
     
     @GetMapping("/periodes/{periodeId}/frais")
-    public ResponseEntity<List<Frais>> obtenirFraisFixesPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId) {
-        List<Frais> frais = fraisService.obtenirFraisFixesPourPeriode(periodeId);
+    public ResponseEntity<Page<Frais>> obtenirFraisFixesPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId, Pageable pageable) {
+    	Page<Frais> frais = fraisService.obtenirFraisFixesPourPeriode(periodeId, pageable);
         if(frais.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

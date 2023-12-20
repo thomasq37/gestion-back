@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.user.appuser.AppUserDTO;
 
@@ -107,5 +108,32 @@ public class AppartementController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(appartGestionnaires);
+    }
+    
+    @PutMapping("/{appartementId}/gestionnaires/{gestionnaireId}")
+    public ResponseEntity<AppUserDTO> mettreAJourUnGestionnairePourAppartement(
+            @PathVariable Long userId,
+            @PathVariable Long appartementId,
+            @PathVariable(required = false) Long gestionnaireId,
+            @RequestBody AppUserDTO modifieGestionnaire) {
+    	 try {
+         	AppUserDTO gestionnaire = appartementService.mettreAJourUnGestionnairePourAppartement(userId, appartementId, gestionnaireId, modifieGestionnaire);
+             return ResponseEntity.ok(gestionnaire);
+         } catch (RuntimeException e) {
+             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+         }
+    }
+
+    @DeleteMapping("/{appartementId}/gestionnaires/{gestionnaireId}")
+    public ResponseEntity<?> supprimerUnGestionnairePourAppartement(
+            @PathVariable Long userId,
+            @PathVariable Long appartementId,
+            @PathVariable Long gestionnaireId) {
+    	 try {
+             appartementService.supprimerUnGestionnairePourAppartement(userId, appartementId, gestionnaireId);
+             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+         } catch (RuntimeException e) {
+             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+         }
     }
 }
