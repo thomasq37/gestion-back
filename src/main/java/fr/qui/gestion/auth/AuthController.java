@@ -86,19 +86,20 @@ public class AuthController {
     public ResponseEntity<Object> login(@RequestBody AppUser credentials) {
         try {
             Map<String, Object> response = authenticationService.authenticate(credentials.getUsername(), credentials.getPassword());
-            
-            String userToken = (String) response.get("userToken");
-            Long userId = (Long) response.get("userId");
-            String userRole = (String) response.get("userRole");
-            if(userId != -1 && userToken != "") {
+            System.out.println(response);
+            if(response.get("error") == null) {
+            	String userToken = (String) response.get("userToken");
+                Long userId = (Long) response.get("userId");
+                String userRole = (String) response.get("userRole");
                 Map<String, Object> credForFront = new HashMap<>();
                 credForFront.put("userId", userId);
                 credForFront.put("userToken", userToken);
                 credForFront.put("userRole", userRole);
                 credForFront.put("token", token);
                 return ResponseEntity.ok(credForFront);
-            } else {
-                return ResponseEntity.status(401).body("Invalid credentials");
+            }
+            else {
+                return ResponseEntity.status(401).body(response.get("error"));
             }
             
         } catch (Exception e) {

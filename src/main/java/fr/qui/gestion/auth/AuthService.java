@@ -63,19 +63,26 @@ public class AuthService {
     public Map<String, Object> authenticate(String username, String password) {
         Optional<AppUser> optionalUser = userRepository.findByUsername(username);
         Map<String, Object> response = new HashMap<>();
-        if(optionalUser.isPresent()) {
-	        AppUser user = optionalUser.get();
-	        response.put("userId", user.getId());
-	        response.put("userToken", user.getUserToken());
-	        response.put("userRole", user.getRole().getName());
+        if (optionalUser.isPresent()) {
+            AppUser user = optionalUser.get();
+            
+            // Vérifiez que le mot de passe correspond à celui stocké dans la base de données
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                // Si les mots de passe correspondent, ajoutez les informations de l'utilisateur à la réponse
+                response.put("userId", user.getId());
+                response.put("userToken", user.getUserToken());
+                response.put("userRole", user.getRole().getName());
+            } else {
+                // Si les mots de passe ne correspondent pas, indiquez une erreur d'authentification
+                response.put("error", "Nom d'utilisateur ou mot de passe incorrect");
+            }
+        } else {
+            // Si l'utilisateur n'existe pas, indiquez également une erreur d'authentification
+            response.put("error", "Nom d'utilisateur ou mot de passe incorrect");
         }
-        else {
-      	  response.put("userId", -1);	
-    	  response.put("userToken", "");
-        }
-		return response;
-
+        return response;
     }
+
     
     public boolean validateInvitation(String token) {
         Invitation invitation = invitationRepository.findByToken(token);
