@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
+import fr.qui.gestion.frais.Frequence;
 import fr.qui.gestion.pays.Pays;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import fr.qui.gestion.user.appuser.AppUser;
@@ -109,8 +110,14 @@ public class Appartement {
 
             // Calcul des dépenses pour les frais de chaque période de location
             for (Frais fraisLocation : pLocation.getFrais()) {
-                double montantAnnuelEquivalent = fraisLocation.getFrequence().convertirMontantAnnuel(fraisLocation.getMontant());
-                depensesTotales += montantAnnuelEquivalent;
+                if (fraisLocation.getFrequence() == Frequence.PONCTUELLE) {
+                    // Frais ponctuel, on l'ajoute une seule fois sans conversion annuelle
+                    depensesTotales += fraisLocation.getMontant();
+                } else {
+                    // Conversion en montant annuel pour les autres fréquences
+                    double montantAnnuelEquivalent = fraisLocation.getFrequence().convertirMontantAnnuel(fraisLocation.getMontant());
+                    depensesTotales += montantAnnuelEquivalent;
+                }
             }
         }
 
@@ -119,8 +126,13 @@ public class Appartement {
 
         // Calcul des dépenses fixes annuelles de l'appartement et multiplication par le nombre d'années
         for (Frais fraisFixeAppart : this.getFraisFixe()) {
-            double montantAnnuelEquivalent = fraisFixeAppart.getFrequence().convertirMontantAnnuel(fraisFixeAppart.getMontant());
-            depensesTotales += montantAnnuelEquivalent * annees;
+            if (fraisFixeAppart.getFrequence() == Frequence.PONCTUELLE) {
+                // Frais ponctuel, on l'ajoute une seule fois sans le convertir en annuel
+                depensesTotales += fraisFixeAppart.getMontant();
+            } else {
+                double montantAnnuelEquivalent = fraisFixeAppart.getFrequence().convertirMontantAnnuel(fraisFixeAppart.getMontant());
+                depensesTotales += montantAnnuelEquivalent * annees;
+            }
         }
         double rNette = revenus - depensesTotales;
         rNette = Math.round(rNette * 100.0) / 100.0;
