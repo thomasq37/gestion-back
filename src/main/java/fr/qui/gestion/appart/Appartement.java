@@ -179,7 +179,6 @@ public class Appartement {
         
         long joursVacances = joursDepuisPremiereEntree - joursOccupes;
         double tauxVacance = ((double) joursVacances / joursDepuisPremiereEntree) * 100;
-
         return Math.round(tauxVacance * 100.0) / 100.0;  // Rond au centième le plus proche
     }
 
