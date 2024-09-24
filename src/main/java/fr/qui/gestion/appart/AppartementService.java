@@ -48,7 +48,8 @@ public class AppartementService {
         if (appartementExist.getAppUser().getId() != userId) {
             throw new SecurityException("L'utilisateur n'est pas autorisé à mettre à jour cet appartement.");
         }
-        appartementExist.setNumero(appartementModifie.getNumero());
+		appartementExist.setDateAchat(appartementModifie.getDateAchat());
+		appartementExist.setNumero(appartementModifie.getNumero());
         appartementExist.setAdresse(appartementModifie.getAdresse());
         appartementExist.setCodePostal(appartementModifie.getCodePostal());
         appartementExist.setVille(appartementModifie.getVille());
@@ -135,6 +136,7 @@ public class AppartementService {
 	public AppartementForProprioDTO convertToPrioprioDTO(Appartement appartement) {
 		AppartementForProprioDTO dto = new AppartementForProprioDTO();
 		dto.setId(appartement.getId());
+		dto.setDateAchat(appartement.getDateAchat());
 		dto.setNumero(appartement.getNumero());
 	    dto.setAdresse(appartement.getAdresse());
 	    dto.setCodePostal(appartement.getCodePostal());
