@@ -66,8 +66,12 @@ public class FraisService {
         if (!fraisActuel.getAppartement().getId().equals(appartId)) {
             throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
         }
+        fraisActuel.setNom(fraisMisAJour.getNom());
+
         fraisActuel.setMontant(fraisMisAJour.getMontant());
         fraisActuel.setFrequence(fraisMisAJour.getFrequence());
+        fraisActuel.setDatePaiement(fraisMisAJour.getDatePaiement());
+
         fraisActuel.setTypeFrais(fraisMisAJour.getTypeFrais());
         return fraisRepository.save(fraisActuel);
     }

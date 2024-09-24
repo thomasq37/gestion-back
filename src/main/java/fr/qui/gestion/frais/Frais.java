@@ -16,12 +16,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 public class Frais {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nom;
+    private LocalDate datePaiement;
     private double montant;
     @Enumerated(EnumType.STRING)
     private Frequence frequence;
@@ -40,7 +44,5 @@ public class Frais {
     @ManyToOne
     @JoinColumn(name = "type_frais_id")
     private TypeFrais typeFrais;
-    
-  
-    
+
 }
