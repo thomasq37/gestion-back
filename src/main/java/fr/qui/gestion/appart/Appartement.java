@@ -128,46 +128,64 @@ public class Appartement {
     }
 
     protected double calculerMoyenneBeneficesNetParMois() {
+        if(this.getDateAchat() == null){
+            return 0;
+        }
         // Obtention de la rentabilité nette (supposant que vous avez une méthode calculerRentabiliteNette)
         double rentabiliteNette = this.calculerRentabiliteNette();
-
         // Calcul du nombre total de mois sur la période de location
-        long joursTotal = 0;
-        for (PeriodLocation pLocation : this.getPeriodLocation()) {
-            long joursLoues = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
-            joursTotal += joursLoues;
-        }
-        // Pour simplifier, nous supposons que chaque mois ait 30 jours
+        long joursTotal = ChronoUnit.DAYS.between(this.getDateAchat(), LocalDate.now());
         double moisTotal = joursTotal / 30.0;
-
+        if (moisTotal == 0) {
+            return 0;
+        }
         // Calcul de la moyenne des bénéfices nets par mois
-        double moyenneBeneficesNetParMois = rentabiliteNette / moisTotal;
+        double moyenneBeneficesNetParMois = (rentabiliteNette / moisTotal);
         moyenneBeneficesNetParMois = Math.round(moyenneBeneficesNetParMois * 100.0) / 100.0;
         return moyenneBeneficesNetParMois;
     }
-
     protected double calculerTauxVacanceLocative() {
+        if(this.getDateAchat() == null){
+            return 0;
+        }
         List<PeriodLocation> periodLocations = this.getPeriodLocation();
+
+        // Si aucune période de location n'est définie, retourner 100% de vacance
         if (periodLocations == null || periodLocations.isEmpty()) {
             return 100.0;  // 100% de vacance si aucune période de location n'est définie
         }
-        
+
         // Trier les périodes de location par date d'entrée
         periodLocations.sort(Comparator.comparing(PeriodLocation::getEstEntree));
 
-        LocalDate premiereEntree = periodLocations.get(0).getEstEntree();
         LocalDate dateActuelle = LocalDate.now();
-        long joursDepuisPremiereEntree = ChronoUnit.DAYS.between(premiereEntree, dateActuelle);
-        
+
+        // Calculer le nombre de jours depuis la date d'achat
+        long joursDepuisAchat = ChronoUnit.DAYS.between(this.getDateAchat(), dateActuelle);
+
         long joursOccupes = 0;
         for (PeriodLocation period : periodLocations) {
-            joursOccupes += ChronoUnit.DAYS.between(period.getEstEntree(), period.getEstSortie() != null ? period.getEstSortie() : dateActuelle);
+            // Calcul des jours occupés dans la période de location
+            LocalDate entree = period.getEstEntree().isBefore(dateAchat) ? dateAchat : period.getEstEntree(); // Utilise dateAchat si la location commence avant l'achat
+            joursOccupes += ChronoUnit.DAYS.between(entree,
+                    period.getEstSortie() != null ? period.getEstSortie() : dateActuelle);
         }
-        
-        long joursVacances = joursDepuisPremiereEntree - joursOccupes;
-        double tauxVacance = ((double) joursVacances / joursDepuisPremiereEntree) * 100;
-        return Math.round(tauxVacance * 100.0) / 100.0;  // Rond au centième le plus proche
+
+        // Calcul des jours de vacance depuis l'achat
+        long joursVacances = joursDepuisAchat - joursOccupes;
+
+        // Eviter la division par zéro
+        if (joursDepuisAchat <= 0) {
+            return 0.0;  // Pas de vacance si le nombre de jours est zéro ou négatif
+        }
+
+        // Calculer le taux de vacance locative
+        double tauxVacance = ((double) joursVacances / joursDepuisAchat) * 100;
+
+        // Arrondir au centième près
+        return Math.round(tauxVacance * 100.0) / 100.0;
     }
+
 
 
 }
