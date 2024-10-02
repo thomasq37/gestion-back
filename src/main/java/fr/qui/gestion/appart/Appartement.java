@@ -76,54 +76,63 @@ public class Appartement {
         inverseJoinColumns = @JoinColumn(name = "gestionnaire_id")
     )
     private List<AppUser> gestionnaires;
-    
-    
+
+    public double calculerCoutParFrequence(double montantParFrequence, long dureeEnJours, int frequenceEnJours) {
+        double nombreDePeriodes = (double) dureeEnJours / frequenceEnJours;
+        double resultat = nombreDePeriodes * montantParFrequence;
+
+        // Arrondir à deux chiffres après la virgule
+        return Math.round(resultat * 100.0) / 100.0;
+    }
+    public int getOccurenceFrequence(Frequence frequence) {
+        return switch (frequence) {
+            case MENSUELLE -> 30; // Environ 30 jours
+            case TRIMESTRIELLE -> 90; // Environ 90 jours
+            case ANNUELLE -> 365; // Environ 365 jours
+            case PONCTUELLE -> 0;
+            default -> throw new IllegalArgumentException("Fréquence de frais invalide : " + this);
+        };
+    }
+
 
     protected double calculerRentabiliteNette() {
         double revenus = 0.0;
         double depensesTotales = 0.0;
-
-        long joursTotal = 0;
-        for (PeriodLocation pLocation : this.getPeriodLocation()) {
-            long joursLoues = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
-            joursTotal += joursLoues;
-
-            // Calcul des revenus
-            if (pLocation.isLocVac()) {
-                revenus += joursLoues * pLocation.getPrix();
+        LocalDate today = LocalDate.now();
+        long dureeEnJours = ChronoUnit.DAYS.between(this.getDateAchat(), today);
+        for (Frais fraisFixeAppart : this.getFraisFixe()) {
+            if (getOccurenceFrequence(fraisFixeAppart.getFrequence()) != 0) {
+                depensesTotales += calculerCoutParFrequence(
+                        fraisFixeAppart.getMontant(),
+                        dureeEnJours,
+                        getOccurenceFrequence(fraisFixeAppart.getFrequence())
+                );
             } else {
-                revenus += joursLoues * (pLocation.getPrix() / 30.0); 
+                depensesTotales += fraisFixeAppart.getMontant();
             }
-
-            // Calcul des dépenses pour les frais de chaque période de location
+        }
+        for (PeriodLocation pLocation : this.getPeriodLocation()) {
+            long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
+            if (pLocation.isLocVac()) {
+                revenus += dureeEnJoursPeriodeLoc * pLocation.getPrix();
+            } else {
+                revenus += dureeEnJoursPeriodeLoc * (pLocation.getPrix() / 30.0);
+            }
             for (Frais fraisLocation : pLocation.getFrais()) {
-                if (fraisLocation.getFrequence() == Frequence.PONCTUELLE) {
-                    // Frais ponctuel, on l'ajoute une seule fois sans conversion annuelle
-                    depensesTotales += fraisLocation.getMontant();
+                if (getOccurenceFrequence(fraisLocation.getFrequence()) != 0) {
+                    depensesTotales += calculerCoutParFrequence(
+                            fraisLocation.getMontant(),
+                            dureeEnJoursPeriodeLoc,
+                            getOccurenceFrequence(fraisLocation.getFrequence())
+                    );
                 } else {
-                    // Conversion en montant annuel pour les autres fréquences
-                    double montantAnnuelEquivalent = fraisLocation.getFrequence().convertirMontantAnnuel(fraisLocation.getMontant());
-                    depensesTotales += montantAnnuelEquivalent;
+                    depensesTotales += fraisLocation.getMontant();
                 }
             }
         }
 
-        // Nombre d'années de la période de location
-        double annees = joursTotal / 365.0;  // Divisé par 365 pour obtenir une approximation du nombre d'années
-
-        // Calcul des dépenses fixes annuelles de l'appartement et multiplication par le nombre d'années
-        for (Frais fraisFixeAppart : this.getFraisFixe()) {
-            if (fraisFixeAppart.getFrequence() == Frequence.PONCTUELLE) {
-                // Frais ponctuel, on l'ajoute une seule fois sans le convertir en annuel
-                depensesTotales += fraisFixeAppart.getMontant();
-            } else {
-                double montantAnnuelEquivalent = fraisFixeAppart.getFrequence().convertirMontantAnnuel(fraisFixeAppart.getMontant());
-                depensesTotales += montantAnnuelEquivalent * annees;
-            }
-        }
         double rNette = revenus - depensesTotales;
         rNette = Math.round(rNette * 100.0) / 100.0;
-        // Rentabilité Nette = Revenus - Dépenses
         return rNette;
     }
 
@@ -144,6 +153,7 @@ public class Appartement {
         moyenneBeneficesNetParMois = Math.round(moyenneBeneficesNetParMois * 100.0) / 100.0;
         return moyenneBeneficesNetParMois;
     }
+
     protected double calculerTauxVacanceLocative() {
         if(this.getDateAchat() == null){
             return 0;
