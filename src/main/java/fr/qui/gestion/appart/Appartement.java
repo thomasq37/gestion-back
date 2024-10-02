@@ -47,9 +47,9 @@ public class Appartement {
 
     @PostLoad
     public void calculerMetrics() {
-        //this.rentabiliteNette = this.calculerRentabiliteNette();
+        this.rentabiliteNette = this.calculerRentabiliteNette();
         this.tauxVacanceLocative = this.calculerTauxVacanceLocative();
-        //this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
+        this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
     }
     
     @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
