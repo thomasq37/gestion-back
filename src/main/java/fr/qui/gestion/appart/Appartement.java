@@ -96,6 +96,9 @@ public class Appartement {
 
 
     protected double calculerRentabiliteNette() {
+        if(this.getDateAchat() == null){
+            return 0.0;
+        }
         double revenus = 0.0;
         double depensesTotales = 0.0;
         LocalDate today = LocalDate.now();
