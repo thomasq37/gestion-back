@@ -52,6 +52,9 @@ public class Appartement {
     @Transient
     private double moyenneBeneficesNetParMois;
 
+    @Transient
+    private double totalFraisGestion;
+
     @PostLoad
     public void calculerMetrics() {
         this.revenusNets = this.calculerRevenusNets();
@@ -59,6 +62,7 @@ public class Appartement {
         this.rentabiliteNette = Math.round((this.revenusNets - this.depensesNettes) * 100.0) / 100.0;
         this.tauxVacanceLocative = this.calculerTauxVacanceLocative();
         this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
+        this.totalFraisGestion = this.calculerTotalFraisGestion();
     }
 
     @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
@@ -85,6 +89,27 @@ public class Appartement {
             inverseJoinColumns = @JoinColumn(name = "gestionnaire_id")
     )
     private List<AppUser> gestionnaires;
+
+    protected double calculerTotalFraisGestion() {
+        double totalFraisGestion = 0.0;
+        for (PeriodLocation pLocation : this.getPeriodLocation()) {
+            Long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
+            for (Frais fraisLocation : pLocation.getFrais()) {
+                if (fraisLocation.getTypeFrais().getNom().equals("Frais de gestion")) {
+                    if (getOccurenceFrequence(fraisLocation.getFrequence()) != 0) {
+                        totalFraisGestion += calculerCoutParFrequence(
+                                fraisLocation.getMontant(),
+                                dureeEnJoursPeriodeLoc,
+                                getOccurenceFrequence(fraisLocation.getFrequence())
+                        );
+                    } else {
+                        totalFraisGestion += fraisLocation.getMontant();
+                    }
+                }
+            }
+        }
+        return Math.round(totalFraisGestion * 100.0) / 100.0;
+    }
 
     public double calculerCoutParFrequence(double montantParFrequence, Long dureeEnJours, int frequenceEnJours) {
         double nombreDePeriodes = (double) dureeEnJours / frequenceEnJours;

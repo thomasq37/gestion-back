@@ -31,6 +31,7 @@ public class AppartementForProprioDTO {
     private double rentabiliteNette;
     private double tauxVacanceLocative;
     private double moyenneBeneficesNetParMois;
+    private double totalFraisGestion;
     private List<Frais> fraisFixe;
     private List<Contact> contacts;
     private List<String> images;
