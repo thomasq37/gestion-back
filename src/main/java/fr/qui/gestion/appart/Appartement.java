@@ -56,7 +56,7 @@ public class Appartement {
     public void calculerMetrics() {
         this.revenusNets = this.calculerRevenusNets();
         this.depensesNettes = this.calculerDepensesNettes();
-        this.rentabiliteNette = this.revenusNets - this.depensesNettes;
+        this.rentabiliteNette = Math.round((this.revenusNets - this.depensesNettes) * 100.0) / 100.0;
         this.tauxVacanceLocative = this.calculerTauxVacanceLocative();
         this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
     }
