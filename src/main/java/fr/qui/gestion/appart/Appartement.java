@@ -5,9 +5,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.frais.Frequence;
