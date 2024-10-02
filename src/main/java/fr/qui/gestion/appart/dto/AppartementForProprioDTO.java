@@ -24,7 +24,7 @@ public class AppartementForProprioDTO {
     private double surface;
     private boolean balcon;
     private double prix;
-    private double estimation;
+    private Double estimation;
     private String dpe;
     private Pays pays;
     private double depensesNettes;
