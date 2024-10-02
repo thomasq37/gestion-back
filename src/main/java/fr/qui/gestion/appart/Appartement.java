@@ -77,7 +77,7 @@ public class Appartement {
     )
     private List<AppUser> gestionnaires;
 
-    public double calculerCoutParFrequence(double montantParFrequence, long dureeEnJours, int frequenceEnJours) {
+    public double calculerCoutParFrequence(double montantParFrequence, Long dureeEnJours, int frequenceEnJours) {
         double nombreDePeriodes = (double) dureeEnJours / frequenceEnJours;
         double resultat = nombreDePeriodes * montantParFrequence;
 
@@ -103,7 +103,7 @@ public class Appartement {
         double revenus = 0.0;
         double depensesTotales = 0.0;
         LocalDate today = LocalDate.now();
-        long dureeEnJours = ChronoUnit.DAYS.between(this.getDateAchat(), today);
+        Long dureeEnJours = ChronoUnit.DAYS.between(this.getDateAchat(), today);
         for (Frais fraisFixeAppart : this.getFraisFixe()) {
             if (getOccurenceFrequence(fraisFixeAppart.getFrequence()) != 0) {
                 depensesTotales += calculerCoutParFrequence(
@@ -116,7 +116,7 @@ public class Appartement {
             }
         }
         for (PeriodLocation pLocation : this.getPeriodLocation()) {
-            long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
+            Long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
             if (pLocation.isLocVac()) {
                 revenus += dureeEnJoursPeriodeLoc * pLocation.getPrix();
             } else {
@@ -147,7 +147,7 @@ public class Appartement {
         // Obtention de la rentabilité nette (supposant que vous avez une méthode calculerRentabiliteNette)
         double rentabiliteNette = this.calculerRentabiliteNette();
         // Calcul du nombre total de mois sur la période de location
-        long joursTotal = ChronoUnit.DAYS.between(this.getDateAchat(), LocalDate.now());
+        Long joursTotal = ChronoUnit.DAYS.between(this.getDateAchat(), LocalDate.now());
         double moisTotal = joursTotal / 30.0;
         if (moisTotal == 0) {
             return 0;
@@ -175,9 +175,9 @@ public class Appartement {
         LocalDate dateActuelle = LocalDate.now();
 
         // Calculer le nombre de jours depuis la date d'achat
-        long joursDepuisAchat = ChronoUnit.DAYS.between(this.getDateAchat(), dateActuelle);
+        Long joursDepuisAchat = ChronoUnit.DAYS.between(this.getDateAchat(), dateActuelle);
 
-        long joursOccupes = 0;
+        Long joursOccupes = 0L;
         for (PeriodLocation period : periodLocations) {
             // Calcul des jours occupés dans la période de location
             LocalDate entree = period.getEstEntree().isBefore(dateAchat) ? dateAchat : period.getEstEntree(); // Utilise dateAchat si la location commence avant l'achat
@@ -186,7 +186,7 @@ public class Appartement {
         }
 
         // Calcul des jours de vacance depuis l'achat
-        long joursVacances = joursDepuisAchat - joursOccupes;
+        Long joursVacances = joursDepuisAchat - joursOccupes;
 
         // Eviter la division par zéro
         if (joursDepuisAchat <= 0) {
