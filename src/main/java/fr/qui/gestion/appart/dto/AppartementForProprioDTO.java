@@ -26,6 +26,8 @@ public class AppartementForProprioDTO {
     private double prix;
     private String dpe;
     private Pays pays;
+    private double depensesNettes;
+    private double revenusNets;
     private double rentabiliteNette;
     private double tauxVacanceLocative;
     private double moyenneBeneficesNetParMois;

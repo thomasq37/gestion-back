@@ -65,7 +65,7 @@ public class AppartementService {
     }
 
     public Appartement obtenirUnAppartementParId(Long id) throws IllegalArgumentException {
-        Optional<Appartement> optionalAppartement = appartementRepository.findById(id);
+		Optional<Appartement> optionalAppartement = appartementRepository.findById(id);
         return optionalAppartement.orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + id));
     }
     
@@ -150,7 +150,9 @@ public class AppartementService {
 	    dto.setImages(appartement.getImages());
 	    dto.setFraisFixe(appartement.getFraisFixe());
 	    dto.setContacts(appartement.getContacts());
-	    dto.setRentabiliteNette(appartement.getRentabiliteNette());
+		dto.setRevenusNets(appartement.getRevenusNets());
+		dto.setDepensesNettes(appartement.getDepensesNettes());
+		dto.setRentabiliteNette(appartement.getRentabiliteNette());
 	    dto.setMoyenneBeneficesNetParMois(appartement.getMoyenneBeneficesNetParMois());
 	    dto.setTauxVacanceLocative(appartement.getTauxVacanceLocative());
 	    dto.setPeriodLocation(appartement.getPeriodLocation());

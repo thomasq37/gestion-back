@@ -38,6 +38,12 @@ public class Appartement {
     private Pays pays;
 
     @Transient
+    private double revenusNets;
+
+    @Transient
+    private double depensesNettes;
+
+    @Transient
     private double rentabiliteNette;
 
     @Transient
@@ -48,7 +54,9 @@ public class Appartement {
 
     @PostLoad
     public void calculerMetrics() {
-        this.rentabiliteNette = this.calculerRentabiliteNette();
+        this.revenusNets = this.calculerRevenusNets();
+        this.depensesNettes = this.calculerDepensesNettes();
+        this.rentabiliteNette = this.revenusNets - this.depensesNettes;
         this.tauxVacanceLocative = this.calculerTauxVacanceLocative();
         this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
     }
@@ -95,13 +103,10 @@ public class Appartement {
         };
     }
 
-
-    protected double calculerRentabiliteNette() {
+    protected double calculerDepensesNettes() {
         if(this.getDateAchat() == null){
             return 0.0;
         }
-
-        double revenus = 0.0;
         double depensesTotales = 0.0;
         LocalDate today = LocalDate.now();
         Long dureeEnJours = ChronoUnit.DAYS.between(this.getDateAchat(), today);
@@ -118,11 +123,6 @@ public class Appartement {
         }
         for (PeriodLocation pLocation : this.getPeriodLocation()) {
             Long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
-            if (pLocation.isLocVac()) {
-                revenus += dureeEnJoursPeriodeLoc * pLocation.getPrix();
-            } else {
-                revenus += dureeEnJoursPeriodeLoc * (pLocation.getPrix() / 30.0);
-            }
             for (Frais fraisLocation : pLocation.getFrais()) {
                 if (getOccurenceFrequence(fraisLocation.getFrequence()) != 0) {
                     depensesTotales += calculerCoutParFrequence(
@@ -135,10 +135,20 @@ public class Appartement {
                 }
             }
         }
+        return Math.round(depensesTotales * 100.0) / 100.0;
+    }
 
-        double rNette = revenus - depensesTotales;
-        rNette = Math.round(rNette * 100.0) / 100.0;
-        return rNette;
+    protected double calculerRevenusNets() {
+        double revenus = 0.0;
+        for (PeriodLocation pLocation : this.getPeriodLocation()) {
+            Long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
+            if (pLocation.isLocVac()) {
+                revenus += dureeEnJoursPeriodeLoc * pLocation.getPrix();
+            } else {
+                revenus += dureeEnJoursPeriodeLoc * (pLocation.getPrix() / 30.0);
+            }
+        }
+        return Math.round(revenus * 100.0) / 100.0;
     }
 
     protected double calculerMoyenneBeneficesNetParMois() {
@@ -146,7 +156,7 @@ public class Appartement {
             return 0;
         }
         // Obtention de la rentabilité nette (supposant que vous avez une méthode calculerRentabiliteNette)
-        double rentabiliteNette = this.calculerRentabiliteNette();
+        double rentabiliteNette = this.revenusNets - this.depensesNettes;
         // Calcul du nombre total de mois sur la période de location
         Long joursTotal = ChronoUnit.DAYS.between(this.getDateAchat(), LocalDate.now());
         double moisTotal = joursTotal / 30.0;
@@ -200,7 +210,4 @@ public class Appartement {
         // Arrondir au centième près
         return Math.round(tauxVacance * 100.0) / 100.0;
     }
-
-
-
 }

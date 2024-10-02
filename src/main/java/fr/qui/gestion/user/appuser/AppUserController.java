@@ -72,12 +72,11 @@ public class AppUserController {
 	    if (!currentUser.getId().equals(userId)) {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Token and UserId don't match
 	    }
+		Appartement appartement = appartementService.obtenirUnAppartementParId(apartmentId);
 
-	    Appartement appartement = appartementService.obtenirUnAppartementParId(apartmentId);
-	    if (appartement == null) {
+		if (appartement == null) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appartement not found");
 	    }
-
 	    if ("PROPRIETAIRE".equals(currentUser.getRole().getName())) {
 	        if (!appartement.getAppUser().getId().equals(currentUser.getId())) {
 	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Apartment doesn't belong to user
