@@ -49,7 +49,6 @@ public class FraisService {
 	    if (!periodLocation.getAppartement().getId().equals(appartId)) {
 	        throw new RuntimeException("The specified period does not belong to the given apartment");
 	    }
-
 	    newFrais.setPeriodLocation(periodLocation);
 	    return fraisRepository.save(newFrais);
 	}
@@ -79,11 +78,12 @@ public class FraisService {
     public Frais mettreAJourUnFraisPourPeriode(Long appartId, Long periodeId, Long fraisId, Frais fraisMisAJour) {
         Frais fraisActuel = fraisRepository.findById(fraisId)
                 .orElseThrow(() -> new RuntimeException("Frais non trouvé"));
-        if (!fraisActuel.getAppartement().getId().equals(appartId)) {
-            throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
-        }
+
         if (fraisActuel.getPeriodLocation() == null || !fraisActuel.getPeriodLocation().getId().equals(periodeId)) {
             throw new RuntimeException("Le frais n'appartient pas à la période donnée");
+        }
+        if (!fraisActuel.getPeriodLocation().getAppartement().getId().equals(appartId)) {
+            throw new RuntimeException("Le frais n'appartient pas à l'appartement donné");
         }
         fraisActuel.setMontant(fraisMisAJour.getMontant());
         fraisActuel.setFrequence(fraisMisAJour.getFrequence());
