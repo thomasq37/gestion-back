@@ -29,6 +29,7 @@ public class Appartement {
     private double surface;
     private boolean balcon;
     private double prix;
+    private Double fraisNotaireEtNegociation;
     private Double estimation;
     private String dpe;
     @ManyToOne(fetch = FetchType.EAGER)

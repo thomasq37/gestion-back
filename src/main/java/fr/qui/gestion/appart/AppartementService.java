@@ -57,6 +57,7 @@ public class AppartementService {
         appartementExist.setSurface(appartementModifie.getSurface());
         appartementExist.setBalcon(appartementModifie.isBalcon());
         appartementExist.setPrix(appartementModifie.getPrix());
+		appartementExist.setFraisNotaireEtNegociation(appartementModifie.getFraisNotaireEtNegociation());
 		appartementExist.setEstimation(appartementModifie.getEstimation());
 		appartementExist.setPays(appartementModifie.getPays());
         appartementExist.setDpe(appartementModifie.getDpe());
@@ -146,6 +147,7 @@ public class AppartementService {
 	    dto.setSurface(appartement.getSurface());
 	    dto.setBalcon(appartement.isBalcon());
 	    dto.setPrix(appartement.getPrix());
+		dto.setFraisNotaireEtNegociation(appartement.getFraisNotaireEtNegociation());
 		dto.setEstimation(appartement.getEstimation());
 	    dto.setDpe(appartement.getDpe());
 	    dto.setPays(appartement.getPays());
