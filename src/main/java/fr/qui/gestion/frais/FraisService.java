@@ -26,7 +26,7 @@ public class FraisService {
     public Page<Frais> obtenirFraisFixesPourAppartement(Long appartId, Pageable pageable) {
         Sort sort = Sort.by(
                 Sort.Order.by("datePaiement").nullsFirst(),
-                Sort.Order.desc("datePaiement"));
+                Sort.Order.asc("datePaiement"));
 	    Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         return fraisRepository.findByAppartementId(appartId, pageableWithSort);
     }
