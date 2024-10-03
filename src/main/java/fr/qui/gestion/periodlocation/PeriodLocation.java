@@ -33,7 +33,7 @@ public class PeriodLocation {
     
     @Column(name = "prix")
     private double prix;
-
+    private String locataire;
     // si loc vac le prix est par jour
     @Column(name = "is_loc_vac")
     private boolean isLocVac;

@@ -38,7 +38,8 @@ public class PeriodLocationService {
         if (!periodeActuel.getAppartement().getId().equals(appartId)) {
             throw new RuntimeException("La periode n'appartient pas à l'appartement donné");
         }
-        periodeActuel.setPrix(periodeMisAJour.getPrix());
+		periodeActuel.setLocataire(periodeMisAJour.getLocataire());
+		periodeActuel.setPrix(periodeMisAJour.getPrix());
         periodeActuel.setEstEntree(periodeMisAJour.getEstEntree());
         periodeActuel.setEstSortie(periodeMisAJour.getEstSortie());
         periodeActuel.setLocVac(periodeMisAJour.isLocVac());
