@@ -35,6 +35,8 @@ public class AppartementForProprioDTO {
     private double moyenneBeneficesNetParMois;
     private double totalFraisGestion;
     private double totalHonorairesDeLoc;
+    private double totalTravaux;
+    private double totalChargesFixesHorsFrais;
     private List<Frais> fraisFixe;
     private List<Contact> contacts;
     private List<String> images;
