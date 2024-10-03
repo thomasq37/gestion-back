@@ -157,6 +157,8 @@ public class AppartementService {
 		dto.setRentabiliteNette(appartement.getRentabiliteNette());
 	    dto.setMoyenneBeneficesNetParMois(appartement.getMoyenneBeneficesNetParMois());
 		dto.setTotalFraisGestion(appartement.getTotalFraisGestion());
+		dto.setTotalHonorairesDeLoc(appartement.getTotalHonorairesDeLoc());
+
 		dto.setTauxVacanceLocative(appartement.getTauxVacanceLocative());
 	    dto.setPeriodLocation(appartement.getPeriodLocation());
 	    dto.setAppUser(convertToDTO(appartement.getAppUser()));

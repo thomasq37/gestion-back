@@ -52,6 +52,8 @@ public class Appartement {
 
     @Transient
     private double totalFraisGestion;
+    @Transient
+    private double totalHonorairesDeLoc;
 
     @PostLoad
     public void calculerMetrics() {
@@ -60,7 +62,9 @@ public class Appartement {
         this.rentabiliteNette = Math.round((this.revenusNets - this.depensesNettes) * 100.0) / 100.0;
         this.tauxVacanceLocative = this.calculerTauxVacanceLocative();
         this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
-        this.totalFraisGestion = this.calculerTotalFraisGestion();
+        TotauxFrais totaux = this.calculerTotalFrais();
+        this.totalFraisGestion = totaux.totalFraisGestion;
+        this.totalHonorairesDeLoc = totaux.totalHonorairesDeLoc;
     }
 
     @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
@@ -88,6 +92,53 @@ public class Appartement {
     )
     private List<AppUser> gestionnaires;
 
+    public static class TotauxFrais {
+        public double totalFraisGestion;
+        public double totalHonorairesDeLoc;
+
+        public TotauxFrais(double totalFraisGestion, double totalHonorairesDeLoc) {
+            this.totalFraisGestion = totalFraisGestion;
+            this.totalHonorairesDeLoc = totalHonorairesDeLoc;
+        }
+    }
+    public TotauxFrais calculerTotalFrais() {
+        double totalFraisGestion = 0.0;
+        double totalHonorairesDeLoc = 0.0;
+
+        for (PeriodLocation pLocation : this.getPeriodLocation()) {
+            Long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
+
+            for (Frais fraisLocation : pLocation.getFrais()) {
+                if (fraisLocation.getTypeFrais().getNom().equals("Frais de gestion")) {
+                    if (getOccurenceFrequence(fraisLocation.getFrequence()) != 0) {
+                        totalFraisGestion += calculerCoutParFrequence(
+                                fraisLocation.getMontant(),
+                                dureeEnJoursPeriodeLoc,
+                                getOccurenceFrequence(fraisLocation.getFrequence())
+                        );
+                    } else {
+                        totalFraisGestion += fraisLocation.getMontant();
+                    }
+                } else if (fraisLocation.getTypeFrais().getNom().equals("Honor. de loc")) {
+                    if (getOccurenceFrequence(fraisLocation.getFrequence()) != 0) {
+                        totalHonorairesDeLoc += calculerCoutParFrequence(
+                                fraisLocation.getMontant(),
+                                dureeEnJoursPeriodeLoc,
+                                getOccurenceFrequence(fraisLocation.getFrequence())
+                        );
+                    } else {
+                        totalHonorairesDeLoc += fraisLocation.getMontant();
+                    }
+                }
+            }
+        }
+
+        // Retourne un objet contenant les deux totaux
+        return new TotauxFrais(
+                Math.round(totalFraisGestion * 100.0) / 100.0,
+                Math.round(totalHonorairesDeLoc * 100.0) / 100.0
+        );
+    }
     protected double calculerTotalFraisGestion() {
         double totalFraisGestion = 0.0;
         for (PeriodLocation pLocation : this.getPeriodLocation()) {
