@@ -8,6 +8,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/upload")
+@CrossOrigin(origins = "${app.cors.origin}")
 public class UploadController {
 
     @Autowired
