@@ -50,4 +50,15 @@ public class S3Service {
         // Retourne l'URL de l'image
         return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
     }
+
+    public void deleteFile(String key) {
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKey, secretKey);
+        S3Client s3Client = S3Client.builder()
+                .region(Region.of(region))
+                .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
+                .build();
+
+        s3Client.deleteObject(builder -> builder.bucket(bucketName).key(key).build());
+    }
+
 }

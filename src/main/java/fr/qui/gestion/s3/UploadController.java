@@ -23,5 +23,16 @@ public class UploadController {
             return ResponseEntity.status(500).body("Erreur lors du téléchargement du fichier : " + e.getMessage());
         }
     }
+
+    @DeleteMapping("/{key}")
+    public ResponseEntity<String> deleteFile(@PathVariable String key) {
+        try {
+            s3Service.deleteFile("images/" + key);
+            return ResponseEntity.ok("Fichier supprimé avec succès.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erreur lors de la suppression du fichier : " + e.getMessage());
+        }
+    }
+
 }
 
