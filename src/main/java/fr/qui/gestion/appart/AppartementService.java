@@ -61,6 +61,7 @@ public class AppartementService {
 		appartementExist.setEstimation(appartementModifie.getEstimation());
 		appartementExist.setPays(appartementModifie.getPays());
         appartementExist.setDpe(appartementModifie.getDpe());
+		appartementExist.setLastDPEUrl(appartementModifie.getLastDPEUrl());
         appartementExist.setImages(appartementModifie.getImages());
         appartementExist.setPays(appartementModifie.getPays());
         return appartementRepository.save(appartementExist);
@@ -150,6 +151,7 @@ public class AppartementService {
 		dto.setFraisNotaireEtNegociation(appartement.getFraisNotaireEtNegociation());
 		dto.setEstimation(appartement.getEstimation());
 	    dto.setDpe(appartement.getDpe());
+		dto.setLastDPEUrl(appartement.getLastDPEUrl());
 	    dto.setPays(appartement.getPays());
 	    dto.setImages(appartement.getImages());
 	    dto.setFraisFixe(appartement.getFraisFixe());

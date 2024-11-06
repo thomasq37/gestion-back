@@ -34,6 +34,7 @@ public class Appartement {
     private Double fraisNotaireEtNegociation;
     private Double estimation;
     private String dpe;
+    private String lastDPEUrl;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pays_id")
     private Pays pays;
@@ -61,21 +62,6 @@ public class Appartement {
     @Transient
     private double totalChargesFixesHorsFrais;
 
-    @PostLoad
-    public void calculerMetrics() {
-        this.revenusNets = this.calculerRevenusNets();
-        this.tauxVacanceLocative = this.calculerTauxVacanceLocative();
-        this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
-        TotauxFrais totaux = this.calculerTotalFrais();
-        this.totalTravaux = totaux.totalTravaux;
-        this.totalFraisGestion = totaux.totalFraisGestion;
-        this.totalHonorairesDeLoc = totaux.totalHonorairesDeLoc;
-        this.totalChargesFixesHorsFrais = this.calculerChargesFixesHorsFrais();
-        this.depensesNettes = this.totalTravaux + this.totalFraisGestion + this.totalHonorairesDeLoc + this.totalChargesFixesHorsFrais;
-        this.rentabiliteNette = Math.round((this.revenusNets - this.depensesNettes) * 100.0) / 100.0;
-
-    }
-
     @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Frais> fraisFixe;
 
@@ -100,6 +86,21 @@ public class Appartement {
             inverseJoinColumns = @JoinColumn(name = "gestionnaire_id")
     )
     private List<AppUser> gestionnaires;
+
+    @PostLoad
+    public void calculerMetrics() {
+        this.revenusNets = this.calculerRevenusNets();
+        this.tauxVacanceLocative = this.calculerTauxVacanceLocative();
+        this.moyenneBeneficesNetParMois = this.calculerMoyenneBeneficesNetParMois();
+        TotauxFrais totaux = this.calculerTotalFrais();
+        this.totalTravaux = totaux.totalTravaux;
+        this.totalFraisGestion = totaux.totalFraisGestion;
+        this.totalHonorairesDeLoc = totaux.totalHonorairesDeLoc;
+        this.totalChargesFixesHorsFrais = this.calculerChargesFixesHorsFrais();
+        this.depensesNettes = this.totalTravaux + this.totalFraisGestion + this.totalHonorairesDeLoc + this.totalChargesFixesHorsFrais;
+        this.rentabiliteNette = Math.round((this.revenusNets - this.depensesNettes) * 100.0) / 100.0;
+
+    }
 
     public static class TotauxFrais {
         public double totalTravaux;

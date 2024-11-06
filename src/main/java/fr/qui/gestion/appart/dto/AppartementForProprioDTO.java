@@ -27,6 +27,7 @@ public class AppartementForProprioDTO {
     private Double fraisNotaireEtNegociation;
     private Double estimation;
     private String dpe;
+    private String lastDPEUrl;
     private Pays pays;
     private double depensesNettes;
     private double revenusNets;
