@@ -33,6 +33,18 @@ public class UploadController {
             return ResponseEntity.status(500).body("Erreur lors de la suppression du fichier : " + e.getMessage());
         }
     }
+    @GetMapping("/{key}")
+    public ResponseEntity<byte[]> getFile(@PathVariable String key) {
+        try {
+            byte[] fileContent = s3Service.getFile(key);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=\"" + key + "\"")
+                    .body(fileContent);
+        } catch (RuntimeException e) {
+            System.err.println("Erreur lors de la récupération du fichier : " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 
 }
 
