@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import fr.qui.gestion.appart.dto.AdresseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,7 +30,7 @@ public class AppUserController {
 		this.appartementService = appartementService;
 	}
 	@GetMapping("/{userId}/appartements")
-	public ResponseEntity<Object> obtenirAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) {
+	public ResponseEntity<Object> obtenirAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) throws InterruptedException {
 	    String userToken = request.getHeader("X-API-USER-KEY");
 
 	    Optional<AppUser> user = appUserService.findByUserToken(userToken);
@@ -52,14 +53,46 @@ public class AppUserController {
 	    // Si l'utilisateur est un propriétaire
 	    else if ("PROPRIETAIRE".equals(currentUser.getRole().getName())) {
 	        List<Appartement> appartements = appUserService.obtenirAppartementsParUserId(userId);
-	        return ResponseEntity.ok(appartements);
+			return ResponseEntity.ok(appartements);
 	    } 
 	    // Si l'utilisateur n'a pas les droits nécessaires
 	    else {
 	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vous n'avez pas les droits nécessaires pour accéder à ces informations.");
 	    }
 	}
-	
+
+	/*@GetMapping("/{userId}/appartements/adresses")
+	public ResponseEntity<Object> obtenirAdressesAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) throws InterruptedException {
+		String userToken = request.getHeader("X-API-USER-KEY");
+
+		Optional<AppUser> user = appUserService.findByUserToken(userToken);
+		if (!user.isPresent()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token invalide.");
+		}
+		AppUser currentUser = user.get();
+		if (!currentUser.getId().equals(userId)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Le token ne correspond pas à l'ID utilisateur fourni.");
+		}
+
+		// Si l'utilisateur est un gestionnaire
+		if ("GESTIONNAIRE".equals(currentUser.getRole().getName())) {
+			List<AdresseDTO> appartementsGeres = appUserService.obtenirAdressesAppartementsParGestionnaireId(currentUser.getId());
+			List<AppartementForGestionDTO> dtos = appartementsGeres.stream()
+					.map(appartementService::convertToDTO)
+					.collect(Collectors.toList());
+			return ResponseEntity.ok(dtos);
+		}
+		// Si l'utilisateur est un propriétaire
+		else if ("PROPRIETAIRE".equals(currentUser.getRole().getName())) {
+			List<Appartement> appartements = appUserService.obtenirAdressesAppartementsParUserId(userId);
+			return ResponseEntity.ok(appartements);
+		}
+		// Si l'utilisateur n'a pas les droits nécessaires
+		else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vous n'avez pas les droits nécessaires pour accéder à ces informations.");
+		}
+	}*/
+
 	@GetMapping("/{userId}/appartements/{apartmentId}")
 	public ResponseEntity<?> findAppartementByAppUserIdAndId(@PathVariable Long userId, @PathVariable Long apartmentId, HttpServletRequest request) {
 	    String userToken = request.getHeader("X-API-USER-KEY");

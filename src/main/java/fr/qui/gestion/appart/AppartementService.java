@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import fr.qui.gestion.appart.dto.AdresseDTO;
+import fr.qui.gestion.appart.dto.ChiffresClesDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.appart.dto.AppartementForGestionDTO;
@@ -34,11 +37,7 @@ public class AppartementService {
     
     @Autowired
     private UserRepository userRepository;
-    
-    public List<Appartement> obtenirTousLesAppartements() {
-        return appartementRepository.findAll();
-    }
-    
+
     public Appartement ajouterAppartement(Appartement nouvelAppartement) {
         return appartementRepository.save(nouvelAppartement);
     }
@@ -241,7 +240,16 @@ public class AppartementService {
 	    userRepository.deleteById(gestionnaireId);
 	}
 
+	// utilisé v2 //
+	public List<AdresseDTO> obtenirAdressesAppartementsParGestionnaireId(Long id) {
+		return appartementRepository.obtenirAdressesAppartementsParGestionnaireId(id);
+	}
 
-	
+	public List<AdresseDTO> obtenirAdressesAppartementsParUserId(Long id) {
+		return appartementRepository.obtenirAdressesAppartementsParUserId(id);
+	}
 
+	public List<ChiffresClesDTO> obtenirChiffresClesAppartementsParUserId(Long id) {
+		return appartementRepository.obtenirChiffresClesAppartementsParUserId(id);
+	}
 }

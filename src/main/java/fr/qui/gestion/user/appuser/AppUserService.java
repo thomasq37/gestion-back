@@ -3,11 +3,11 @@ package fr.qui.gestion.user.appuser;
 import java.util.List;
 import java.util.Optional;
 
+import fr.qui.gestion.appart.dto.AdresseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.appart.Appartement;
-import fr.qui.gestion.appart.dto.AppartementForGestionDTO;
 import fr.qui.gestion.user.UserRepository;
 
 @Service
@@ -34,5 +34,5 @@ public class AppUserService {
 	public Appartement findAppartementByAppUserIdAndId(Long userId, Long apartmentId) {
         return userRepository.findAppartementByAppUserIdAndId(userId, apartmentId).orElse(null);
     }
-	
+
 }

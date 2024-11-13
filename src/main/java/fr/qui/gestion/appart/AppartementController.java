@@ -1,7 +1,13 @@
 package fr.qui.gestion.appart;
 
 import java.util.List;
+import java.util.Optional;
 
+import fr.qui.gestion.appart.dto.AdresseDTO;
+import fr.qui.gestion.appart.dto.ChiffresClesDTO;
+import fr.qui.gestion.user.appuser.AppUser;
+import fr.qui.gestion.user.appuser.AppUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +32,16 @@ import fr.qui.gestion.user.appuser.AppUserDTO;
 public class AppartementController {
 
     private final AppartementService appartementService;
-    
-    
+    private final AppUserService appUserService;
+
     @Autowired
-    public AppartementController(AppartementService appartementService) {
+    public AppartementController(AppartementService appartementService, AppUserService appUserService) {
         this.appartementService = appartementService;
+        this.appUserService = appUserService;
     }
-    
+
     // Appartements
-    
+
     @PostMapping("/ajouter")
     public ResponseEntity<Appartement> ajouterAppartement(@RequestBody Appartement nouvelAppartement) {
         try {
@@ -44,7 +51,7 @@ public class AppartementController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-    
+
     @PutMapping("/{appartId}")
     public ResponseEntity<Appartement> mettreAJourUnAppartementPourUtilisateur(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody Appartement appartModifie) {
         try {
@@ -58,16 +65,13 @@ public class AppartementController {
     @DeleteMapping("/{appartId}")
     @Transactional
     public ResponseEntity<String> supprimerUnAppartement(@PathVariable Long appartId) {
-    	appartementService.supprimerTousLesFraisParAppartementId(appartId);
-    	appartementService.supprimerUnAppartement(appartId);
+        appartementService.supprimerTousLesFraisParAppartementId(appartId);
+        appartementService.supprimerUnAppartement(appartId);
         return new ResponseEntity<>("Appartement deleted successfully", HttpStatus.OK);
     }
-    
     // Periode
-
-    
     // Frais Periodes
-    
+
     @PostMapping("/periodes/{periodeId}/frais")
     public ResponseEntity<Frais> ajouterUnFraisPourPeriode(
             @PathVariable Long periodeId,
@@ -79,7 +83,7 @@ public class AppartementController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-    
+
     @PutMapping("/periodes/{periodeId}/frais/{fraisId}")
     public ResponseEntity<Frais> mettreAJourUnFraisPourPeriode(@PathVariable Long periodeId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
         try {
@@ -89,6 +93,7 @@ public class AppartementController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping("/periodes/{periodeId}/frais/{fraisId}")
     @Transactional
     public ResponseEntity<?> supprimerFraisPourPeriode(@PathVariable Long periodeId, @PathVariable Long fraisId) {
@@ -99,29 +104,29 @@ public class AppartementController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    
+
     @GetMapping("/{appartId}/gestionnaires")
     public ResponseEntity<List<AppUserDTO>> obtenirGestionnairesParAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
-		
-    	List<AppUserDTO> appartGestionnaires = appartementService.obtenirGestionnairesParAppartement(appartId); 
-        if(appartGestionnaires.isEmpty()) {
+
+        List<AppUserDTO> appartGestionnaires = appartementService.obtenirGestionnairesParAppartement(appartId);
+        if (appartGestionnaires.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(appartGestionnaires);
     }
-    
+
     @PutMapping("/{appartementId}/gestionnaires/{gestionnaireId}")
     public ResponseEntity<AppUserDTO> mettreAJourUnGestionnairePourAppartement(
             @PathVariable Long userId,
             @PathVariable Long appartementId,
             @PathVariable(required = false) Long gestionnaireId,
             @RequestBody AppUserDTO modifieGestionnaire) {
-    	 try {
-         	AppUserDTO gestionnaire = appartementService.mettreAJourUnGestionnairePourAppartement(userId, appartementId, gestionnaireId, modifieGestionnaire);
-             return ResponseEntity.ok(gestionnaire);
-         } catch (RuntimeException e) {
-             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-         }
+        try {
+            AppUserDTO gestionnaire = appartementService.mettreAJourUnGestionnairePourAppartement(userId, appartementId, gestionnaireId, modifieGestionnaire);
+            return ResponseEntity.ok(gestionnaire);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{appartementId}/gestionnaires/{gestionnaireId}")
@@ -129,11 +134,51 @@ public class AppartementController {
             @PathVariable Long userId,
             @PathVariable Long appartementId,
             @PathVariable Long gestionnaireId) {
-    	 try {
-             appartementService.supprimerUnGestionnairePourAppartement(userId, appartementId, gestionnaireId);
-             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-         } catch (RuntimeException e) {
-             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-         }
+        try {
+            appartementService.supprimerUnGestionnairePourAppartement(userId, appartementId, gestionnaireId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // utilisé v2 //
+    @GetMapping("/adresses")
+    public ResponseEntity<Object> obtenirAdressesAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) {
+        String userToken = request.getHeader("X-API-USER-KEY");
+        Optional<AppUser> user = appUserService.findByUserToken(userToken);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token invalide.");
+        }
+        AppUser currentUser = user.get();
+        if (!currentUser.getId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Le token ne correspond pas à l'ID utilisateur fourni.");
+        }
+        // Si l'utilisateur est un gestionnaire
+        if ("GESTIONNAIRE".equals(currentUser.getRole().getName())) {
+            List<AdresseDTO> adressesAppartements = appartementService.obtenirAdressesAppartementsParGestionnaireId(currentUser.getId());
+            return ResponseEntity.ok(adressesAppartements);
+        }
+        // Si l'utilisateur est un propriétaire
+        else if ("PROPRIETAIRE".equals(currentUser.getRole().getName())) {
+            List<AdresseDTO> adressesAppartements = appartementService.obtenirAdressesAppartementsParUserId(currentUser.getId());
+            return ResponseEntity.ok(adressesAppartements);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vous n'avez pas les droits nécessaires pour accéder à ces informations.");
+        }
+    }
+    @GetMapping("/chiffres-cles")
+    public ResponseEntity<Object> obtenirChiffresClesAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) {
+        String userToken = request.getHeader("X-API-USER-KEY");
+        Optional<AppUser> user = appUserService.findByUserToken(userToken);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token invalide.");
+        }
+        AppUser currentUser = user.get();
+        if (!currentUser.getId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Le token ne correspond pas à l'ID utilisateur fourni.");
+        }
+        List<ChiffresClesDTO> chiffresClesAppartements = appartementService.obtenirChiffresClesAppartementsParUserId(currentUser.getId());
+        return ResponseEntity.ok(chiffresClesAppartements);
     }
 }
