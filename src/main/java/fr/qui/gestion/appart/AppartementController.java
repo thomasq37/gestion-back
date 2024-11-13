@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import fr.qui.gestion.appart.dto.AdresseDTO;
+import fr.qui.gestion.appart.dto.AppartementCCDTO;
 import fr.qui.gestion.appart.dto.ChiffresClesDTO;
 import fr.qui.gestion.user.appuser.AppUser;
 import fr.qui.gestion.user.appuser.AppUserService;
@@ -168,17 +169,9 @@ public class AppartementController {
         }
     }
     @GetMapping("/chiffres-cles")
-    public ResponseEntity<Object> obtenirChiffresClesAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) {
-        String userToken = request.getHeader("X-API-USER-KEY");
-        Optional<AppUser> user = appUserService.findByUserToken(userToken);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token invalide.");
-        }
-        AppUser currentUser = user.get();
-        if (!currentUser.getId().equals(userId)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Le token ne correspond pas à l'ID utilisateur fourni.");
-        }
-        List<ChiffresClesDTO> chiffresClesAppartements = appartementService.obtenirChiffresClesAppartementsParUserId(currentUser.getId());
-        return ResponseEntity.ok(chiffresClesAppartements);
+    public ResponseEntity<Object> obtenirCCAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) {
+        List<AppartementCCDTO> ccAppartements = appartementService.obtenirCCAppartementsParUserId(userId);
+        return ResponseEntity.ok(ccAppartements);
     }
+
 }

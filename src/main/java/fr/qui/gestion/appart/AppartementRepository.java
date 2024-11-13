@@ -25,6 +25,4 @@ public interface AppartementRepository extends JpaRepository<Appartement, Long> 
     List<AdresseDTO> obtenirAdressesAppartementsParUserId(@Param("userId") Long userId);
     @Query("SELECT new fr.qui.gestion.appart.dto.AdresseDTO(a.id, a.numero, a.adresse, a.codePostal, a.ville, a.pays) from Appartement a JOIN a.gestionnaires g WHERE g.id = :gestionnaireId")
     List<AdresseDTO> obtenirAdressesAppartementsParGestionnaireId(Long gestionnaireId);
-
-    List<ChiffresClesDTO> obtenirPrixTotalAppartementsParUserId(Long id);
 }

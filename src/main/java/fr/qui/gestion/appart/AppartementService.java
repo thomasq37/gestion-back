@@ -1,17 +1,16 @@
 package fr.qui.gestion.appart;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import fr.qui.gestion.appart.dto.AdresseDTO;
-import fr.qui.gestion.appart.dto.ChiffresClesDTO;
+import fr.qui.gestion.appart.dto.*;
+import fr.qui.gestion.user.appuser.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import fr.qui.gestion.appart.dto.AppartementForGestionDTO;
-import fr.qui.gestion.appart.dto.AppartementForProprioDTO;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.frais.FraisRepository;
 import fr.qui.gestion.periodlocation.PeriodLocation;
@@ -37,6 +36,16 @@ public class AppartementService {
     
     @Autowired
     private UserRepository userRepository;
+
+	private final AppUserService appUserService;
+	private final AppartementCalculService appartementCalculService;
+
+    public AppartementService(
+			AppUserService appUserService,
+			AppartementCalculService appartementCalculService) {
+        this.appUserService = appUserService;
+		this.appartementCalculService = appartementCalculService;
+    }
 
     public Appartement ajouterAppartement(Appartement nouvelAppartement) {
         return appartementRepository.save(nouvelAppartement);
@@ -157,13 +166,6 @@ public class AppartementService {
 	    dto.setContacts(appartement.getContacts());
 		dto.setRevenusNets(appartement.getRevenusNets());
 		dto.setDepensesNettes(appartement.getDepensesNettes());
-		dto.setRentabiliteNette(appartement.getRentabiliteNette());
-	    dto.setMoyenneBeneficesNetParMois(appartement.getMoyenneBeneficesNetParMois());
-		dto.setTotalFraisGestion(appartement.getTotalFraisGestion());
-		dto.setTotalHonorairesDeLoc(appartement.getTotalHonorairesDeLoc());
-		dto.setTotalTravaux(appartement.getTotalTravaux());
-		dto.setTotalChargesFixesHorsFrais(appartement.getTotalChargesFixesHorsFrais());
-		dto.setTauxVacanceLocative(appartement.getTauxVacanceLocative());
 	    dto.setPeriodLocation(appartement.getPeriodLocation());
 	    dto.setAppUser(convertToDTO(appartement.getAppUser()));
 		List<AppUserDTO> appUserDTOs = appartement.getGestionnaires().stream().map(this::convertToDTO)
@@ -249,7 +251,12 @@ public class AppartementService {
 		return appartementRepository.obtenirAdressesAppartementsParUserId(id);
 	}
 
-	public List<ChiffresClesDTO> obtenirChiffresClesAppartementsParUserId(Long id) {
-		return appartementRepository.obtenirChiffresClesAppartementsParUserId(id);
+	public List<AppartementCCDTO> obtenirCCAppartementsParUserId(Long userId) {
+		List<AppartementCCDTO> dtos = new ArrayList<>();
+		appUserService.obtenirAppartementsParUserId(userId).forEach(a -> {
+			dtos.add(appartementCalculService.creerAppartementCCDTO(a));
+		});
+		return dtos;
 	}
+
 }
