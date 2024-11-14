@@ -16,19 +16,19 @@ import java.util.Objects;
 public class AppartementCalculService {
 
     public static class TotauxFrais {
-        public double totalTravaux;
-        public double totalFraisGestion;
-        public double totalHonorairesDeLoc;
+        public Double totalTravaux;
+        public Double totalFraisGestion;
+        public Double totalHonorairesDeLoc;
 
-        public TotauxFrais(double totalTravaux, double totalFraisGestion, double totalHonorairesDeLoc) {
+        public TotauxFrais(Double totalTravaux, Double totalFraisGestion, Double totalHonorairesDeLoc) {
             this.totalTravaux = totalTravaux;
             this.totalFraisGestion = totalFraisGestion;
             this.totalHonorairesDeLoc = totalHonorairesDeLoc;
         }
     }
 
-    public double calculerRevenusNets(Appartement appartement) {
-        double revenus = 0.0;
+    public Double calculerRevenusNets(Appartement appartement) {
+        Double revenus = 0.0;
         for (PeriodLocation pLocation : appartement.getPeriodLocation()) {
             Long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
             if (pLocation.isLocVac()) {
@@ -40,30 +40,30 @@ public class AppartementCalculService {
         return Math.round(revenus * 100.0) / 100.0;
     }
 
-    protected double calculerMoyenneBeneficesNetParMois(Appartement appartement) {
+    protected Double calculerMoyenneBeneficesNetParMois(Appartement appartement) {
         if(appartement.getDateAchat() == null){
-            return 0;
+            return 0.0;
         }
         TotauxFrais tf = calculerTotalFrais(appartement);
         // Obtention de la rentabilité nette (supposant que vous avez une méthode calculerRentabiliteNette)
-        double rentabiliteNette = calculerRevenusNets(appartement) - tf.totalTravaux + tf.totalFraisGestion + tf.totalHonorairesDeLoc + calculerChargesFixesHorsFrais(appartement);
+        Double rentabiliteNette = calculerRevenusNets(appartement) - tf.totalTravaux + tf.totalFraisGestion + tf.totalHonorairesDeLoc + calculerChargesFixesHorsFrais(appartement);
         // Calcul du nombre total de mois sur la période de location
         Long joursTotal = ChronoUnit.DAYS.between(appartement.getDateAchat(), LocalDate.now());
-        double moisTotal = joursTotal / 30.0;
+        Double moisTotal = joursTotal / 30.0;
         if (moisTotal == 0) {
-            return 0;
+            return 0.0;
         }
         // Calcul de la moyenne des bénéfices nets par mois
-        double moyenneBeneficesNetParMois = (rentabiliteNette / moisTotal);
+        Double moyenneBeneficesNetParMois = (rentabiliteNette / moisTotal);
         moyenneBeneficesNetParMois = Math.round(moyenneBeneficesNetParMois * 100.0) / 100.0;
         return moyenneBeneficesNetParMois;
     }
 
-    public double calculerChargesFixesHorsFrais(Appartement appartement) {
+    public Double calculerChargesFixesHorsFrais(Appartement appartement) {
         if(appartement.getDateAchat() == null){
             return 0.0;
         }
-        double chargesFixesHorsFrais = 0.0;
+        Double chargesFixesHorsFrais = 0.0;
         LocalDate today = LocalDate.now();
         Long dureeEnJours = ChronoUnit.DAYS.between(appartement.getDateAchat(), today);
         for (Frais fraisFixeAppart : appartement.getFraisFixe()) {
@@ -91,9 +91,9 @@ public class AppartementCalculService {
     }
 
     public TotauxFrais calculerTotalFrais(Appartement appartement) {
-        double totalTravaux = 0.0;
-        double totalFraisGestion = 0.0;
-        double totalHonorairesDeLoc = 0.0;
+        Double totalTravaux = 0.0;
+        Double totalFraisGestion = 0.0;
+        Double totalHonorairesDeLoc = 0.0;
         for (Frais fraisFixeAppart : appartement.getFraisFixe()) {
             if (fraisFixeAppart.getTypeFrais().getNom().equals("Travaux")) {
                 totalTravaux += fraisFixeAppart.getMontant();
@@ -139,9 +139,9 @@ public class AppartementCalculService {
         );
     }
 
-    public double calculerCoutParFrequence(double montantParFrequence, Long dureeEnJours, int frequenceEnJours) {
-        double nombreDePeriodes = (double) dureeEnJours / frequenceEnJours;
-        double resultat = nombreDePeriodes * montantParFrequence;
+    public Double calculerCoutParFrequence(Double montantParFrequence, Long dureeEnJours, int frequenceEnJours) {
+        Double nombreDePeriodes = (double) dureeEnJours / frequenceEnJours;
+        Double resultat = nombreDePeriodes * montantParFrequence;
 
         // Arrondir à deux chiffres après la virgule
         return Math.round(resultat * 100.0) / 100.0;
@@ -157,9 +157,9 @@ public class AppartementCalculService {
         };
     }
 
-    protected double calculerTauxVacanceLocative(Appartement appartement) {
+    protected Double calculerTauxVacanceLocative(Appartement appartement) {
         if(appartement.getDateAchat() == null){
-            return 0;
+            return 0.0;
         }
         List<PeriodLocation> periodLocations = appartement.getPeriodLocation();
 
@@ -193,32 +193,32 @@ public class AppartementCalculService {
         }
 
         // Calculer le taux de vacance locative
-        double tauxVacance = ((double) joursVacances / joursDepuisAchat) * 100;
+        Double tauxVacance = ((double) joursVacances / joursDepuisAchat) * 100;
 
         // Arrondir au centième près
         return Math.round(tauxVacance * 100.0) / 100.0;
     }
 
     public AppartementCCDTO creerAppartementCCDTO(Appartement appartement) {
-        double revenusNets = calculerRevenusNets(appartement);
-        double tauxVacanceLocative = calculerTauxVacanceLocative(appartement);
-        double moyenneBeneficesNetParMois = calculerMoyenneBeneficesNetParMois(appartement);
+        Double revenusNets = calculerRevenusNets(appartement);
+        Double tauxVacanceLocative = calculerTauxVacanceLocative(appartement);
+        Double moyenneBeneficesNetParMois = calculerMoyenneBeneficesNetParMois(appartement);
 
         // Calcul des totaux des frais
         TotauxFrais totaux = calculerTotalFrais(appartement);
-        double totalTravaux = totaux.totalTravaux;
-        double totalFraisGestion = totaux.totalFraisGestion;
-        double totalHonorairesDeLoc = totaux.totalHonorairesDeLoc;
+        Double totalTravaux = totaux.totalTravaux;
+        Double totalFraisGestion = totaux.totalFraisGestion;
+        Double totalHonorairesDeLoc = totaux.totalHonorairesDeLoc;
 
         // Calcul des charges fixes
-        double totalChargesFixesHorsFrais = calculerChargesFixesHorsFrais(appartement);
+        Double totalChargesFixesHorsFrais = calculerChargesFixesHorsFrais(appartement);
 
         // Calcul des dépenses nettes et de la rentabilité nette
-        double depensesNettes = totalTravaux + totalFraisGestion + totalHonorairesDeLoc + totalChargesFixesHorsFrais;
-        double rentabiliteNette = Math.round((revenusNets - depensesNettes) * 100.0) / 100.0;
+        Double depensesNettes = totalTravaux + totalFraisGestion + totalHonorairesDeLoc + totalChargesFixesHorsFrais;
+        Double rentabiliteNette = Math.round((revenusNets - depensesNettes) * 100.0) / 100.0;
 
         // Créer et retourner le DTO
-        return new AppartementCCDTO(appartement.getId(), appartement.getPrix(), appartement.getEstimation(), revenusNets, depensesNettes, rentabiliteNette, tauxVacanceLocative,
+        return new AppartementCCDTO(appartement.getId(), appartement.getPrix(), appartement.getEstimation(), appartement.getFraisNotaireEtNegociation(), revenusNets, depensesNettes, rentabiliteNette, tauxVacanceLocative,
                 moyenneBeneficesNetParMois, totalTravaux, totalFraisGestion, totalHonorairesDeLoc, totalChargesFixesHorsFrais);
     }
 

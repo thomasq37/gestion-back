@@ -4,22 +4,37 @@ import lombok.Data;
 @Data
 public class AppartementCCDTO {
     private Long appartementId;
-    private double prixAchat;
-    private double estimation;
-    private double revenusNets;
-    private double depensesNettes;
-    private double rentabiliteNette;
-    private double tauxVacanceLocative;
-    private double moyenneBeneficesNetParMois;
-    private double totalTravaux;
-    private double totalFraisGestion;
-    private double totalHonorairesDeLoc;
-    private double totalChargesFixesHorsFrais;
+    private Double prixAchat;
+    private Double estimation;
+    private Double fraisNotaireEtNegociation;
+    private Double revenusNets;
+    private Double depensesNettes;
+    private Double rentabiliteNette;
+    private Double tauxVacanceLocative;
+    private Double moyenneBeneficesNetParMois;
+    private Double totalTravaux;
+    private Double totalFraisGestion;
+    private Double totalHonorairesDeLoc;
+    private Double totalChargesFixesHorsFrais;
 
-    public AppartementCCDTO(Long appartementId, double prixAchat,  double estimation, double revenusNets, double depensesNettes, double rentabiliteNette, double tauxVacanceLocative, double moyenneBeneficesNetParMois, double totalTravaux, double totalFraisGestion, double totalHonorairesDeLoc, double totalChargesFixesHorsFrais) {
+    public AppartementCCDTO(
+            Long appartementId,
+            Double prixAchat,
+            Double estimation,
+            Double fraisNotaireEtNegociation,
+            Double revenusNets,
+            Double depensesNettes,
+            Double rentabiliteNette,
+            Double tauxVacanceLocative,
+            Double moyenneBeneficesNetParMois,
+            Double totalTravaux,
+            Double totalFraisGestion,
+            Double totalHonorairesDeLoc,
+            Double totalChargesFixesHorsFrais) {
         this.appartementId = appartementId;
         this.prixAchat = prixAchat;
         this.estimation = estimation;
+        this.fraisNotaireEtNegociation = fraisNotaireEtNegociation;
         this.revenusNets = revenusNets;
         this.depensesNettes = depensesNettes;
         this.rentabiliteNette = rentabiliteNette;
