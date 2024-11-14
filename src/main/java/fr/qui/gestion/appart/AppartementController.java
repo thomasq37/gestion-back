@@ -5,13 +5,15 @@ import java.util.Optional;
 
 import fr.qui.gestion.appart.dto.AdresseDTO;
 import fr.qui.gestion.appart.dto.AppartementCCDTO;
-import fr.qui.gestion.appart.dto.ChiffresClesDTO;
-import fr.qui.gestion.user.appuser.AppUser;
-import fr.qui.gestion.user.appuser.AppUserService;
+import fr.qui.gestion.utilisateur.Utilisateur;
+import fr.qui.gestion.utilisateur.UtilisateurDTO;
+import fr.qui.gestion.utilisateur.UtilisateurService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,21 +24,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
-import fr.qui.gestion.user.appuser.AppUserDTO;
 
 @RestController
-@RequestMapping(path = "/api/utilisateurs/{userId}/appartements", produces = "application/json")
+@RequestMapping(path = "/api/appartements", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
 public class AppartementController {
 
     private final AppartementService appartementService;
-    private final AppUserService appUserService;
+    private final UtilisateurService appUserService;
 
     @Autowired
-    public AppartementController(AppartementService appartementService, AppUserService appUserService) {
+    public AppartementController(AppartementService appartementService, UtilisateurService appUserService) {
         this.appartementService = appartementService;
         this.appUserService = appUserService;
     }
@@ -55,8 +54,9 @@ public class AppartementController {
 
     @PutMapping("/{appartId}")
     public ResponseEntity<Appartement> mettreAJourUnAppartementPourUtilisateur(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody Appartement appartModifie) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         try {
-            Appartement appartement = appartementService.mettreAJourUnAppartementPourUtilisateur(userId, appartId, appartModifie);
+            Appartement appartement = appartementService.mettreAJourUnAppartementPourUtilisateur(auth.getName(), appartId, appartModifie);
             return ResponseEntity.ok(appartement);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -107,9 +107,9 @@ public class AppartementController {
     }
 
     @GetMapping("/{appartId}/gestionnaires")
-    public ResponseEntity<List<AppUserDTO>> obtenirGestionnairesParAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
+    public ResponseEntity<List<UtilisateurDTO>> obtenirGestionnairesParAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
 
-        List<AppUserDTO> appartGestionnaires = appartementService.obtenirGestionnairesParAppartement(appartId);
+        List<UtilisateurDTO> appartGestionnaires = appartementService.obtenirGestionnairesParAppartement(appartId);
         if (appartGestionnaires.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -117,13 +117,13 @@ public class AppartementController {
     }
 
     @PutMapping("/{appartementId}/gestionnaires/{gestionnaireId}")
-    public ResponseEntity<AppUserDTO> mettreAJourUnGestionnairePourAppartement(
+    public ResponseEntity<UtilisateurDTO> mettreAJourUnGestionnairePourAppartement(
             @PathVariable Long userId,
             @PathVariable Long appartementId,
             @PathVariable(required = false) Long gestionnaireId,
-            @RequestBody AppUserDTO modifieGestionnaire) {
+            @RequestBody UtilisateurDTO modifieGestionnaire) {
         try {
-            AppUserDTO gestionnaire = appartementService.mettreAJourUnGestionnairePourAppartement(userId, appartementId, gestionnaireId, modifieGestionnaire);
+            UtilisateurDTO gestionnaire = appartementService.mettreAJourUnGestionnairePourAppartement(userId, appartementId, gestionnaireId, modifieGestionnaire);
             return ResponseEntity.ok(gestionnaire);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -145,33 +145,43 @@ public class AppartementController {
 
     // utilisé v2 //
     @GetMapping("/adresses")
-    public ResponseEntity<Object> obtenirAdressesAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) {
-        String userToken = request.getHeader("X-API-USER-KEY");
-        Optional<AppUser> user = appUserService.findByUserToken(userToken);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token invalide.");
-        }
-        AppUser currentUser = user.get();
-        if (!currentUser.getId().equals(userId)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Le token ne correspond pas à l'ID utilisateur fourni.");
-        }
+    public ResponseEntity<Object> obtenirAdressesAppartementsParUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         // Si l'utilisateur est un gestionnaire
-        if ("GESTIONNAIRE".equals(currentUser.getRole().getName())) {
-            List<AdresseDTO> adressesAppartements = appartementService.obtenirAdressesAppartementsParGestionnaireId(currentUser.getId());
+        if (auth.getAuthorities().stream().anyMatch(authority -> "ROLE_GESTIONNAIRE".equals(authority.getAuthority()))) {
+            List<AdresseDTO> adressesAppartements = appartementService.obtenirAdressesAppartementsParGestionnaireId(auth.getName());
             return ResponseEntity.ok(adressesAppartements);
         }
         // Si l'utilisateur est un propriétaire
-        else if ("PROPRIETAIRE".equals(currentUser.getRole().getName())) {
-            List<AdresseDTO> adressesAppartements = appartementService.obtenirAdressesAppartementsParUserId(currentUser.getId());
+        else if (auth.getAuthorities().stream().anyMatch(role -> "ROLE_PROPRIETAIRE".equals(role.getAuthority()))) {
+            List<AdresseDTO> adressesAppartements = appartementService.obtenirAdressesAppartementsParUserId(auth.getName());
             return ResponseEntity.ok(adressesAppartements);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Vous n'avez pas les droits nécessaires pour accéder à ces informations.");
         }
     }
     @GetMapping("/chiffres-cles")
-    public ResponseEntity<Object> obtenirCCAppartementsParUserId(@PathVariable Long userId, HttpServletRequest request) {
-        List<AppartementCCDTO> ccAppartements = appartementService.obtenirCCAppartementsParUserId(userId);
+    public ResponseEntity<Object> obtenirCCAppartementsParUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<AppartementCCDTO> ccAppartements = appartementService.obtenirCCAppartementsParUserId(auth.getName());
         return ResponseEntity.ok(ccAppartements);
+    }
+
+    @GetMapping("/{apartmentId}")
+    public ResponseEntity<?> obtenirUnAppartementParIdAndByUtilisateurId(@PathVariable Long apartmentId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Appartement appartement = appartementService.obtenirUnAppartementParIdAndByUtilisateurId(apartmentId, auth.getName());
+
+        if (appartement == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appartement not found");
+        }
+        if (auth.getAuthorities().stream().anyMatch(role -> "ROLE_PROPRIETAIRE".equals(role.getAuthority()))) {
+            return ResponseEntity.ok(appartementService.convertToPrioprioDTO(appartement));
+        } else if (auth.getAuthorities().stream().anyMatch(authority -> "ROLE_GESTIONNAIRE".equals(authority.getAuthority()))) {
+            return ResponseEntity.ok(appartementService.convertToPrioprioDTO(appartement));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have the right to access this information.");
+        }
     }
 
 }

@@ -21,7 +21,5 @@ public class AppartementForGestionDTO {
     private List<PeriodLocation> periodLocation;
     private String appartProprioUsername; 
     private String appartProprioEmail; 
-    private String appartProprioPhoneNumber; 
-    
-
+    private String appartProprioPhoneNumber;
 }

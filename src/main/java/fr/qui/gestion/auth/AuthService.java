@@ -6,27 +6,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import fr.qui.gestion.utilisateur.Utilisateur;
+import fr.qui.gestion.utilisateur.UtilisateurDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import fr.qui.gestion.appart.Appartement;
-import fr.qui.gestion.appart.dto.AppartementForGestionDTO;
-import fr.qui.gestion.user.UserRepository;
-import fr.qui.gestion.user.appuser.AppUser;
-import fr.qui.gestion.user.appuser.AppUserDTO;
-import fr.qui.gestion.user.role.Role;
-import fr.qui.gestion.user.role.RoleRepository;
-
 @Service
 public class AuthService {
 	
-	  
+	/*
     @Autowired
     private UserRepository userRepository;
     
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleARepository roleARepository;
     
     @Autowired
     private InvitationRepository invitationRepository;
@@ -35,22 +29,22 @@ public class AuthService {
 
     public AppUser createUser(String username, String password, String role) {
     	// Check if the role already exists
-        Optional<Role> optionalRole = roleRepository.findByName(role);
-        Role defaultRole;
+        Optional<RoleA> optionalRole = roleARepository.findByName(role);
+        RoleA defaultRoleA;
         if(optionalRole.isPresent()) {
-        	defaultRole = optionalRole.get();
+        	defaultRoleA = optionalRole.get();
         }
         else {
-        	defaultRole = new Role();
-        	defaultRole.setName(role);
-            roleRepository.save(defaultRole);
+        	defaultRoleA = new RoleA();
+        	defaultRoleA.setName(role);
+            roleARepository.save(defaultRoleA);
         }
         
         AppUser user = new AppUser();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setUserToken(generateRandomToken(24));
-        user.setRole(defaultRole);
+        user.setRoleA(defaultRoleA);
         return userRepository.save(user);
     }
     public String generateRandomToken(int byteLength) {
@@ -71,7 +65,7 @@ public class AuthService {
                 // Si les mots de passe correspondent, ajoutez les informations de l'utilisateur à la réponse
                 response.put("userId", user.getId());
                 response.put("userToken", user.getUserToken());
-                response.put("userRole", user.getRole().getName());
+                response.put("userRole", user.getRoleA().getName());
             } else {
                 // Si les mots de passe ne correspondent pas, indiquez une erreur d'authentification
                 response.put("error", "Nom d'utilisateur ou mot de passe incorrect");
@@ -82,8 +76,8 @@ public class AuthService {
         }
         return response;
     }
-
-    
+*/
+  /*
     public boolean validateInvitation(String token) {
         Invitation invitation = invitationRepository.findByToken(token);
         if(invitation != null && !invitation.isUsed()) {
@@ -94,12 +88,12 @@ public class AuthService {
         return false;
     }
     
-	public AppUserDTO convertToDTO(AppUser user) {
-		AppUserDTO dto = new AppUserDTO();
+	public UtilisateurDTO convertToDTO(Utilisateur user) {
+        UtilisateurDTO dto = new UtilisateurDTO();
 		dto.setId(user.getId());
-		dto.setUsername(user.getUsername());
+		dto.setPseudo(user.getPseudo());
 		dto.setPhoneNumber(user.getPhoneNumber());
 	    dto.setEmail(user.getEmail());
 	    return dto;
-	}
+	}*/
 }

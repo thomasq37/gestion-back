@@ -7,7 +7,7 @@ import fr.qui.gestion.contact.Contact;
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.pays.Pays;
 import fr.qui.gestion.periodlocation.PeriodLocation;
-import fr.qui.gestion.user.appuser.AppUser;
+import fr.qui.gestion.utilisateur.Utilisateur;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -34,43 +34,23 @@ public class Appartement {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pays_id")
     private Pays pays;
-
-
-    @Transient
-    private double revenusNets;
-
-
-    @Transient
-    private double depensesNettes;
-
-
     @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Frais> fraisFixe;
-
-
     @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Contact> contacts;
-
-
     @ElementCollection
     @CollectionTable(name = "appartement_images", joinColumns = @JoinColumn(name = "appartement_id"))
     private List<String> images;
-
-
     @OneToMany(mappedBy = "appartement", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<PeriodLocation> periodLocation;
-
-
     @ManyToOne
-    @JoinColumn(name = "app_user_id")
-    private AppUser appUser;
-
-
+    @JoinColumn(name = "utilisateur_id")
+    private Utilisateur appUser;
     @ManyToMany
     @JoinTable(
             name = "appartement_gestionnaires",
             joinColumns = @JoinColumn(name = "appartement_id"),
             inverseJoinColumns = @JoinColumn(name = "gestionnaire_id")
     )
-    private List<AppUser> gestionnaires;
+    private List<Utilisateur> gestionnaires;
 }

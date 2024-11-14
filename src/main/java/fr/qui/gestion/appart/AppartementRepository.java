@@ -2,8 +2,6 @@ package fr.qui.gestion.appart;
 
 import java.util.List;
 import java.util.Optional;
-
-import fr.qui.gestion.appart.dto.ChiffresClesDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

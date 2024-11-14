@@ -2,29 +2,26 @@ package fr.qui.gestion.appart;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import fr.qui.gestion.appart.dto.*;
-import fr.qui.gestion.user.appuser.AppUserService;
+import fr.qui.gestion.utilisateur.Utilisateur;
+import fr.qui.gestion.utilisateur.UtilisateurDTO;
+import fr.qui.gestion.utilisateur.UtilisateurRepository;
+import fr.qui.gestion.utilisateur.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import fr.qui.gestion.frais.Frais;
 import fr.qui.gestion.frais.FraisRepository;
 import fr.qui.gestion.periodlocation.PeriodLocation;
 import fr.qui.gestion.periodlocation.PeriodLocationRepository;
-import fr.qui.gestion.user.UserRepository;
-import fr.qui.gestion.user.appuser.AppUser;
-import fr.qui.gestion.user.appuser.AppUserDTO;
 import jakarta.transaction.Transactional;
 
 @Service
 public class AppartementService {
-    
-
-    
     @Autowired
     private FraisRepository fraisRepository;
     
@@ -35,13 +32,13 @@ public class AppartementService {
     private AppartementRepository appartementRepository;
     
     @Autowired
-    private UserRepository userRepository;
+    private UtilisateurRepository userRepository;
 
-	private final AppUserService appUserService;
+	private final UtilisateurService appUserService;
 	private final AppartementCalculService appartementCalculService;
 
     public AppartementService(
-			AppUserService appUserService,
+			UtilisateurService appUserService,
 			AppartementCalculService appartementCalculService) {
         this.appUserService = appUserService;
 		this.appartementCalculService = appartementCalculService;
@@ -51,9 +48,10 @@ public class AppartementService {
         return appartementRepository.save(nouvelAppartement);
     }
     
-    public Appartement mettreAJourUnAppartementPourUtilisateur(Long userId, Long appartId, Appartement appartementModifie) {
-        Appartement appartementExist = obtenirUnAppartementParId(appartId);
-        if (appartementExist.getAppUser().getId() != userId) {
+    public Appartement mettreAJourUnAppartementPourUtilisateur(String email, Long appartId, Appartement appartementModifie) {
+        Appartement appartementExist = obtenirUnAppartementParIdAndByUtilisateurId(appartId, email);
+		Optional<Utilisateur> utilisateur = userRepository.findByEmail(email);
+		if (utilisateur.isPresent() && !Objects.equals(appartementExist.getAppUser().getId(), utilisateur.get().getId())) {
             throw new SecurityException("L'utilisateur n'est pas autorisé à mettre à jour cet appartement.");
         }
 		appartementExist.setDateAchat(appartementModifie.getDateAchat());
@@ -73,11 +71,6 @@ public class AppartementService {
         appartementExist.setImages(appartementModifie.getImages());
         appartementExist.setPays(appartementModifie.getPays());
         return appartementRepository.save(appartementExist);
-    }
-
-    public Appartement obtenirUnAppartementParId(Long id) throws IllegalArgumentException {
-		Optional<Appartement> optionalAppartement = appartementRepository.findById(id);
-        return optionalAppartement.orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + id));
     }
     
     public void supprimerUnAppartement(Long id) {
@@ -137,7 +130,7 @@ public class AppartementService {
 	    dto.setPays(appartement.getPays());
 	    dto.setImages(appartement.getImages());
 	    dto.setPeriodLocation(appartement.getPeriodLocation());
-	    dto.setAppartProprioUsername(appartement.getAppUser().getUsername());
+	    dto.setAppartProprioUsername(appartement.getAppUser().getPseudo());
 	    dto.setAppartProprioEmail(appartement.getAppUser().getEmail());
 	    dto.setAppartProprioPhoneNumber(appartement.getAppUser().getPhoneNumber());
 
@@ -164,18 +157,16 @@ public class AppartementService {
 	    dto.setImages(appartement.getImages());
 	    dto.setFraisFixe(appartement.getFraisFixe());
 	    dto.setContacts(appartement.getContacts());
-		dto.setRevenusNets(appartement.getRevenusNets());
-		dto.setDepensesNettes(appartement.getDepensesNettes());
 	    dto.setPeriodLocation(appartement.getPeriodLocation());
 	    dto.setAppUser(convertToDTO(appartement.getAppUser()));
-		List<AppUserDTO> appUserDTOs = appartement.getGestionnaires().stream().map(this::convertToDTO)
+		List<UtilisateurDTO> appUserDTOs = appartement.getGestionnaires().stream().map(this::convertToDTO)
                 .collect(Collectors.toList());
 	    dto.setGestionnaires(appUserDTOs);
 	    return dto;
 	}
 	
 	public boolean estGestionnaireDeAppartement(Long userId, Appartement appartement) {
-		Optional<AppUser> optionalUser = userRepository.findById(userId);
+		Optional<Utilisateur> optionalUser = userRepository.findById(userId);
 		if(optionalUser.isPresent()) {
 		    return appartement.getGestionnaires().contains(optionalUser.get());
 		}
@@ -186,41 +177,41 @@ public class AppartementService {
 		return appartementRepository.findByGestionnaireId(gestionnaireId);
 	}
 
-	public AppUserDTO convertToDTO(AppUser appUser) {
-		AppUserDTO dto = new AppUserDTO();
+	public UtilisateurDTO convertToDTO(Utilisateur appUser) {
+		UtilisateurDTO dto = new UtilisateurDTO();
 		dto.setId(appUser.getId());
-		dto.setUsername(appUser.getUsername());
+		dto.setPseudo(appUser.getPseudo());
 	    dto.setEmail(appUser.getEmail());
 	    dto.setPhoneNumber(appUser.getPhoneNumber());
 	    return dto;
 	}
 
-	public List<AppUserDTO> obtenirGestionnairesParAppartement(Long appartId) {
+	public List<UtilisateurDTO> obtenirGestionnairesParAppartement(Long appartId) {
         Optional<Appartement> optionalAppartement = appartementRepository.findById(appartId);
         if(!optionalAppartement.isPresent()) {
         	throw new IllegalArgumentException("Appart not found");
         }
-		List<AppUserDTO> appUserDTOs = optionalAppartement.get().getGestionnaires().stream().map(this::convertToDTO)
+		List<UtilisateurDTO> appUserDTOs = optionalAppartement.get().getGestionnaires().stream().map(this::convertToDTO)
                 .collect(Collectors.toList());
 		return appUserDTOs;
 	}
 
-	public AppUserDTO mettreAJourUnGestionnairePourAppartement(Long userId, Long appartementId, Long gestionnaireId, AppUserDTO modifieGestionnaire) {
+	public UtilisateurDTO mettreAJourUnGestionnairePourAppartement(Long userId, Long appartementId, Long gestionnaireId, UtilisateurDTO modifieGestionnaire) {
 	    Appartement appartement = appartementRepository.findById(appartementId)
 	            .orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + appartementId));
 	    
 	    if (!estGestionnaireDeAppartement(gestionnaireId, appartement)) {
 	        throw new SecurityException("L'utilisateur n'est pas autorisé à modifier ce gestionnaire.");
 	    }
-	    Optional<AppUser> optionalGestionnaire = userRepository.findById(gestionnaireId);
+	    Optional<Utilisateur> optionalGestionnaire = userRepository.findById(gestionnaireId);
 	    if(!optionalGestionnaire.isPresent()) {
         	throw new IllegalArgumentException("Gestionnaire not found");
         }
-    	AppUser gestionnaire = optionalGestionnaire.get();
+    	Utilisateur gestionnaire = optionalGestionnaire.get();
     	gestionnaire.setEmail(modifieGestionnaire.getEmail());
-	    gestionnaire.setUsername(modifieGestionnaire.getUsername());
+	    gestionnaire.setPseudo(modifieGestionnaire.getPseudo());
 	    gestionnaire.setPhoneNumber(modifieGestionnaire.getPhoneNumber());
-	    AppUser updatedGestionnaire = userRepository.save(gestionnaire);
+	    Utilisateur updatedGestionnaire = userRepository.save(gestionnaire);
 	    return convertToDTO(updatedGestionnaire);
 	    
 	}
@@ -230,11 +221,11 @@ public class AppartementService {
 	    Appartement appartement = appartementRepository.findById(appartementId)
 	            .orElseThrow(() -> new IllegalArgumentException("Appartement not found with ID: " + appartementId));
 	    
-	    Optional<AppUser> gestionnaireOpt = userRepository.findById(gestionnaireId);
+	    Optional<Utilisateur> gestionnaireOpt = userRepository.findById(gestionnaireId);
 	    if (!gestionnaireOpt.isPresent()) {
 	        throw new IllegalArgumentException("Gestionnaire not found with ID: " + gestionnaireId);
 	    }
-	    AppUser gestionnaire = gestionnaireOpt.get();
+	    Utilisateur gestionnaire = gestionnaireOpt.get();
 	    if (!estGestionnaireDeAppartement(gestionnaireId, appartement)) {
 	        throw new SecurityException("L'utilisateur n'est pas autorisé à modifier ce gestionnaire.");
 	    }
@@ -243,20 +234,56 @@ public class AppartementService {
 	}
 
 	// utilisé v2 //
-	public List<AdresseDTO> obtenirAdressesAppartementsParGestionnaireId(Long id) {
-		return appartementRepository.obtenirAdressesAppartementsParGestionnaireId(id);
+	public List<AdresseDTO> obtenirAdressesAppartementsParGestionnaireId(String email) {
+		Optional<Utilisateur> utilisateur = userRepository.findByEmail(email);
+		if(utilisateur.isPresent()) {
+			return appartementRepository.obtenirAdressesAppartementsParGestionnaireId(utilisateur.get().getId());
+		}
+		else{
+			throw new IllegalArgumentException("User not found");
+		}
 	}
 
-	public List<AdresseDTO> obtenirAdressesAppartementsParUserId(Long id) {
-		return appartementRepository.obtenirAdressesAppartementsParUserId(id);
+	public List<AdresseDTO> obtenirAdressesAppartementsParUserId(String email) {
+		Optional<Utilisateur> utilisateur = userRepository.findByEmail(email);
+		if(utilisateur.isPresent()) {
+			return appartementRepository.obtenirAdressesAppartementsParUserId(utilisateur.get().getId());
+		}
+		else{
+			throw new IllegalArgumentException("User not found");
+		}
 	}
 
-	public List<AppartementCCDTO> obtenirCCAppartementsParUserId(Long userId) {
-		List<AppartementCCDTO> dtos = new ArrayList<>();
-		appUserService.obtenirAppartementsParUserId(userId).forEach(a -> {
-			dtos.add(appartementCalculService.creerAppartementCCDTO(a));
-		});
-		return dtos;
+	public List<AppartementCCDTO> obtenirCCAppartementsParUserId(String email) {
+		Optional<Utilisateur> utilisateur = userRepository.findByEmail(email);
+		if(utilisateur.isPresent()) {
+			List<AppartementCCDTO> dtos = new ArrayList<>();
+			appUserService.obtenirAppartementsParUserId(utilisateur.get().getId()).forEach(a -> {
+				dtos.add(appartementCalculService.creerAppartementCCDTO(a));
+			});
+			return dtos;
+		}
+		else{
+			throw new IllegalArgumentException("User not found");
+		}
+
 	}
 
+	public Appartement obtenirUnAppartementParIdAndByUtilisateurId(Long id, String email) throws IllegalArgumentException {
+		Optional<Utilisateur> utilisateur = userRepository.findByEmail(email);
+		if(utilisateur.isPresent()) {
+			Appartement appartement = appartementRepository.findById(id)
+					.orElseThrow(() -> new IllegalArgumentException("Appartement not found"));
+
+			if (
+					!estGestionnaireDeAppartement(utilisateur.get().getId(), appartement) &&
+					!appartement.getAppUser().equals(utilisateur.get())) {
+				throw new IllegalArgumentException("Appartement not found");
+			}
+			return appartement;
+		}
+		else{
+			throw new IllegalArgumentException("User not found");
+		}
+	}
 }
