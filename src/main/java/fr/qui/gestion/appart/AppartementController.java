@@ -32,12 +32,9 @@ import fr.qui.gestion.frais.Frais;
 public class AppartementController {
 
     private final AppartementService appartementService;
-    private final UtilisateurService appUserService;
-
     @Autowired
-    public AppartementController(AppartementService appartementService, UtilisateurService appUserService) {
+    public AppartementController(AppartementService appartementService) {
         this.appartementService = appartementService;
-        this.appUserService = appUserService;
     }
 
     // Appartements

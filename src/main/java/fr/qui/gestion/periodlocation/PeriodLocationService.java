@@ -21,7 +21,7 @@ public class PeriodLocationService {
 
 	public Page<PeriodLocation> obtenirPeriodeLocationParAppartement(Long appartId, Pageable pageable) {
 	    Pageable pageableWithSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "estEntree"));
-	    return periodLocationRepository.findByAppartementId(appartId, pageableWithSort);
+		return periodLocationRepository.findByAppartementId(appartId, pageableWithSort);
 	}
 	
 	public PeriodLocation ajouterUnePeriodeLocationPourAppartement(Long appartId, PeriodLocation newPeriodLocation) {

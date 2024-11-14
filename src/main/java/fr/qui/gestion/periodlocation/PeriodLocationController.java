@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/utilisateurs/{userId}/appartements/{appartId}/periodes", produces = "application/json")
+@RequestMapping(path = "/api/{appartId}/periodes", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
 public class PeriodLocationController {
 	
@@ -28,12 +28,9 @@ public class PeriodLocationController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<PeriodLocation>> obtenirPeriodeLocationParAppartement(@PathVariable Long userId, @PathVariable Long appartId, Pageable pageable) {
+    public ResponseEntity<Page<PeriodLocation>> obtenirPeriodeLocationParAppartement(@PathVariable Long appartId, Pageable pageable) {
 		
-    	Page<PeriodLocation> periodLocations = periodLocationService.obtenirPeriodeLocationParAppartement(appartId, pageable); 
-        if(periodLocations.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+    	Page<PeriodLocation> periodLocations = periodLocationService.obtenirPeriodeLocationParAppartement(appartId, pageable);
         return ResponseEntity.ok(periodLocations);
     }
  

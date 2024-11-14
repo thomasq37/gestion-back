@@ -17,10 +17,10 @@ public interface FraisRepository extends JpaRepository<Frais, Long> {
 
     @Query("SELECT f FROM Frais f WHERE f.appartement.id = :appartId " +
             "ORDER BY CASE WHEN f.frequence = 'PONCTUELLE' THEN 1 ELSE 0 END, " +
-            "CASE WHEN f.frequence = 'PONCTUELLE' THEN f.datePaiement ELSE NULL END DESC, " +
+            "COALESCE(f.datePaiement, '1900-01-01') DESC, " +
             "f.frequence")
     Page<Frais> findByAppartementIdOrderByDatePaiementDesc(@Param("appartId") Long appartId, Pageable pageable);
-    
+
     Page<Frais> findByPeriodLocationId(Long periodeId, Pageable pageable);
     
     Optional<Frais> findById(Long id);

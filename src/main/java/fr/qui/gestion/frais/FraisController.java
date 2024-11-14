@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/utilisateurs/{userId}/appartements/{appartId}", produces = "application/json")
+@RequestMapping(path = "/api/{appartId}", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
 public class FraisController {
 	
@@ -30,7 +30,7 @@ public class FraisController {
     }
     
     @GetMapping("/frais")
-    public ResponseEntity<Page<Frais>> obtenirFraisFixesPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, Pageable pageable) {
+    public ResponseEntity<Page<Frais>> obtenirFraisFixesPourAppartement(@PathVariable Long appartId, Pageable pageable) {
         Page<Frais> frais = fraisService.obtenirFraisFixesPourAppartement(appartId, pageable);
         if(frais.isEmpty()) {
             return ResponseEntity.noContent().build();
