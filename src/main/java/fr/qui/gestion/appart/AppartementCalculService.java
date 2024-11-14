@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AppartementCalculService {
@@ -59,7 +60,34 @@ public class AppartementCalculService {
     }
 
     public double calculerChargesFixesHorsFrais(Appartement appartement) {
-        return 0.0;
+        if(appartement.getDateAchat() == null){
+            return 0.0;
+        }
+        double chargesFixesHorsFrais = 0.0;
+        LocalDate today = LocalDate.now();
+        Long dureeEnJours = ChronoUnit.DAYS.between(appartement.getDateAchat(), today);
+        for (Frais fraisFixeAppart : appartement.getFraisFixe()) {
+            if (getOccurenceFrequence(fraisFixeAppart.getFrequence()) != 0 && !Objects.equals(fraisFixeAppart.getTypeFrais().getNom(), "Frais de gestion")) {
+                chargesFixesHorsFrais += calculerCoutParFrequence(
+                        fraisFixeAppart.getMontant(),
+                        dureeEnJours,
+                        getOccurenceFrequence(fraisFixeAppart.getFrequence())
+                );
+            }
+        }
+        for (PeriodLocation pLocation : appartement.getPeriodLocation()) {
+            Long dureeEnJoursPeriodeLoc = ChronoUnit.DAYS.between(pLocation.getEstEntree(), pLocation.getEstSortie() != null ? pLocation.getEstSortie() : LocalDate.now());
+            for (Frais fraisLocation : pLocation.getFrais()) {
+                if (getOccurenceFrequence(fraisLocation.getFrequence()) != 0 && !Objects.equals(fraisLocation.getTypeFrais().getNom(), "Frais de gestion")) {
+                    chargesFixesHorsFrais += calculerCoutParFrequence(
+                            fraisLocation.getMontant(),
+                            dureeEnJoursPeriodeLoc,
+                            getOccurenceFrequence(fraisLocation.getFrequence())
+                    );
+                }
+            }
+        }
+        return Math.round(chargesFixesHorsFrais * 100.0) / 100.0;
     }
 
     public TotauxFrais calculerTotalFrais(Appartement appartement) {
