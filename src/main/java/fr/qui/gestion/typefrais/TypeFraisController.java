@@ -27,12 +27,6 @@ private final TypeFraisService typeFraisService;
         this.typeFraisService = typeFraisService;
     }
     
-    @GetMapping("/liste")
-    public ResponseEntity<List<TypeFrais>> obtenirTousLesTypeDeFrais() {
-        List<TypeFrais> fraisList = typeFraisService.obtenirTousLesTypeDeFrais();
-        return ResponseEntity.ok(fraisList);
-    }
-    
     @GetMapping("/{id}")
     public ResponseEntity<TypeFrais> obtenirUnTypeDeFraisParId(@PathVariable("id") Long id) {
         try {
@@ -69,5 +63,13 @@ private final TypeFraisService typeFraisService;
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    // utilise v2 //
+
+    @GetMapping("/liste")
+    public ResponseEntity<List<TypeFrais>> obtenirTousLesTypeDeFrais() {
+        List<TypeFrais> fraisList = typeFraisService.obtenirTousLesTypeDeFrais();
+        return ResponseEntity.ok(fraisList);
     }
 }

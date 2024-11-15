@@ -29,7 +29,9 @@ public class AppartementForProprioDTO {
     private String dpe;
     private String lastDPEUrl;
     private Pays pays;
+    @JsonIgnore
     private List<Frais> fraisFixe;
+    @JsonIgnore
     private List<Contact> contacts;
     private List<String> images;
     @JsonIgnore

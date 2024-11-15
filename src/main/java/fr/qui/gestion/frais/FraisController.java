@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/api/{appartId}", produces = "application/json")
+@RequestMapping(path = "/api/appartements/{appartId}", produces = "application/json")
 @CrossOrigin(origins = "${app.cors.origin}")
 public class FraisController {
 	
@@ -29,17 +29,8 @@ public class FraisController {
         this.fraisService = fraisService;
     }
     
-    @GetMapping("/frais")
-    public ResponseEntity<Page<Frais>> obtenirFraisFixesPourAppartement(@PathVariable Long appartId, Pageable pageable) {
-        Page<Frais> frais = fraisService.obtenirFraisFixesPourAppartement(appartId, pageable);
-        if(frais.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(frais);
-    }
-    
     @GetMapping("/periodes/{periodeId}/frais")
-    public ResponseEntity<Page<Frais>> obtenirFraisFixesPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId, Pageable pageable) {
+    public ResponseEntity<Page<Frais>> obtenirFraisFixesPourPeriode(@PathVariable Long appartId, @PathVariable Long periodeId, Pageable pageable) {
     	Page<Frais> frais = fraisService.obtenirFraisFixesPourPeriode(periodeId, pageable);
         if(frais.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -96,6 +87,16 @@ public class FraisController {
         	System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    // utilise v2 //
+    @GetMapping("/frais")
+    public ResponseEntity<Page<Frais>> obtenirFraisFixesPourAppartement(@PathVariable Long appartId, Pageable pageable) {
+        Page<Frais> frais = fraisService.obtenirFraisFixesPourAppartement(appartId, pageable);
+        if(frais.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(frais);
     }
 
 }
