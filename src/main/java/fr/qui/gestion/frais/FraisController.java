@@ -37,57 +37,6 @@ public class FraisController {
         }
         return ResponseEntity.ok(frais);
     }
-    
-    @PostMapping("/frais")
-    public ResponseEntity<Frais> ajouterUnFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody Frais newFrais) {
-        try {
-            Frais frais = fraisService.ajouterUnFraisPourAppartement(appartId, newFrais);
-            return ResponseEntity.ok(frais);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-    
-    @PostMapping("/periodes/{periodeId}/frais")
-    public ResponseEntity<Frais> ajouterUnFraisPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId, @RequestBody Frais newFrais) {
-        try {
-            Frais frais = fraisService.ajouterUnFraisPourPeriode(appartId, periodeId, newFrais);
-            return ResponseEntity.ok(frais);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-    
-    @DeleteMapping("/frais/{fraisId}")
-    public ResponseEntity<String> supprimerFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long fraisId) {
-        try {
-            fraisService.supprimerFraisPourAppartement(fraisId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-    
-    @PutMapping("/frais/{fraisId}")
-    public ResponseEntity<Frais> mettreAJourUnFraisPourAppartement(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
-        try {
-            Frais frais = fraisService.mettreAJourUnFraisPourAppartement(appartId, fraisId, fraisMisAJour);
-            return ResponseEntity.ok(frais);
-        } catch (RuntimeException e) {
-        	System.out.println(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-    @PutMapping("/periodes/{periodeId}/frais/{fraisId}")
-    public ResponseEntity<Frais> mettreAJourUnFraisPourPeriode(@PathVariable Long userId, @PathVariable Long appartId, @PathVariable Long periodeId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
-        try {
-            Frais frais = fraisService.mettreAJourUnFraisPourPeriode(appartId, periodeId, fraisId, fraisMisAJour);
-            return ResponseEntity.ok(frais);
-        } catch (RuntimeException e) {
-        	System.out.println(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 
     // utilise v2 //
     @GetMapping("/frais")
@@ -98,5 +47,49 @@ public class FraisController {
         }
         return ResponseEntity.ok(frais);
     }
-
+    @PutMapping("/frais/{fraisId}")
+    public ResponseEntity<Frais> mettreAJourUnFraisPourAppartement(@PathVariable Long appartId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
+        try {
+            Frais frais = fraisService.mettreAJourUnFraisPourAppartement(appartId, fraisId, fraisMisAJour);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/frais/{fraisId}")
+    public ResponseEntity<String> supprimerFraisPourAppartement(@PathVariable Long appartId, @PathVariable Long fraisId) {
+        try {
+            fraisService.supprimerFraisPourAppartement(fraisId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/frais")
+    public ResponseEntity<Frais> ajouterUnFraisPourAppartement(@PathVariable Long appartId, @RequestBody Frais newFrais) {
+        try {
+            Frais frais = fraisService.ajouterUnFraisPourAppartement(appartId, newFrais);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PutMapping("/periodes/{periodeId}/frais/{fraisId}")
+    public ResponseEntity<Frais> mettreAJourUnFraisPourPeriode(@PathVariable Long appartId, @PathVariable Long periodeId, @PathVariable Long fraisId, @RequestBody Frais fraisMisAJour) {
+        try {
+            Frais frais = fraisService.mettreAJourUnFraisPourPeriode(appartId, periodeId, fraisId, fraisMisAJour);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/periodes/{periodeId}/frais")
+    public ResponseEntity<Frais> ajouterUnFraisPourPeriode(@PathVariable Long appartId, @PathVariable Long periodeId, @RequestBody Frais newFrais) {
+        try {
+            Frais frais = fraisService.ajouterUnFraisPourPeriode(appartId, periodeId, newFrais);
+            return ResponseEntity.ok(frais);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -39,26 +39,7 @@ public class AppartementController {
 
     // Appartements
 
-    @PostMapping("/ajouter")
-    public ResponseEntity<Appartement> ajouterAppartement(@RequestBody Appartement nouvelAppartement) {
-        try {
-            Appartement appartement = appartementService.ajouterAppartement(nouvelAppartement);
-            return ResponseEntity.status(HttpStatus.CREATED).body(appartement);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
 
-    @PutMapping("/{appartId}")
-    public ResponseEntity<Appartement> mettreAJourUnAppartementPourUtilisateur(@PathVariable Long userId, @PathVariable Long appartId, @RequestBody Appartement appartModifie) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        try {
-            Appartement appartement = appartementService.mettreAJourUnAppartementPourUtilisateur(auth.getName(), appartId, appartModifie);
-            return ResponseEntity.ok(appartement);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
 
     @DeleteMapping("/{appartId}")
     @Transactional
@@ -103,15 +84,7 @@ public class AppartementController {
         }
     }
 
-    @GetMapping("/{appartId}/gestionnaires")
-    public ResponseEntity<List<UtilisateurDTO>> obtenirGestionnairesParAppartement(@PathVariable Long userId, @PathVariable Long appartId) {
 
-        List<UtilisateurDTO> appartGestionnaires = appartementService.obtenirGestionnairesParAppartement(appartId);
-        if (appartGestionnaires.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(appartGestionnaires);
-    }
 
     @PutMapping("/{appartementId}/gestionnaires/{gestionnaireId}")
     public ResponseEntity<UtilisateurDTO> mettreAJourUnGestionnairePourAppartement(
@@ -180,5 +153,35 @@ public class AppartementController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You don't have the right to access this information.");
         }
     }
+    @PutMapping("/{appartId}")
+    public ResponseEntity<Appartement> mettreAJourUnAppartementPourUtilisateur(@PathVariable Long appartId, @RequestBody Appartement appartModifie) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            Appartement appartement = appartementService.mettreAJourUnAppartementPourUtilisateur(auth.getName(), appartId, appartModifie);
+            return ResponseEntity.ok(appartement);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    @PostMapping("/ajouter")
+    public ResponseEntity<Appartement> ajouterAppartement(@RequestBody Appartement nouvelAppartement) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName(); // Récupère le nom d'utilisateur ou email
+        try {
+            Appartement appartement = appartementService.ajouterAppartement(nouvelAppartement, email);
+            return ResponseEntity.status(HttpStatus.CREATED).body(appartement);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
+    @GetMapping("/{appartId}/gestionnaires")
+    public ResponseEntity<List<UtilisateurDTO>> obtenirGestionnairesParAppartement(@PathVariable Long appartId) {
+
+        List<UtilisateurDTO> appartGestionnaires = appartementService.obtenirGestionnairesParAppartement(appartId);
+        if (appartGestionnaires.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(appartGestionnaires);
+    }
 }

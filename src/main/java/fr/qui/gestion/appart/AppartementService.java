@@ -44,7 +44,12 @@ public class AppartementService {
 		this.appartementCalculService = appartementCalculService;
     }
 
-    public Appartement ajouterAppartement(Appartement nouvelAppartement) {
+    public Appartement ajouterAppartement(Appartement nouvelAppartement, String email) {
+		Utilisateur utilisateur = userRepository.findByEmail(email)
+				.orElseThrow(() -> new IllegalArgumentException("Utilisateur introuvable"));
+
+		// Associer l'utilisateur à l'Appartement
+		nouvelAppartement.setAppUser(utilisateur);
         return appartementRepository.save(nouvelAppartement);
     }
     
