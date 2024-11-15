@@ -13,7 +13,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
 
 @Service
 public class S3Service {
@@ -47,8 +46,6 @@ public class S3Service {
                         .build(),
                 RequestBody.fromInputStream(file.getInputStream(), file.getSize())
         );
-
-        // Retourne l'URL de l'image
         return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
     }
 

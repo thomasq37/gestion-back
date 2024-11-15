@@ -20,8 +20,6 @@ public class RoleController {
     public RoleController(RoleService roleService) {
         this.roleService = roleService;
     }
-    
-    // Obtenir tous les roles avec pagination
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Page<Role>> obtenirTousLesRoles(Pageable pageable) {
@@ -37,28 +35,16 @@ public class RoleController {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role non trouvé"));
         return new ResponseEntity<>(role, HttpStatus.OK);
     }
-
-    // Ajouter un role
-    /*@PostMapping
-    public ResponseEntity<Role> ajouterRole(@RequestBody Role role) {
-    	Role roleEnregistre = roleService.ajouterRole(role);
-        return new ResponseEntity<>(roleEnregistre, HttpStatus.CREATED);
-    }*/
-
-    // Mettre à jour un role
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Role> mettreAJourRole(@PathVariable Long id, @RequestBody Role detailsRole) {
     	Role roleMisAJour = roleService.mettreAJourRole(id, detailsRole);
         return new ResponseEntity<>(roleMisAJour, HttpStatus.OK);
     }
-
-    // Supprimer un role
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> supprimerRole(@PathVariable Long id) {
     	roleService.supprimerRole(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

@@ -20,7 +20,6 @@ public class Utilisateur {
 	 private String email;
 	@Column(nullable = true)
 	private String phoneNumber;
-
 	@OneToMany(mappedBy = "appUser")
 	@JsonIgnore
 	private List<Appartement> appartements;

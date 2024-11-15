@@ -137,6 +137,12 @@ public class AppartementController {
         return ResponseEntity.ok(ccAppartements);
     }
 
+    @GetMapping("/{apartmentId}/chiffres-cles")
+    public ResponseEntity<Object> obtenirCCAppartementParId(@PathVariable Long apartmentId) {
+        AppartementCCDTO ccAppartement = appartementService.obtenirCCAppartementParId(apartmentId);
+        return ResponseEntity.ok(ccAppartement);
+    }
+
     @GetMapping("/{apartmentId}")
     public ResponseEntity<?> obtenirUnAppartementParIdAndByUtilisateurId(@PathVariable Long apartmentId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

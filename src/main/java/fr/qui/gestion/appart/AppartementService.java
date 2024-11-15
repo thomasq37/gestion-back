@@ -274,6 +274,17 @@ public class AppartementService {
 
 	}
 
+	public AppartementCCDTO obtenirCCAppartementParId(Long apartmentId) {
+		Optional<Appartement> appartement = appartementRepository.findById(apartmentId);
+		if(appartement.isPresent()) {
+			return appartementCalculService.creerAppartementCCDTO(appartement.get());
+		}
+		else{
+			throw new IllegalArgumentException("Appartement not found");
+		}
+
+	}
+
 	public Appartement obtenirUnAppartementParIdAndByUtilisateurId(Long id, String email) throws IllegalArgumentException {
 		Optional<Utilisateur> utilisateur = userRepository.findByEmail(email);
 		if(utilisateur.isPresent()) {

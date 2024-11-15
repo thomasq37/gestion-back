@@ -1,6 +1,7 @@
 package fr.qui.gestion.utilisateur;
 
 import fr.qui.gestion.appart.Appartement;
+import fr.qui.gestion.auth.InvitationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,11 +17,11 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @Autowired
     public UtilisateurService(
     		UtilisateurRepository utilisateurRepository, 
-    		PasswordEncoder passwordEncoder) {
+    		PasswordEncoder passwordEncoder,
+            InvitationRepository invitationRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
     }

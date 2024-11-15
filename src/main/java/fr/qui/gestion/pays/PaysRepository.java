@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PaysRepository extends JpaRepository<Pays, Long>  {
-	List<Pays> findAll();
 }

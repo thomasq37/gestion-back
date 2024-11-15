@@ -25,25 +25,19 @@ public class PeriodLocation {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appartement_id")
     @JsonIgnore
     private Appartement appartement;
-    
     @Column(name = "prix")
     private double prix;
     private String locataire;
-    // si loc vac le prix est par jour
     @Column(name = "is_loc_vac")
     private boolean isLocVac;
-    
     @Column(name = "est_entree")
     private LocalDate estEntree;
-
     @Column(name = "est_sortie")
     private LocalDate estSortie;
-    
     @OneToMany(mappedBy = "periodLocation", cascade = CascadeType.REMOVE)
     private List<Frais> frais;
 }
