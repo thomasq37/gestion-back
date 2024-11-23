@@ -1,7 +1,7 @@
 package fr.qui.gestion.v2.entites.Caracteristiques;
 
 import fr.qui.gestion.v2.entites.Logement.Logement;
-import fr.qui.gestion.v2.enumeration.DpeLettre;
+import fr.qui.gestion.v2.enumeration.DpeLettre.DpeLettre;
 import fr.qui.gestion.v2.enumeration.TypeDeLogement.TypeDeLogement;
 import fr.qui.gestion.v2.util.AbstractEntityWithMasqueId;
 import jakarta.persistence.*;
@@ -25,6 +25,8 @@ public class Caracteristiques extends AbstractEntityWithMasqueId {
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
     private DpeLettre dpeLettre;
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] dpeFichier;
     @OneToOne(mappedBy = "caracteristiques")
     private Logement logement;

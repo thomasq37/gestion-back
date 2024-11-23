@@ -1,4 +1,4 @@
-package fr.qui.gestion.v2.enumeration;
+package fr.qui.gestion.v2.enumeration.DpeLettre;
 
 public enum DpeLettre {
     A,

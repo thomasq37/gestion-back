@@ -57,6 +57,10 @@ public class AuthService {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("L'email est obligatoire.");
         }
+        String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        if (!email.matches(emailPattern)) {
+            throw new IllegalArgumentException("L'email n'est pas valide.");
+        }
         if (mdp == null || mdp.length() < 8 || !mdp.matches(".*\\d.*") || !mdp.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
             throw new IllegalArgumentException("Le mot de passe doit respecter les critères suivants : au moins 8 caractères, un chiffre, et un caractère spécial.");
         }
