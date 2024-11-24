@@ -1,10 +1,12 @@
 package fr.qui.gestion.v2.entites.Logement;
+import fr.qui.gestion.v2.entites.Adresse.Adresse;
 import fr.qui.gestion.v2.entites.Utilisateur.Utilisateur;
 import fr.qui.gestion.v2.entites.Utilisateur.UtilisateurRepository;
 import fr.qui.gestion.v2.exception.SuccessResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +31,13 @@ public class LogementService {
                 .orElseThrow(() -> new SecurityException("Acces interdit ou utilisateur introuvable."));
         Logement nouveauLogement = new Logement();
         nouveauLogement.setProprietaire(utilisateur);
+        nouveauLogement.setAdresse(null);
+        nouveauLogement.setCaracteristiques(null); // Si nécessaire, initialisez aussi à vide
+        nouveauLogement.setContacts(new ArrayList<>());
+        nouveauLogement.setFrais(new ArrayList<>());
+        nouveauLogement.setPeriodesDeLocation(new ArrayList<>());
+        nouveauLogement.setPhotos(new ArrayList<>());
+        nouveauLogement.setGestionnaires(new ArrayList<>());
         logementRepository.save(nouveauLogement);
         return logementMapper.toDto(nouveauLogement);
     }

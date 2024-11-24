@@ -1,5 +1,6 @@
 package fr.qui.gestion.v2.entites.Utilisateur;
 
+import fr.qui.gestion.v2.auth.RegisterUserRequestDTO;
 import fr.qui.gestion.v2.exception.SuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class UtilisateurController {
     }
 
     @PatchMapping("/modifier")
-    public ResponseEntity<UtilisateurDTO> modifierUtilisateur(@RequestBody Utilisateur utilisateurModifie) {
+    public ResponseEntity<UtilisateurDTO> modifierUtilisateur(@RequestBody UtilisateurUpdateDTO utilisateurModifie) {
         return ResponseEntity.ok(utilisateurService.modifierUtilisateur(utilisateurModifie));
     }
 

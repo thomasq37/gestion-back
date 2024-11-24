@@ -29,11 +29,33 @@ public class AdresseService {
     }
 
     @Transactional
-    public AdresseDTO creerAdressePourLogement(String logementMasqueId, Adresse adresse) {
+    public AdresseDTO creerAdressePourLogement(String logementMasqueId, AdresseDTO adresseDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
         if (logement.getAdresse() != null) {
             throw new IllegalStateException("Une adresse existe déjà pour ce logement. Veuillez la modifier.");
         }
+        if (adresseDTO.getNumero() == null || adresseDTO.getNumero().isEmpty()) {
+            throw new IllegalArgumentException("Le numéro de rue est obligatoire.");
+        }
+        if (adresseDTO.getVoie() == null || adresseDTO.getVoie().isEmpty()) {
+            throw new IllegalArgumentException("Le nom de la voie est obligatoire.");
+        }
+        if (adresseDTO.getCodePostal() == null || !adresseDTO.getCodePostal().matches("\\d{5}")) {
+            throw new IllegalArgumentException("Le code postal est invalide. Il doit comporter 5 chiffres.");
+        }
+        if (adresseDTO.getVille() == null || adresseDTO.getVille().isEmpty()) {
+            throw new IllegalArgumentException("La ville est obligatoire.");
+        }
+        if (adresseDTO.getPays() == null) {
+            throw new IllegalArgumentException("Le pays est obligatoire.");
+        }
+        Adresse adresse = new Adresse();
+        adresse.setNumero(adresseDTO.getNumero());
+        adresse.setVoie(adresseDTO.getVoie());
+        adresse.setComplementAdresse(adresseDTO.getComplementAdresse());
+        adresse.setCodePostal(adresseDTO.getCodePostal());
+        adresse.setVille(adresseDTO.getVille());
+        adresse.setPays(adresseDTO.getPays());
         adresse.setLogement(logement);
         Adresse savedAdresse = adresseRepository.save(adresse);
         logement.setAdresse(savedAdresse);
@@ -52,18 +74,33 @@ public class AdresseService {
     }
 
     @Transactional
-    public AdresseDTO modifierAdressePourLogement(String logementMasqueId, Adresse adresseModifiee) {
+    public AdresseDTO modifierAdressePourLogement(String logementMasqueId, AdresseDTO adresseModifieeDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
         Adresse adresse = logement.getAdresse();
         if (adresse == null) {
             throw new IllegalArgumentException("Aucune adresse à modifier pour le logement.");
         }
-        adresse.setNumero(adresseModifiee.getNumero());
-        adresse.setVoie(adresseModifiee.getVoie());
-        adresse.setComplementAdresse(adresseModifiee.getComplementAdresse());
-        adresse.setCodePostal(adresseModifiee.getCodePostal());
-        adresse.setVille(adresseModifiee.getVille());
-        adresse.setPays(adresseModifiee.getPays());
+        if (adresseModifieeDTO.getNumero() == null || adresseModifieeDTO.getNumero().isEmpty()) {
+            throw new IllegalArgumentException("Le numéro de rue est obligatoire.");
+        }
+        if (adresseModifieeDTO.getVoie() == null || adresseModifieeDTO.getVoie().isEmpty()) {
+            throw new IllegalArgumentException("Le nom de la voie est obligatoire.");
+        }
+        if (adresseModifieeDTO.getCodePostal() == null || !adresseModifieeDTO.getCodePostal().matches("\\d{5}")) {
+            throw new IllegalArgumentException("Le code postal est invalide. Il doit comporter 5 chiffres.");
+        }
+        if (adresseModifieeDTO.getVille() == null || adresseModifieeDTO.getVille().isEmpty()) {
+            throw new IllegalArgumentException("La ville est obligatoire.");
+        }
+        if (adresseModifieeDTO.getPays() == null) {
+            throw new IllegalArgumentException("Le pays est obligatoire.");
+        }
+        adresse.setNumero(adresseModifieeDTO.getNumero());
+        adresse.setVoie(adresseModifieeDTO.getVoie());
+        adresse.setComplementAdresse(adresseModifieeDTO.getComplementAdresse());
+        adresse.setCodePostal(adresseModifieeDTO.getCodePostal());
+        adresse.setVille(adresseModifieeDTO.getVille());
+        adresse.setPays(adresseModifieeDTO.getPays());
 
         Adresse savedAdresse = adresseRepository.save(adresse);
         return adresseMapper.toDto(savedAdresse);

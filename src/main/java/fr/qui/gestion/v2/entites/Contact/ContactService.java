@@ -38,21 +38,26 @@ public class ContactService {
         return contacts.stream().map(contactMapper::toDto).toList();
     }
     @Transactional
-    public ContactDTO creerContactPourLogement(String logementMasqueId, Contact contact) {
+    public ContactDTO creerContactPourLogement(String logementMasqueId, ContactDTO contactDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        if (contact.getNom() == null || contact.getNom().isEmpty()) {
+        if (contactDTO.getNom() == null || contactDTO.getNom().isEmpty()) {
             throw new IllegalArgumentException("Le nom du contact est obligatoire.");
         }
-        if (contact.getPrenom() == null || contact.getPrenom().isEmpty()) {
+        if (contactDTO.getPrenom() == null || contactDTO.getPrenom().isEmpty()) {
             throw new IllegalArgumentException("Le prénom du contact est obligatoire.");
         }
         String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-        if (contact.getEmail() != null && !contact.getEmail().matches(emailPattern)) {
+        if (contactDTO.getEmail() != null && !contactDTO.getEmail().matches(emailPattern)) {
             throw new IllegalArgumentException("L'email du contact n'est pas valide.");
         }
-        if (contact.getTelephone() != null && !contact.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
+        if (contactDTO.getTelephone() != null && !contactDTO.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
             throw new IllegalArgumentException("Numéro de téléphone invalide.");
         }
+        Contact contact = new Contact();
+        contact.setNom(contactDTO.getNom());
+        contact.setPrenom(contactDTO.getPrenom());
+        contact.setTelephone(contactDTO.getTelephone());
+        contact.setEmail(contactDTO.getEmail());
         contact.setLogement(logement);
         Contact savedContact = contactRepository.save(contact);
         logement.getContacts().add(savedContact);
@@ -69,29 +74,29 @@ public class ContactService {
         return contactMapper.toDto(contact);
     }
     @Transactional
-    public ContactDTO modifierContactPourLogement(String logementMasqueId, String contactMasqueId, Contact contactModifiee) {
+    public ContactDTO modifierContactPourLogement(String logementMasqueId, String contactMasqueId, ContactDTO contactModifieeDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
         Contact contact = logement.getContacts().stream()
                 .filter(c -> c.getMasqueId().equals(contactMasqueId))
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Acces interdit ou contact introuvable."));
-        if (contactModifiee.getNom() == null || contactModifiee.getNom().isEmpty()) {
+        if (contactModifieeDTO.getNom() == null || contactModifieeDTO.getNom().isEmpty()) {
             throw new IllegalArgumentException("Le nom du contact est obligatoire.");
         }
-        if (contactModifiee.getPrenom() == null || contactModifiee.getPrenom().isEmpty()) {
+        if (contactModifieeDTO.getPrenom() == null || contactModifieeDTO.getPrenom().isEmpty()) {
             throw new IllegalArgumentException("Le prénom du contact est obligatoire.");
         }
         String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-        if (contactModifiee.getEmail() != null && !contactModifiee.getEmail().matches(emailPattern)) {
+        if (contactModifieeDTO.getEmail() != null && !contactModifieeDTO.getEmail().matches(emailPattern)) {
             throw new IllegalArgumentException("L'email du contact n'est pas valide.");
         }
-        if (contactModifiee.getTelephone() != null && !contactModifiee.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
+        if (contactModifieeDTO.getTelephone() != null && !contactModifieeDTO.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
             throw new IllegalArgumentException("Numéro de téléphone du contact invalide.");
         }
-        contact.setNom(contactModifiee.getNom());
-        contact.setPrenom(contactModifiee.getPrenom());
-        contact.setTelephone(contactModifiee.getTelephone());
-        contact.setEmail(contactModifiee.getEmail());
+        contact.setNom(contactModifieeDTO.getNom());
+        contact.setPrenom(contactModifieeDTO.getPrenom());
+        contact.setTelephone(contactModifieeDTO.getTelephone());
+        contact.setEmail(contactModifieeDTO.getEmail());
         Contact savedContact = contactRepository.save(contact);
         return contactMapper.toDto(savedContact);
     }

@@ -18,8 +18,8 @@ public class CaracteristiquesController {
     @PostMapping("/ajouter")
     public ResponseEntity<CaracteristiquesDTO> creerCaracteristiquesPourLogement(
             @PathVariable String logementMasqueId,
-            @Valid @RequestBody Caracteristiques caracteristiques) {
-        CaracteristiquesDTO nouvellesCaracteristiques = caracteristiquesService.creerCaracteristiquesPourLogement(logementMasqueId, caracteristiques);
+            @Valid @RequestBody CaracteristiquesDTO caracteristiquesDTO) {
+        CaracteristiquesDTO nouvellesCaracteristiques = caracteristiquesService.creerCaracteristiquesPourLogement(logementMasqueId, caracteristiquesDTO);
         return ResponseEntity.ok(nouvellesCaracteristiques);
     }
 
@@ -33,8 +33,8 @@ public class CaracteristiquesController {
     @PatchMapping("/modifier")
     public ResponseEntity<CaracteristiquesDTO> modifierCaracteristiquesPourLogement(
             @PathVariable String logementMasqueId,
-            @Valid @RequestBody Caracteristiques caracteristiques) {
-        CaracteristiquesDTO caracteristiquesModifiees = caracteristiquesService.modifierCaracteristiquesPourLogement(logementMasqueId, caracteristiques);
+            @Valid @RequestBody CaracteristiquesDTO caracteristiquesDTO) {
+        CaracteristiquesDTO caracteristiquesModifiees = caracteristiquesService.modifierCaracteristiquesPourLogement(logementMasqueId, caracteristiquesDTO);
         return ResponseEntity.ok(caracteristiquesModifiees);
     }
 

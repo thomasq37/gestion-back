@@ -10,14 +10,12 @@ import fr.qui.gestion.v2.exception.TooManyAttemptsException;
 import fr.qui.gestion.v2.security.CustomUtilisateurDetailsService;
 import fr.qui.gestion.v2.security.jwt.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,11 +43,11 @@ public class AuthService {
         this.tentativeBlocageService = tentativeBlocageService;
     }
 
-    public SuccessResponse registerUser(Utilisateur utilisateurRequest, HttpServletRequest request) {
+    public SuccessResponse registerUser(RegisterUserRequestDTO registerUserRequestDTO, HttpServletRequest request) {
         String ip = request.getRemoteAddr();
-        String mdp = utilisateurRequest.getMdp();
-        String telephone = utilisateurRequest.getTelephone();
-        String email = utilisateurRequest.getEmail();
+        String mdp = registerUserRequestDTO.getMdp();
+        String telephone = registerUserRequestDTO.getTelephone();
+        String email = registerUserRequestDTO.getEmail();
 
         if (!tentativeBlocageService.peutTenterInscription(ip)) {
             throw new TooManyAttemptsException("Trop de tentatives de connexion depuis cette adresse IP.");
@@ -74,14 +72,14 @@ public class AuthService {
 
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setEmail(email);
-        utilisateur.setNom(utilisateurRequest.getNom());
-        utilisateur.setPrenom(utilisateurRequest.getPrenom());
+        utilisateur.setNom(registerUserRequestDTO.getNom());
+        utilisateur.setPrenom(registerUserRequestDTO.getPrenom());
         utilisateur.setTelephone(telephone);
         utilisateur.setMdp(passwordEncoder.encode(mdp));
 
         Role role = utilisateurRepository.count() == 0
-                ? roleRepository.findByNom("ROLE_ADMIN").orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rôle administrateur non trouvé"))
-                : roleRepository.findByNom("ROLE_USER").orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rôle utilisateur non trouvé"));
+                ? roleRepository.findByNom("ROLE_ADMIN").orElseThrow(() -> new SecurityException("Rôle administrateur non trouvé"))
+                : roleRepository.findByNom("ROLE_USER").orElseThrow(() -> new SecurityException("Rôle utilisateur non trouvé"));
 
         utilisateur.setRoles(Collections.singleton(role));
         utilisateurRepository.save(utilisateur);
@@ -89,7 +87,7 @@ public class AuthService {
         return new SuccessResponse("Utilisateur enregistré avec succès!");
     }
 
-    public ResponseEntity<?> authenticateUser(Utilisateur loginRequest, HttpServletRequest request) {
+    public ResponseEntity<?> authenticateUser(AuthenticateUserRequestDTO loginRequest, HttpServletRequest request) {
         String ip = request.getRemoteAddr();
         if (!tentativeBlocageService.peutTenterConnexion(ip)) {
             throw new TooManyAttemptsException("Trop de tentatives de connexion depuis cette adresse IP.");

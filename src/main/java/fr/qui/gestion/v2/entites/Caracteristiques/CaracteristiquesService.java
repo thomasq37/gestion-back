@@ -29,11 +29,50 @@ public class CaracteristiquesService {
     }
 
     @Transactional
-    public CaracteristiquesDTO creerCaracteristiquesPourLogement(String logementMasqueId, Caracteristiques caracteristiques) {
+    public CaracteristiquesDTO creerCaracteristiquesPourLogement(String logementMasqueId, CaracteristiquesDTO caracteristiquesDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
         if (logement.getCaracteristiques() != null) {
             throw new IllegalStateException("Des caracteristiques existe déjà pour ce logement. Veuillez les modifier.");
         }
+        if (caracteristiquesDTO.getDateAchat() == null) {
+            throw new IllegalArgumentException("La date d'achat est obligatoire.");
+        }
+        if (caracteristiquesDTO.getMontantAchat() == null || caracteristiquesDTO.getMontantAchat() <= 0) {
+            throw new IllegalArgumentException("Le montant d'achat est obligatoire et doit être supérieur à zéro.");
+        }
+        if (caracteristiquesDTO.getMontantEstimation() != null && caracteristiquesDTO.getMontantEstimation() <= 0) {
+            throw new IllegalArgumentException("Le montant d'estimation, s'il est présent, doit être supérieur à zéro.");
+        }
+        if (caracteristiquesDTO.getMontantFraisDeNotaireEtNegociation() != null && caracteristiquesDTO.getMontantFraisDeNotaireEtNegociation() <= 0) {
+            throw new IllegalArgumentException("Le montant des frais de notaire et négociations, s'il est présent, doit être supérieur à zéro.");
+        }
+        if (caracteristiquesDTO.getNombreDePieces() == null || caracteristiquesDTO.getNombreDePieces() <= 0) {
+            throw new IllegalArgumentException("Le nombre de pièces est obligatoire et doit être supérieur à zéro.");
+        }
+        if (caracteristiquesDTO.getSurfaceLogement() == null || caracteristiquesDTO.getSurfaceLogement() <= 0) {
+            throw new IllegalArgumentException("La surface du logement est obligatoire et doit être supérieure à zéro.");
+        }
+        if (caracteristiquesDTO.getTypeDeLogement() == null) {
+            throw new IllegalArgumentException("Le type de logement est obligatoire.");
+        }
+        if (caracteristiquesDTO.getBalconOuTerrasse() != null && caracteristiquesDTO.getBalconOuTerrasse() && (caracteristiquesDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesDTO.getSurfaceBalconOuTerrasse() <= 0)) {
+            throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
+        }
+        if (caracteristiquesDTO.getDpeLettre() == null) {
+            throw new IllegalArgumentException("La lettre DPE est obligatoire.");
+        }
+        Caracteristiques caracteristiques = new Caracteristiques();
+        caracteristiques.setDateAchat(caracteristiquesDTO.getDateAchat());
+        caracteristiques.setMontantAchat(caracteristiquesDTO.getMontantAchat());
+        caracteristiques.setMontantEstimation(caracteristiquesDTO.getMontantEstimation());
+        caracteristiques.setMontantFraisDeNotaireEtNegociation(caracteristiquesDTO.getMontantFraisDeNotaireEtNegociation());
+        caracteristiques.setNombreDePieces(caracteristiquesDTO.getNombreDePieces());
+        caracteristiques.setSurfaceLogement(caracteristiquesDTO.getSurfaceLogement());
+        caracteristiques.setTypeDeLogement(caracteristiquesDTO.getTypeDeLogement());
+        caracteristiques.setBalconOuTerrasse(caracteristiquesDTO.getBalconOuTerrasse());
+        caracteristiques.setSurfaceBalconOuTerrasse(caracteristiquesDTO.getSurfaceBalconOuTerrasse());
+        caracteristiques.setDpeLettre(caracteristiquesDTO.getDpeLettre());
+        caracteristiques.setDpeFichier(caracteristiquesDTO.getDpeFichier());
         caracteristiques.setLogement(logement);
         Caracteristiques savedCaracteristiques = caracteristiquesRepository.save(caracteristiques);
         logement.setCaracteristiques(savedCaracteristiques);
@@ -52,24 +91,50 @@ public class CaracteristiquesService {
     }
 
     @Transactional
-    public CaracteristiquesDTO modifierCaracteristiquesPourLogement(String logementMasqueId, Caracteristiques caracteristiquesModifiee) {
+    public CaracteristiquesDTO modifierCaracteristiquesPourLogement(String logementMasqueId, CaracteristiquesDTO caracteristiquesModifieeDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
         Caracteristiques caracteristiques = logement.getCaracteristiques();
         if (caracteristiques == null) {
             throw new IllegalArgumentException("Aucunes caracteristiques à modifier pour le logement.");
         }
-
-        caracteristiques.setDateAchat(caracteristiquesModifiee.getDateAchat());
-        caracteristiques.setMontantAchat(caracteristiquesModifiee.getMontantAchat());
-        caracteristiques.setMontantEstimation(caracteristiquesModifiee.getMontantEstimation());
-        caracteristiques.setMontantFraisDeNotaireEtNegociation(caracteristiquesModifiee.getMontantFraisDeNotaireEtNegociation());
-        caracteristiques.setNombreDePieces(caracteristiquesModifiee.getNombreDePieces());
-        caracteristiques.setSurfaceLogement(caracteristiquesModifiee.getSurfaceLogement());
-        caracteristiques.setTypeDeLogement(caracteristiquesModifiee.getTypeDeLogement());
-        caracteristiques.setBalconOuTerrasse(caracteristiquesModifiee.getBalconOuTerrasse());
-        caracteristiques.setSurfaceBalconOuTerrasse(caracteristiquesModifiee.getSurfaceBalconOuTerrasse());
-        caracteristiques.setDpeLettre(caracteristiquesModifiee.getDpeLettre());
-        caracteristiques.setDpeFichier(caracteristiquesModifiee.getDpeFichier());
+        if (caracteristiquesModifieeDTO.getDateAchat() == null) {
+            throw new IllegalArgumentException("La date d'achat est obligatoire.");
+        }
+        if (caracteristiquesModifieeDTO.getMontantAchat() == null || caracteristiquesModifieeDTO.getMontantAchat() <= 0) {
+            throw new IllegalArgumentException("Le montant d'achat est obligatoire et doit être supérieur à zéro.");
+        }
+        if (caracteristiquesModifieeDTO.getMontantEstimation() != null && caracteristiquesModifieeDTO.getMontantEstimation() <= 0) {
+            throw new IllegalArgumentException("Le montant d'estimation, s'il est présent, doit être supérieur à zéro.");
+        }
+        if (caracteristiquesModifieeDTO.getMontantFraisDeNotaireEtNegociation() != null && caracteristiquesModifieeDTO.getMontantFraisDeNotaireEtNegociation() <= 0) {
+            throw new IllegalArgumentException("Le montant des frais de notaire et négociations, s'il est présent, doit être supérieur à zéro.");
+        }
+        if (caracteristiquesModifieeDTO.getNombreDePieces() == null || caracteristiquesModifieeDTO.getNombreDePieces() <= 0) {
+            throw new IllegalArgumentException("Le nombre de pièces est obligatoire et doit être supérieur à zéro.");
+        }
+        if (caracteristiquesModifieeDTO.getSurfaceLogement() == null || caracteristiquesModifieeDTO.getSurfaceLogement() <= 0) {
+            throw new IllegalArgumentException("La surface du logement est obligatoire et doit être supérieure à zéro.");
+        }
+        if (caracteristiquesModifieeDTO.getTypeDeLogement() == null) {
+            throw new IllegalArgumentException("Le type de logement est obligatoire.");
+        }
+        if (caracteristiquesModifieeDTO.getBalconOuTerrasse() != null && caracteristiquesModifieeDTO.getBalconOuTerrasse() && (caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() <= 0)) {
+            throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
+        }
+        if (caracteristiquesModifieeDTO.getDpeLettre() == null) {
+            throw new IllegalArgumentException("La lettre DPE est obligatoire.");
+        }
+        caracteristiques.setDateAchat(caracteristiquesModifieeDTO.getDateAchat());
+        caracteristiques.setMontantAchat(caracteristiquesModifieeDTO.getMontantAchat());
+        caracteristiques.setMontantEstimation(caracteristiquesModifieeDTO.getMontantEstimation());
+        caracteristiques.setMontantFraisDeNotaireEtNegociation(caracteristiquesModifieeDTO.getMontantFraisDeNotaireEtNegociation());
+        caracteristiques.setNombreDePieces(caracteristiquesModifieeDTO.getNombreDePieces());
+        caracteristiques.setSurfaceLogement(caracteristiquesModifieeDTO.getSurfaceLogement());
+        caracteristiques.setTypeDeLogement(caracteristiquesModifieeDTO.getTypeDeLogement());
+        caracteristiques.setBalconOuTerrasse(caracteristiquesModifieeDTO.getBalconOuTerrasse());
+        caracteristiques.setSurfaceBalconOuTerrasse(caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse());
+        caracteristiques.setDpeLettre(caracteristiquesModifieeDTO.getDpeLettre());
+        caracteristiques.setDpeFichier(caracteristiquesModifieeDTO.getDpeFichier());
 
         Caracteristiques savedCaracteristiques = caracteristiquesRepository.save(caracteristiques);
         return caracteristiquesMapper.toDto(savedCaracteristiques);

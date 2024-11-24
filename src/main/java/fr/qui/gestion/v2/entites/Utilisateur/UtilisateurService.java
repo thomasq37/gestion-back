@@ -1,4 +1,5 @@
 package fr.qui.gestion.v2.entites.Utilisateur;
+import fr.qui.gestion.v2.auth.RegisterUserRequestDTO;
 import fr.qui.gestion.v2.exception.SuccessResponse;
 import fr.qui.gestion.v2.security.CustomUtilisateurDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class UtilisateurService {
                 .orElseThrow(() -> new SecurityException("Acces interdit ou utilisateur introuvable."));
         return utilisateurMapper.toDto(utilisateur);
     }
-    public UtilisateurDTO modifierUtilisateur(Utilisateur utilisateurModifie) {
+    public UtilisateurDTO modifierUtilisateur(UtilisateurUpdateDTO utilisateurModifie) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> new SecurityException("Acces interdit ou utilisateur introuvable."));
@@ -60,21 +61,18 @@ public class UtilisateurService {
             }
             utilisateur.setMdp(passwordEncoder.encode(mdp));
         }
-        if (utilisateurModifie.getTelephone() != null && !utilisateurModifie.getTelephone().isEmpty()) {
+        if (utilisateurModifie.getTelephone() == null || utilisateurModifie.getTelephone().isEmpty()){
+            utilisateur.setTelephone(null);
+        }
+        else {
             String telephone = utilisateurModifie.getTelephone();
             if (!telephone.matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
                 throw new IllegalArgumentException("Le numéro de téléphone est invalide.");
             }
-            utilisateur.setTelephone(telephone);
+            utilisateur.setTelephone(utilisateurModifie.getTelephone());
         }
-
-        if (utilisateurModifie.getNom() != null && !utilisateurModifie.getNom().isEmpty()) {
-            utilisateur.setNom(utilisateurModifie.getNom());
-        }
-        if (utilisateurModifie.getPrenom() != null && !utilisateurModifie.getPrenom().isEmpty()) {
-            utilisateur.setPrenom(utilisateurModifie.getPrenom());
-        }
-
+        utilisateur.setNom(utilisateurModifie.getNom());
+        utilisateur.setPrenom(utilisateurModifie.getPrenom());
         utilisateur = utilisateurRepository.save(utilisateur);
         mettreAJourSecurityContext(utilisateur);
         return utilisateurMapper.toDto(utilisateur);

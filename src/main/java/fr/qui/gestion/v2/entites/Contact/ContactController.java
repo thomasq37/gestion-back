@@ -25,8 +25,8 @@ public class ContactController {
     @PostMapping("/ajouter")
     public ResponseEntity<ContactDTO> creerContactPourLogement(
             @PathVariable String logementMasqueId,
-            @Valid @RequestBody Contact contact) {
-        ContactDTO nouveauContact = contactService.creerContactPourLogement(logementMasqueId, contact);
+            @Valid @RequestBody ContactDTO contactDTO) {
+        ContactDTO nouveauContact = contactService.creerContactPourLogement(logementMasqueId, contactDTO);
         return ResponseEntity.ok(nouveauContact);
     }
 
@@ -42,8 +42,8 @@ public class ContactController {
     public ResponseEntity<ContactDTO> modifierContactPourLogement(
             @PathVariable String logementMasqueId,
             @PathVariable String contactMasqueId,
-            @Valid @RequestBody Contact contact) {
-        ContactDTO contactModifie = contactService.modifierContactPourLogement(logementMasqueId, contactMasqueId, contact);
+            @Valid @RequestBody ContactDTO contactDTO) {
+        ContactDTO contactModifie = contactService.modifierContactPourLogement(logementMasqueId, contactMasqueId, contactDTO);
         return ResponseEntity.ok(contactModifie);
     }
 

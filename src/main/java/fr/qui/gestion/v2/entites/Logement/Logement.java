@@ -22,18 +22,25 @@ public class Logement  extends AbstractEntityWithMasqueId {
     @NotNull(message = "Le propriétaire est obligatoire")
     @ManyToOne
     private Utilisateur proprietaire;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Adresse adresse;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Caracteristiques caracteristiques;
-    @OneToMany(mappedBy = "logement")
+
+    @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contact> contacts;
-    @OneToMany(mappedBy = "logement")
+
+    @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Frais> frais;
+
     @OneToMany(mappedBy = "logement")
     private List<PeriodeDeLocation> periodesDeLocation;
-    @OneToMany(mappedBy = "logement")
+
+    @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos;
+
     @ManyToMany
     private List<Utilisateur> gestionnaires;
 }

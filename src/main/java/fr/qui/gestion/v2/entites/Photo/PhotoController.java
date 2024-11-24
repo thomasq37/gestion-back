@@ -25,8 +25,8 @@ public class PhotoController {
     @PostMapping("/ajouter")
     public ResponseEntity<PhotoDTO> creerPhotoPourLogement(
             @PathVariable String logementMasqueId,
-            @Valid @RequestBody Photo photo) {
-        PhotoDTO nouvellePhoto = photoService.creerPhotoPourLogement(logementMasqueId, photo);
+            @Valid @RequestBody PhotoDTO photoDTO) {
+        PhotoDTO nouvellePhoto = photoService.creerPhotoPourLogement(logementMasqueId, photoDTO);
         return ResponseEntity.ok(nouvellePhoto);
     }
 
@@ -42,8 +42,8 @@ public class PhotoController {
     public ResponseEntity<PhotoDTO> modifierPhotoPourLogement(
             @PathVariable String logementMasqueId,
             @PathVariable String photoMasqueId,
-            @Valid @RequestBody Photo photo) {
-        PhotoDTO photoModifie = photoService.modifierPhotoPourLogement(logementMasqueId, photoMasqueId, photo);
+            @Valid @RequestBody PhotoDTO photoDTO) {
+        PhotoDTO photoModifie = photoService.modifierPhotoPourLogement(logementMasqueId, photoMasqueId, photoDTO);
         return ResponseEntity.ok(photoModifie);
     }
 

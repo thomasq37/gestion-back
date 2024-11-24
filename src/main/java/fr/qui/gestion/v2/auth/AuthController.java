@@ -1,5 +1,4 @@
 package fr.qui.gestion.v2.auth;
-import fr.qui.gestion.v2.entites.Utilisateur.Utilisateur;
 import fr.qui.gestion.v2.exception.SuccessResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +16,12 @@ public class AuthController {
     }
 
     @PostMapping("/inscription")
-    public SuccessResponse registerUser(@RequestBody Utilisateur utilisateurRequest, HttpServletRequest request) {
-        return authService.registerUser(utilisateurRequest, request);
+    public SuccessResponse registerUser(@RequestBody RegisterUserRequestDTO registerUserRequestDTO, HttpServletRequest request) {
+        return authService.registerUser(registerUserRequestDTO, request);
     }
 
     @PostMapping("/connexion")
-    public ResponseEntity<?> authenticateUser(@RequestBody Utilisateur loginRequest, HttpServletRequest request) {
-        return authService.authenticateUser(loginRequest, request);
+    public ResponseEntity<?> authenticateUser(@RequestBody AuthenticateUserRequestDTO authenticateUserRequestDTO, HttpServletRequest request) {
+        return authService.authenticateUser(authenticateUserRequestDTO, request);
     }
 }

@@ -17,8 +17,8 @@ public class AdresseController {
     @PostMapping("/ajouter")
     public ResponseEntity<AdresseDTO> creerAdressePourLogement(
             @PathVariable String logementMasqueId,
-            @Valid @RequestBody Adresse adresse) {
-        AdresseDTO nouvelleAdresse = adresseService.creerAdressePourLogement(logementMasqueId, adresse);
+            @Valid @RequestBody AdresseDTO adresseDTO) {
+        AdresseDTO nouvelleAdresse = adresseService.creerAdressePourLogement(logementMasqueId, adresseDTO);
         return ResponseEntity.ok(nouvelleAdresse);
     }
 
@@ -32,8 +32,8 @@ public class AdresseController {
     @PatchMapping("/modifier")
     public ResponseEntity<AdresseDTO> modifierAdressePourLogement(
             @PathVariable String logementMasqueId,
-            @Valid @RequestBody Adresse adresse) {
-        AdresseDTO adresseModifiee = adresseService.modifierAdressePourLogement(logementMasqueId, adresse);
+            @Valid @RequestBody AdresseDTO adresseDTO) {
+        AdresseDTO adresseModifiee = adresseService.modifierAdressePourLogement(logementMasqueId, adresseDTO);
         return ResponseEntity.ok(adresseModifiee);
     }
 

@@ -37,11 +37,13 @@ public class PhotoService {
         return photos.stream().map(photoMapper::toDto).toList();
     }
     @Transactional
-    public PhotoDTO creerPhotoPourLogement(String logementMasqueId, Photo photo) {
+    public PhotoDTO creerPhotoPourLogement(String logementMasqueId, PhotoDTO photoDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        if (photo.getImage() == null) {
+        if (photoDTO.getImage() == null) {
             throw new IllegalArgumentException("L'image est obligatoire.");
         }
+        Photo photo = new Photo();
+        photo.setImage(photoDTO.getImage());
         photo.setLogement(logement);
         Photo savedPhoto = photoRepository.save(photo);
         logement.getPhotos().add(savedPhoto);
@@ -58,16 +60,16 @@ public class PhotoService {
         return photoMapper.toDto(photo);
     }
     @Transactional
-    public PhotoDTO modifierPhotoPourLogement(String logementMasqueId, String photoMasqueId, Photo photoModifiee) {
+    public PhotoDTO modifierPhotoPourLogement(String logementMasqueId, String photoMasqueId, PhotoDTO photoModifieeDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
         Photo photo = logement.getPhotos().stream()
                 .filter(c -> c.getMasqueId().equals(photoMasqueId))
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Acces interdit ou photo introuvable."));
-        if (photoModifiee.getImage() == null) {
+        if (photoModifieeDTO.getImage() == null) {
             throw new IllegalArgumentException("L'image est obligatoire.");
         }
-        photo.setImage(photoModifiee.getImage());
+        photo.setImage(photoModifieeDTO.getImage());
         Photo savedPhoto = photoRepository.save(photo);
         return photoMapper.toDto(savedPhoto);
     }
