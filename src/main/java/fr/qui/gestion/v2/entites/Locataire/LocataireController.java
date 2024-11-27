@@ -17,10 +17,10 @@ public class LocataireController {
     }
 
     @GetMapping("/periodes-de-location/{periodeMasqueId}/lister")
-    public ResponseEntity<List<LocataireDTO>> listerLocatairePourPeriodeDeLocation(
+    public ResponseEntity<List<LocataireDTO>> listerLocatairesPourPeriodeDeLocation(
             @PathVariable String logementMasqueId,
             @PathVariable String periodeMasqueId) {
-        List<LocataireDTO> locataires = locataireService.listerLocatairePourPeriodeDeLocation(logementMasqueId, periodeMasqueId);
+        List<LocataireDTO> locataires = locataireService.listerLocatairesPourPeriodeDeLocation(logementMasqueId, periodeMasqueId);
         return ResponseEntity.ok(locataires);
     }
 
@@ -33,7 +33,7 @@ public class LocataireController {
         return ResponseEntity.ok(nouveauLocataire);
     }
 
-    @GetMapping("/periodes-de-location/{periodeMasqueId}/{locataireMasqueId}/obtenir")
+    @GetMapping("/{locataireMasqueId}/periodes-de-location/{periodeMasqueId}/obtenir")
     public ResponseEntity<LocataireDTO> obtenirLocatairePourPeriodeDeLocation(
             @PathVariable String logementMasqueId,
             @PathVariable String periodeMasqueId,
@@ -42,7 +42,7 @@ public class LocataireController {
         return ResponseEntity.ok(locataire);
     }
 
-    @PatchMapping("/periodes-de-location/{periodeMasqueId}/{locataireMasqueId}/modifier")
+    @PatchMapping("/{locataireMasqueId}/periodes-de-location/{periodeMasqueId}/modifier")
     public ResponseEntity<LocataireDTO> modifierLocatairePourPeriodeDeLocation(
             @PathVariable String logementMasqueId,
             @PathVariable String periodeMasqueId,
@@ -52,7 +52,7 @@ public class LocataireController {
         return ResponseEntity.ok(locataireModifie);
     }
 
-    @DeleteMapping("/periodes-de-location/{periodeMasqueId}/{locataireMasqueId}/supprimer")
+    @DeleteMapping("/{locataireMasqueId}/periodes-de-location/{periodeMasqueId}/supprimer")
     public ResponseEntity<SuccessResponse> supprimerLocatairePourPeriodeDeLocation(
             @PathVariable String logementMasqueId,
             @PathVariable String periodeMasqueId,

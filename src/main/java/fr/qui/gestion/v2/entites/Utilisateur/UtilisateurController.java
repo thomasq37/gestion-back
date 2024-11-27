@@ -19,13 +19,13 @@ public class UtilisateurController {
     }
 
     @GetMapping("/profil")
-    public ResponseEntity<UtilisateurDTO> obtenirUtilisateur() {
-        return ResponseEntity.ok(utilisateurService.obtenirUtilisateur());
+    public ResponseEntity<UtilisateurDTO> obtenirCompte() {
+        return ResponseEntity.ok(utilisateurService.obtenirCompte());
     }
 
     @PatchMapping("/modifier")
-    public ResponseEntity<UtilisateurDTO> modifierUtilisateur(@RequestBody UtilisateurUpdateDTO utilisateurModifie) {
-        return ResponseEntity.ok(utilisateurService.modifierUtilisateur(utilisateurModifie));
+    public ResponseEntity<UtilisateurDTO> modifierCompte(@RequestBody UtilisateurUpdateDTO utilisateurModifie) {
+        return ResponseEntity.ok(utilisateurService.modifierCompte(utilisateurModifie));
     }
 
     @DeleteMapping("/supprimer")

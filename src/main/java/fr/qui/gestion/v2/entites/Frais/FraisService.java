@@ -34,27 +34,13 @@ public class FraisService {
         this.utilisateurRepository = utilisateurRepository;
         this.fraisMapper = fraisMapper;
     }
-    public List<FraisDTO> listerFrais(String logementMasqueId) {
+    public List<FraisDTO> listerFraisPourLogement(String logementMasqueId) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> new SecurityException("Acces interdit ou utilisateur introuvable."));
         List<Frais> frais = fraisRepository.findByLogement(logement);
         return frais.stream().map(fraisMapper::toDto).toList();
-    }
-    public List<FraisDTO> listerFraisPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId) {
-        // Valider que le logement appartient bien à l'utilisateur connecté
-        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        // Vérifier si la période est bien associée au logement
-        PeriodeDeLocation periodeDeLocation = logement.getPeriodesDeLocation().stream()
-                .filter(periode -> periode.getMasqueId().equals(periodeMasqueId))
-                .findFirst()
-                .orElseThrow(() -> new SecurityException("Accès interdit ou période introuvable pour ce logement."));
-        // Récupérer les frais associés à la période
-        List<Frais> frais = fraisRepository.findByPeriodeDeLocation(periodeDeLocation);
-        return frais.stream()
-                .map(fraisMapper::toDto)
-                .toList();
     }
     @Transactional
     public FraisDTO creerFraisPourLogement(String logementMasqueId, FraisDTO fraisDTO) {
@@ -89,6 +75,77 @@ public class FraisService {
         logement.getFrais().add(savedFrais);
         logementRepository.save(logement);
         return fraisMapper.toDto(savedFrais);
+    }
+    @Transactional(readOnly = true)
+    public FraisDTO obtenirFraisPourLogement(String logementMasqueId, String fraisMasqueId) {
+        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
+        Frais frais = logement.getFrais().stream()
+                .filter(c -> c.getMasqueId().equals(fraisMasqueId))
+                .findFirst()
+                .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
+        return fraisMapper.toDto(frais);
+    }
+    @Transactional
+    public FraisDTO modifierFraisPourLogement(String logementMasqueId, String fraisMasqueId, FraisDTO fraisModifieeDTO) {
+        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
+        Frais frais = logement.getFrais().stream()
+                .filter(c -> c.getMasqueId().equals(fraisMasqueId))
+                .findFirst()
+                .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
+        if (fraisModifieeDTO.getNom() == null || fraisModifieeDTO.getNom().isEmpty()) {
+            throw new IllegalArgumentException("Le nom du frais est obligatoire.");
+        }
+        if (fraisModifieeDTO.getMontant() <= 0) {
+            throw new IllegalArgumentException("Le montant du frais doit être supérieur à zéro.");
+        }
+        if (fraisModifieeDTO.getDateDeDebut() == null) {
+            throw new IllegalArgumentException("La date de début du frais est obligatoire.");
+        }
+        if (fraisModifieeDTO.getDateDeFin() != null && fraisModifieeDTO.getDateDeFin().isBefore(fraisModifieeDTO.getDateDeDebut())) {
+            throw new IllegalArgumentException("La date de fin ne peut pas être antérieure à la date de début.");
+        }
+        if (fraisModifieeDTO.getFrequence() == null) {
+            throw new IllegalArgumentException("La fréquence du frais est obligatoire.");
+        }
+        if (fraisModifieeDTO.getCategorieFrais() == null) {
+            throw new IllegalArgumentException("La catégorie du frais est obligatoire.");
+        }
+        frais.setNom(fraisModifieeDTO.getNom());
+        frais.setMontant(fraisModifieeDTO.getMontant());
+        frais.setDateDeDebut(fraisModifieeDTO.getDateDeDebut());
+        frais.setDateDeFin(fraisModifieeDTO.getDateDeFin());
+        frais.setFrequence(fraisModifieeDTO.getFrequence());
+        frais.setCategorieFrais(fraisModifieeDTO.getCategorieFrais());
+        Frais savedFrais = fraisRepository.save(frais);
+        return fraisMapper.toDto(savedFrais);
+    }
+    @Transactional
+    public SuccessResponse supprimerFraisPourLogement(String logementMasqueId, String fraisMasqueId) {
+        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
+        Frais frais = logement.getFrais().stream()
+                .filter(c -> c.getMasqueId().equals(fraisMasqueId))
+                .findFirst()
+                .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
+        logement.getFrais().remove(frais);
+        logementRepository.save(logement);
+        fraisRepository.delete(frais);
+        return new SuccessResponse("Le frais a été supprimé avec succès.");
+
+    }
+
+    public List<FraisDTO> listerFraisPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId) {
+        // Valider que le logement appartient bien à l'utilisateur connecté
+        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
+        // Vérifier si la période est bien associée au logement
+        PeriodeDeLocation periodeDeLocation = logement.getPeriodesDeLocation().stream()
+                .filter(periode -> periode.getMasqueId().equals(periodeMasqueId))
+                .findFirst()
+                .orElseThrow(() -> new SecurityException("Accès interdit ou période introuvable pour ce logement."));
+        // Récupérer les frais associés à la période
+        List<Frais> frais = fraisRepository.findByPeriodeDeLocation(periodeDeLocation);
+        return frais.stream()
+                .map(fraisMapper::toDto)
+                .toList();
     }
     @Transactional
     public FraisDTO creerFraisPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId, FraisDTO fraisDTO) {
@@ -130,15 +187,6 @@ public class FraisService {
         return fraisMapper.toDto(savedFrais);
     }
     @Transactional(readOnly = true)
-    public FraisDTO obtenirFraisPourLogement(String logementMasqueId, String fraisMasqueId) {
-        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        Frais frais = logement.getFrais().stream()
-                .filter(c -> c.getMasqueId().equals(fraisMasqueId))
-                .findFirst()
-                .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
-        return fraisMapper.toDto(frais);
-    }
-    @Transactional(readOnly = true)
     public FraisDTO obtenirFraisPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId, String fraisMasqueId) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
 
@@ -153,40 +201,6 @@ public class FraisService {
                 .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
 
         return fraisMapper.toDto(frais);
-    }
-    @Transactional
-    public FraisDTO modifierFraisPourLogement(String logementMasqueId, String fraisMasqueId, FraisDTO fraisModifieeDTO) {
-        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        Frais frais = logement.getFrais().stream()
-                .filter(c -> c.getMasqueId().equals(fraisMasqueId))
-                .findFirst()
-                .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
-        if (fraisModifieeDTO.getNom() == null || fraisModifieeDTO.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du frais est obligatoire.");
-        }
-        if (fraisModifieeDTO.getMontant() <= 0) {
-            throw new IllegalArgumentException("Le montant du frais doit être supérieur à zéro.");
-        }
-        if (fraisModifieeDTO.getDateDeDebut() == null) {
-            throw new IllegalArgumentException("La date de début du frais est obligatoire.");
-        }
-        if (fraisModifieeDTO.getDateDeFin() != null && fraisModifieeDTO.getDateDeFin().isBefore(fraisModifieeDTO.getDateDeDebut())) {
-            throw new IllegalArgumentException("La date de fin ne peut pas être antérieure à la date de début.");
-        }
-        if (fraisModifieeDTO.getFrequence() == null) {
-            throw new IllegalArgumentException("La fréquence du frais est obligatoire.");
-        }
-        if (fraisModifieeDTO.getCategorieFrais() == null) {
-            throw new IllegalArgumentException("La catégorie du frais est obligatoire.");
-        }
-        frais.setNom(fraisModifieeDTO.getNom());
-        frais.setMontant(fraisModifieeDTO.getMontant());
-        frais.setDateDeDebut(fraisModifieeDTO.getDateDeDebut());
-        frais.setDateDeFin(fraisModifieeDTO.getDateDeFin());
-        frais.setFrequence(fraisModifieeDTO.getFrequence());
-        frais.setCategorieFrais(fraisModifieeDTO.getCategorieFrais());
-        Frais savedFrais = fraisRepository.save(frais);
-        return fraisMapper.toDto(savedFrais);
     }
     @Transactional
     public FraisDTO modifierFraisPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId, String fraisMasqueId, FraisDTO fraisModifieeDTO) {
@@ -230,19 +244,6 @@ public class FraisService {
         return fraisMapper.toDto(savedFrais);
     }
     @Transactional
-    public SuccessResponse supprimerFraisPourLogement(String logementMasqueId, String fraisMasqueId) {
-        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        Frais frais = logement.getFrais().stream()
-                .filter(c -> c.getMasqueId().equals(fraisMasqueId))
-                .findFirst()
-                .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
-        logement.getFrais().remove(frais);
-        logementRepository.save(logement);
-        fraisRepository.delete(frais);
-        return new SuccessResponse("Le frais a été supprimé avec succès.");
-
-    }
-    @Transactional
     public SuccessResponse supprimerFraisPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId, String fraisMasqueId) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
 
@@ -261,6 +262,7 @@ public class FraisService {
         fraisRepository.delete(frais);
         return new SuccessResponse("Le frais a été supprimé avec succès.");
     }
+
     private Logement validerLogementPourUtilisateur(String logementMasqueId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)

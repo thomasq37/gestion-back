@@ -101,8 +101,8 @@ public class AuthService {
             }
         }
         catch (UsernameNotFoundException ex){
-            return ResponseEntity.badRequest().body(new ErrorResponse("Erreur: Email ou mot de passe incorrect!"));
+            return ResponseEntity.badRequest().body(new ErrorResponse(" Email ou mot de passe incorrect!"));
         }
-        return ResponseEntity.badRequest().body(new ErrorResponse("Erreur: Email ou mot de passe incorrect!"));
+        return ResponseEntity.badRequest().body(new ErrorResponse(" Email ou mot de passe incorrect!"));
     }
 }

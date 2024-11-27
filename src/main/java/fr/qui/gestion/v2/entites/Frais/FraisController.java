@@ -17,19 +17,10 @@ public class FraisController {
     }
 
     @GetMapping("/lister")
-    public ResponseEntity<List<FraisDTO>> listerFrais(@PathVariable String logementMasqueId) {
-        List<FraisDTO> frais = fraisService.listerFrais(logementMasqueId);
+    public ResponseEntity<List<FraisDTO>> listerFraisPourLogement(@PathVariable String logementMasqueId) {
+        List<FraisDTO> frais = fraisService.listerFraisPourLogement(logementMasqueId);
         return ResponseEntity.ok(frais);
     }
-
-    @GetMapping("/periodes-de-location/{periodeMasqueId}/lister")
-    public ResponseEntity<List<FraisDTO>> listerFraisPourPeriodeDeLocation(
-            @PathVariable String logementMasqueId,
-            @PathVariable String periodeMasqueId) {
-        List<FraisDTO> frais = fraisService.listerFraisPourPeriodeDeLocation(logementMasqueId, periodeMasqueId);
-        return ResponseEntity.ok(frais);
-    }
-
     @PostMapping("/ajouter")
     public ResponseEntity<FraisDTO> creerFraisPourLogement(
             @PathVariable String logementMasqueId,
@@ -37,16 +28,6 @@ public class FraisController {
         FraisDTO nouveauFrais = fraisService.creerFraisPourLogement(logementMasqueId, fraisDTO);
         return ResponseEntity.ok(nouveauFrais);
     }
-    @PostMapping("/periodes-de-location/{periodeMasqueId}/ajouter")
-
-    public ResponseEntity<FraisDTO> creerFraisPourPeriodeDeLocation(
-            @PathVariable String logementMasqueId,
-            @PathVariable String periodeMasqueId,
-            @Valid @RequestBody FraisDTO fraisDTO) {
-        FraisDTO nouveauFrais = fraisService.creerFraisPourPeriodeDeLocation(logementMasqueId, periodeMasqueId, fraisDTO);
-        return ResponseEntity.ok(nouveauFrais);
-    }
-
     @GetMapping("/{fraisMasqueId}/obtenir")
     public ResponseEntity<FraisDTO> obtenirFraisPourLogement(
             @PathVariable String logementMasqueId,
@@ -54,16 +35,6 @@ public class FraisController {
         FraisDTO frais = fraisService.obtenirFraisPourLogement(logementMasqueId, fraisMasqueId);
         return ResponseEntity.ok(frais);
     }
-
-    @GetMapping("/periodes-de-location/{periodeMasqueId}/{fraisMasqueId}/obtenir")
-    public ResponseEntity<FraisDTO> obtenirFraisPourPeriodeDeLocation(
-            @PathVariable String logementMasqueId,
-            @PathVariable String periodeMasqueId,
-            @PathVariable String fraisMasqueId) {
-        FraisDTO frais = fraisService.obtenirFraisPourPeriodeDeLocation(logementMasqueId, periodeMasqueId, fraisMasqueId);
-        return ResponseEntity.ok(frais);
-    }
-
     @PatchMapping("/{fraisMasqueId}/modifier")
     public ResponseEntity<FraisDTO> modifierFraisPourLogement(
             @PathVariable String logementMasqueId,
@@ -72,7 +43,41 @@ public class FraisController {
         FraisDTO fraisModifie = fraisService.modifierFraisPourLogement(logementMasqueId, fraisMasqueId, fraisDTO);
         return ResponseEntity.ok(fraisModifie);
     }
-    @PatchMapping("/periodes-de-location/{periodeMasqueId}/{fraisMasqueId}/modifier")
+    @DeleteMapping("/{fraisMasqueId}/supprimer")
+    public ResponseEntity<SuccessResponse> supprimerFraisPourLogement(
+            @PathVariable String logementMasqueId,
+            @PathVariable String fraisMasqueId) {
+        return ResponseEntity.ok(fraisService.supprimerFraisPourLogement(logementMasqueId, fraisMasqueId));
+    }
+
+    // ----------------------------------------------- //
+    // Debut des frais concernant periodes de location //
+    // ----------------------------------------------- //
+
+    @GetMapping("/periodes-de-location/{periodeMasqueId}/lister")
+    public ResponseEntity<List<FraisDTO>> listerFraisPourPeriodeDeLocation(
+            @PathVariable String logementMasqueId,
+            @PathVariable String periodeMasqueId) {
+        List<FraisDTO> frais = fraisService.listerFraisPourPeriodeDeLocation(logementMasqueId, periodeMasqueId);
+        return ResponseEntity.ok(frais);
+    }
+    @PostMapping("/periodes-de-location/{periodeMasqueId}/ajouter")
+    public ResponseEntity<FraisDTO> creerFraisPourPeriodeDeLocation(
+            @PathVariable String logementMasqueId,
+            @PathVariable String periodeMasqueId,
+            @Valid @RequestBody FraisDTO fraisDTO) {
+        FraisDTO nouveauFrais = fraisService.creerFraisPourPeriodeDeLocation(logementMasqueId, periodeMasqueId, fraisDTO);
+        return ResponseEntity.ok(nouveauFrais);
+    }
+    @GetMapping("/{fraisMasqueId}/periodes-de-location/{periodeMasqueId}/obtenir")
+    public ResponseEntity<FraisDTO> obtenirFraisPourPeriodeDeLocation(
+            @PathVariable String logementMasqueId,
+            @PathVariable String periodeMasqueId,
+            @PathVariable String fraisMasqueId) {
+        FraisDTO frais = fraisService.obtenirFraisPourPeriodeDeLocation(logementMasqueId, periodeMasqueId, fraisMasqueId);
+        return ResponseEntity.ok(frais);
+    }
+    @PatchMapping("/{fraisMasqueId}/periodes-de-location/{periodeMasqueId}/modifier")
     public ResponseEntity<FraisDTO> modifierFraisPourPeriodeDeLocation(
             @PathVariable String logementMasqueId,
             @PathVariable String periodeMasqueId,
@@ -81,14 +86,7 @@ public class FraisController {
         FraisDTO fraisModifie = fraisService.modifierFraisPourPeriodeDeLocation(logementMasqueId, periodeMasqueId, fraisMasqueId, fraisDTO);
         return ResponseEntity.ok(fraisModifie);
     }
-
-    @DeleteMapping("/{fraisMasqueId}/supprimer")
-    public ResponseEntity<SuccessResponse> supprimerFraisPourLogement(
-            @PathVariable String logementMasqueId,
-            @PathVariable String fraisMasqueId) {
-        return ResponseEntity.ok(fraisService.supprimerFraisPourLogement(logementMasqueId, fraisMasqueId));
-    }
-    @DeleteMapping("/periodes-de-location/{periodeMasqueId}/{fraisMasqueId}/supprimer")
+    @DeleteMapping("/{fraisMasqueId}/periodes-de-location/{periodeMasqueId}/supprimer")
     public ResponseEntity<SuccessResponse> supprimerFraisPourPeriodeDeLocation(
             @PathVariable String logementMasqueId,
             @PathVariable String periodeMasqueId,

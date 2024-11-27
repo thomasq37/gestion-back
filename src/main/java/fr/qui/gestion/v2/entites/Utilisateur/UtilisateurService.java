@@ -28,14 +28,14 @@ public class UtilisateurService {
         this.customUtilisateurDetailsService = customUtilisateurDetailsService;
     }
 
-    public UtilisateurDTO obtenirUtilisateur() {
+    public UtilisateurDTO obtenirCompte() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println(email);
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> new SecurityException("Acces interdit ou utilisateur introuvable."));
         return utilisateurMapper.toDto(utilisateur);
     }
-    public UtilisateurDTO modifierUtilisateur(UtilisateurUpdateDTO utilisateurModifie) {
+    public UtilisateurDTO modifierCompte(UtilisateurUpdateDTO utilisateurModifie) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> new SecurityException("Acces interdit ou utilisateur introuvable."));

@@ -33,7 +33,7 @@ public class LocataireService {
         this.utilisateurRepository = utilisateurRepository;
         this.locataireMapper = locataireMapper;
     }
-    public List<LocataireDTO> listerLocatairePourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId) {
+    public List<LocataireDTO> listerLocatairesPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId) {
         // Valider que le logement appartient bien à l'utilisateur connecté
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
         // Vérifier si la période est bien associée au logement
@@ -65,7 +65,7 @@ public class LocataireService {
         locataire.setPrenom(locataireDTO.getPrenom());
         locataire.setEmail(locataireDTO.getEmail());
         locataire.setTelephone(locataireDTO.getTelephone());
-
+        locataire.setPeriodeDeLocation(periodeDeLocation);
         Locataire savedLocataire = locataireRepository.save(locataire);
         periodeDeLocation.getLocataires().add(savedLocataire);
         periodeDeLocationRepository.save(periodeDeLocation);

@@ -26,12 +26,12 @@ public class GlobalExceptionHandler {
                                 .toArray(String[]::new)
                 );
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ErrorResponse("Erreur : Valeur invalide. Les valeurs acceptées sont : [" + enumValues + "]")
+                        new ErrorResponse(" Valeur invalide. Les valeurs acceptées sont : [" + enumValues + "]")
                 );
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                new ErrorResponse("Erreur : Le corps de la requête est invalide ou mal formaté.")
+                new ErrorResponse(" Le corps de la requête est invalide ou mal formaté.")
         );
     }
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
