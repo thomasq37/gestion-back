@@ -39,17 +39,33 @@ public class PhotoService {
     @Transactional
     public PhotoDTO creerPhotoPourLogement(String logementMasqueId, PhotoDTO photoDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
+
         if (photoDTO.getImage() == null) {
             throw new IllegalArgumentException("L'image est obligatoire.");
         }
+
+        if (Boolean.TRUE.equals(photoDTO.getIsPrincipal())) {
+            // Vérifier s'il existe déjà une photo principale
+            Photo photoPrincipaleExistante = photoRepository.findFirstByLogementAndIsPrincipalTrue(logement);
+            if (photoPrincipaleExistante != null) {
+                // Définir l'ancienne photo principale comme non principale
+                photoPrincipaleExistante.setIsPrincipal(false);
+                photoRepository.save(photoPrincipaleExistante);
+            }
+        }
+
         Photo photo = new Photo();
         photo.setImage(photoDTO.getImage());
+        photo.setIsPrincipal(photoDTO.getIsPrincipal());
         photo.setLogement(logement);
+
         Photo savedPhoto = photoRepository.save(photo);
         logement.getPhotos().add(savedPhoto);
         logementRepository.save(logement);
+
         return photoMapper.toDto(savedPhoto);
     }
+
     @Transactional(readOnly = true)
     public PhotoDTO obtenirPhotoPourLogement(String logementMasqueId, String photoMasqueId) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
@@ -59,20 +75,44 @@ public class PhotoService {
                 .orElseThrow(() -> new SecurityException("Acces interdit ou photo introuvable."));
         return photoMapper.toDto(photo);
     }
+    public PhotoDTO obtenirPhotoPrincipalePourLogement(String logementMasqueId) {
+        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
+        Photo photoPrincipale = photoRepository.findFirstByLogementAndIsPrincipalTrue(logement);
+        if (photoPrincipale == null) {
+            throw new IllegalArgumentException("Aucune photo principale trouvée pour ce logement.");
+        }
+        return photoMapper.toDto(photoPrincipale);
+    }
     @Transactional
     public PhotoDTO modifierPhotoPourLogement(String logementMasqueId, String photoMasqueId, PhotoDTO photoModifieeDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
+
         Photo photo = logement.getPhotos().stream()
                 .filter(c -> c.getMasqueId().equals(photoMasqueId))
                 .findFirst()
-                .orElseThrow(() -> new SecurityException("Acces interdit ou photo introuvable."));
+                .orElseThrow(() -> new SecurityException("Accès interdit ou photo introuvable."));
+
         if (photoModifieeDTO.getImage() == null) {
             throw new IllegalArgumentException("L'image est obligatoire.");
         }
+
+        if (Boolean.TRUE.equals(photoModifieeDTO.getIsPrincipal()) && !Boolean.TRUE.equals(photo.getIsPrincipal())) {
+            // Vérifier s'il existe déjà une photo principale
+            Photo photoPrincipaleExistante = photoRepository.findFirstByLogementAndIsPrincipalTrue(logement);
+            if (photoPrincipaleExistante != null) {
+                // Définir l'ancienne photo principale comme non principale
+                photoPrincipaleExistante.setIsPrincipal(false);
+                photoRepository.save(photoPrincipaleExistante);
+            }
+        }
+
         photo.setImage(photoModifieeDTO.getImage());
+        photo.setIsPrincipal(photoModifieeDTO.getIsPrincipal());
+
         Photo savedPhoto = photoRepository.save(photo);
         return photoMapper.toDto(savedPhoto);
     }
+
     @Transactional
     public SuccessResponse supprimerPhotoPourLogement(String logementMasqueId, String photoMasqueId) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);

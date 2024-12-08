@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface PhotoRepository extends JpaRepository<Photo, Long> {
     List<Photo> findByLogement(Logement logement);
+    Photo findFirstByLogementAndIsPrincipalTrue(Logement logement); // Récupère la photo principale
 }

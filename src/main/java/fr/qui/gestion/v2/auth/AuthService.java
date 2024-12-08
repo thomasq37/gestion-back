@@ -97,12 +97,12 @@ public class AuthService {
             if (passwordEncoder.matches(loginRequest.getMdp(), userDetails.getPassword())) {
                 List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
                 String jwt = jwtUtils.generateJwtToken(userDetails.getUsername(), roles);
-                return ResponseEntity.ok(jwt);
+                return ResponseEntity.ok(new SuccessResponse(jwt));
             }
         }
         catch (UsernameNotFoundException ex){
             return ResponseEntity.badRequest().body(new ErrorResponse(" Email ou mot de passe incorrect!"));
         }
-        return ResponseEntity.badRequest().body(new ErrorResponse(" Email ou mot de passe incorrect!"));
+        return ResponseEntity.badRequest().body(new ErrorResponse("Erreur: Email ou mot de passe incorrect!"));
     }
 }

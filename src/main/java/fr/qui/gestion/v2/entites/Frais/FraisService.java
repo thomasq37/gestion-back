@@ -45,9 +45,6 @@ public class FraisService {
     @Transactional
     public FraisDTO creerFraisPourLogement(String logementMasqueId, FraisDTO fraisDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        if (fraisDTO.getNom() == null || fraisDTO.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du frais est obligatoire.");
-        }
         if (fraisDTO.getMontant() <= 0) {
             throw new IllegalArgumentException("Le montant du frais doit être supérieur à zéro.");
         }
@@ -62,6 +59,10 @@ public class FraisService {
         }
         if (fraisDTO.getCategorieFrais() == null) {
             throw new IllegalArgumentException("La catégorie du frais est obligatoire.");
+        }
+        if (fraisDTO.getDateDeFin() != null && fraisDTO.getDateDeDebut().isEqual(fraisDTO.getDateDeFin())
+                && !"PONCTUELLE".equalsIgnoreCase(String.valueOf(fraisDTO.getFrequence()))) {
+            throw new IllegalArgumentException("Si la date de début et la date de fin sont identiques, la fréquence doit être 'PONCTUELLE'.");
         }
         Frais frais = new Frais();
         frais.setNom(fraisDTO.getNom());
@@ -92,9 +93,6 @@ public class FraisService {
                 .filter(c -> c.getMasqueId().equals(fraisMasqueId))
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
-        if (fraisModifieeDTO.getNom() == null || fraisModifieeDTO.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du frais est obligatoire.");
-        }
         if (fraisModifieeDTO.getMontant() <= 0) {
             throw new IllegalArgumentException("Le montant du frais doit être supérieur à zéro.");
         }
@@ -109,6 +107,10 @@ public class FraisService {
         }
         if (fraisModifieeDTO.getCategorieFrais() == null) {
             throw new IllegalArgumentException("La catégorie du frais est obligatoire.");
+        }
+        if (fraisModifieeDTO.getDateDeFin() != null && fraisModifieeDTO.getDateDeDebut().isEqual(fraisModifieeDTO.getDateDeFin())
+                && !"PONCTUELLE".equalsIgnoreCase(String.valueOf(fraisModifieeDTO.getFrequence()))) {
+            throw new IllegalArgumentException("Si la date de début et la date de fin sont identiques, la fréquence doit être 'PONCTUELLE'.");
         }
         frais.setNom(fraisModifieeDTO.getNom());
         frais.setMontant(fraisModifieeDTO.getMontant());
@@ -155,9 +157,6 @@ public class FraisService {
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Accès interdit ou période introuvable pour ce logement."));
 
-        if (fraisDTO.getNom() == null || fraisDTO.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du frais est obligatoire.");
-        }
         if (fraisDTO.getMontant() <= 0) {
             throw new IllegalArgumentException("Le montant du frais doit être supérieur à zéro.");
         }
@@ -172,6 +171,10 @@ public class FraisService {
         }
         if (fraisDTO.getCategorieFrais() == null) {
             throw new IllegalArgumentException("La catégorie du frais est obligatoire.");
+        }
+        if (fraisDTO.getDateDeFin() != null && fraisDTO.getDateDeDebut().isEqual(fraisDTO.getDateDeFin())
+                && !"PONCTUELLE".equalsIgnoreCase(String.valueOf(fraisDTO.getFrequence()))) {
+            throw new IllegalArgumentException("Si la date de début et la date de fin sont identiques, la fréquence doit être 'PONCTUELLE'.");
         }
         Frais frais = new Frais();
         frais.setNom(fraisDTO.getNom());
@@ -216,9 +219,6 @@ public class FraisService {
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
 
-        if (fraisModifieeDTO.getNom() == null || fraisModifieeDTO.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du frais est obligatoire.");
-        }
         if (fraisModifieeDTO.getMontant() <= 0) {
             throw new IllegalArgumentException("Le montant du frais doit être supérieur à zéro.");
         }
@@ -233,6 +233,10 @@ public class FraisService {
         }
         if (fraisModifieeDTO.getCategorieFrais() == null) {
             throw new IllegalArgumentException("La catégorie du frais est obligatoire.");
+        }
+        if (fraisModifieeDTO.getDateDeFin() != null && fraisModifieeDTO.getDateDeDebut().isEqual(fraisModifieeDTO.getDateDeFin())
+                && !"PONCTUELLE".equalsIgnoreCase(String.valueOf(fraisModifieeDTO.getFrequence()))) {
+            throw new IllegalArgumentException("Si la date de début et la date de fin sont identiques, la fréquence doit être 'PONCTUELLE'.");
         }
         frais.setNom(fraisModifieeDTO.getNom());
         frais.setMontant(fraisModifieeDTO.getMontant());

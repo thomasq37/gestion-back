@@ -37,6 +37,11 @@ public class PhotoController {
         PhotoDTO photo = photoService.obtenirPhotoPourLogement(logementMasqueId, photoMasqueId);
         return ResponseEntity.ok(photo);
     }
+    @GetMapping("/principale")
+    public ResponseEntity<PhotoDTO> obtenirPhotoPrincipalePourLogement(@PathVariable String logementMasqueId) {
+        PhotoDTO photoPrincipale = photoService.obtenirPhotoPrincipalePourLogement(logementMasqueId);
+        return ResponseEntity.ok(photoPrincipale);
+    }
 
     @PatchMapping("/{photoMasqueId}/modifier")
     public ResponseEntity<PhotoDTO> modifierPhotoPourLogement(

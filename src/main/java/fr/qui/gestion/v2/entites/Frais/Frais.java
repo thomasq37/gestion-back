@@ -27,4 +27,13 @@ public class Frais extends AbstractEntityWithMasqueId {
     private Logement logement;
     @ManyToOne
     private PeriodeDeLocation periodeDeLocation;
+
+    @Transient
+    public int getFrequencePriority() {
+        // Priorité pour trier : autres fréquences avant PONCTUELLE
+        return switch (this.frequence) {
+            case PONCTUELLE -> 2; // PONCTUELLE a la priorité la plus basse
+            default -> 1; // Autres fréquences (e.g., MENSUELLE, ANNUELLE) en premier
+        };
+    }
 }

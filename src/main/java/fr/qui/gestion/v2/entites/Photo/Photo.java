@@ -13,6 +13,7 @@ public class Photo  extends AbstractEntityWithMasqueId {
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] image;
+    private Boolean isPrincipal;
     @ManyToOne
     private Logement logement;
 }
