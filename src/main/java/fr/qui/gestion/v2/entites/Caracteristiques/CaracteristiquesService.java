@@ -55,6 +55,9 @@ public class CaracteristiquesService {
         if (caracteristiquesDTO.getTypeDeLogement() == null) {
             throw new IllegalArgumentException("Le type de logement est obligatoire.");
         }
+        if (caracteristiquesDTO.getMeubleeOuNon() == null) {
+            throw new IllegalArgumentException("Veuillez spécifier si le logement est meublé ou non.");
+        }
         if (caracteristiquesDTO.getBalconOuTerrasse() != null && caracteristiquesDTO.getBalconOuTerrasse() && (caracteristiquesDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesDTO.getSurfaceBalconOuTerrasse() <= 0)) {
             throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
         }
@@ -69,6 +72,7 @@ public class CaracteristiquesService {
         caracteristiques.setNombreDePieces(caracteristiquesDTO.getNombreDePieces());
         caracteristiques.setSurfaceLogement(caracteristiquesDTO.getSurfaceLogement());
         caracteristiques.setTypeDeLogement(caracteristiquesDTO.getTypeDeLogement());
+        caracteristiques.setMeubleeOuNon(caracteristiquesDTO.getMeubleeOuNon());
         caracteristiques.setBalconOuTerrasse(caracteristiquesDTO.getBalconOuTerrasse());
         caracteristiques.setSurfaceBalconOuTerrasse(caracteristiquesDTO.getSurfaceBalconOuTerrasse());
         caracteristiques.setDpeLettre(caracteristiquesDTO.getDpeLettre());
@@ -118,6 +122,9 @@ public class CaracteristiquesService {
         if (caracteristiquesModifieeDTO.getTypeDeLogement() == null) {
             throw new IllegalArgumentException("Le type de logement est obligatoire.");
         }
+        if (caracteristiquesModifieeDTO.getMeubleeOuNon() == null) {
+            throw new IllegalArgumentException("Veuillez spécifier si le logement est meublé ou non.");
+        }
         if (caracteristiquesModifieeDTO.getBalconOuTerrasse() != null && caracteristiquesModifieeDTO.getBalconOuTerrasse() && (caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() <= 0)) {
             throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
         }
@@ -131,6 +138,7 @@ public class CaracteristiquesService {
         caracteristiques.setNombreDePieces(caracteristiquesModifieeDTO.getNombreDePieces());
         caracteristiques.setSurfaceLogement(caracteristiquesModifieeDTO.getSurfaceLogement());
         caracteristiques.setTypeDeLogement(caracteristiquesModifieeDTO.getTypeDeLogement());
+        caracteristiques.setMeubleeOuNon(caracteristiquesModifieeDTO.getMeubleeOuNon());
         caracteristiques.setBalconOuTerrasse(caracteristiquesModifieeDTO.getBalconOuTerrasse());
         caracteristiques.setSurfaceBalconOuTerrasse(caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse());
         caracteristiques.setDpeLettre(caracteristiquesModifieeDTO.getDpeLettre());

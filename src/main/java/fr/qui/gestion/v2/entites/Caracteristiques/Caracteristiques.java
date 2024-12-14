@@ -22,6 +22,7 @@ public class Caracteristiques extends AbstractEntityWithMasqueId {
     private Double surfaceLogement;
     @Enumerated(EnumType.STRING)
     private TypeDeLogement typeDeLogement;
+    private Boolean meubleeOuNon;
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
     private DpeLettre dpeLettre;

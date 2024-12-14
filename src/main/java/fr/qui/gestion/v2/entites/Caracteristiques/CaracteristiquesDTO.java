@@ -16,6 +16,7 @@ public class CaracteristiquesDTO {
     private Integer nombreDePieces;
     private Double surfaceLogement;
     private TypeDeLogement typeDeLogement;
+    private Boolean meubleeOuNon;
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
     private DpeLettre dpeLettre;
