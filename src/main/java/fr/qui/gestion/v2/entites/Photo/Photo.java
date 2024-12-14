@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class Photo  extends AbstractEntityWithMasqueId {
     @Lob
-    @Column(columnDefinition = "MEDIUMBLOB")
+    @Column(columnDefinition = "bytea")
     private byte[] image;
     private Boolean isPrincipal;
     @ManyToOne
