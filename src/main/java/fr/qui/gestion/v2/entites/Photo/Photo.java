@@ -10,9 +10,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 public class Photo  extends AbstractEntityWithMasqueId {
-    @Lob
-    @Column(columnDefinition = "bytea")
-    private byte[] image;
+    @Column(columnDefinition = "TEXT")
+    private String image;
     private Boolean isPrincipal;
     @ManyToOne
     private Logement logement;

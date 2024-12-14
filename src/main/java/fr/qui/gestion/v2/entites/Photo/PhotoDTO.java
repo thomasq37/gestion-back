@@ -5,6 +5,6 @@ import lombok.Data;
 public class PhotoDTO {
     private String masqueId;
     private Boolean isPrincipal;
-    private byte[] image;
+    private String image;
 
 }
