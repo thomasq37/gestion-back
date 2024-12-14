@@ -26,7 +26,6 @@ public class Caracteristiques extends AbstractEntityWithMasqueId {
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
     private DpeLettre dpeLettre;
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String dpeFichier;
     @OneToOne(mappedBy = "caracteristiques")
