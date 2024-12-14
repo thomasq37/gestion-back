@@ -20,5 +20,5 @@ public class CaracteristiquesDTO {
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
     private DpeLettre dpeLettre;
-    private byte[] dpeFichier;
+    private String dpeFichier;
 }
