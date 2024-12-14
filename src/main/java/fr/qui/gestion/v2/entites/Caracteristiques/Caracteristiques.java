@@ -27,7 +27,7 @@ public class Caracteristiques extends AbstractEntityWithMasqueId {
     private Double surfaceBalconOuTerrasse;
     private DpeLettre dpeLettre;
     @Lob
-    @Column(columnDefinition = "bytea")
+    @Column
     private byte[] dpeFichier;
     @OneToOne(mappedBy = "caracteristiques")
     private Logement logement;
