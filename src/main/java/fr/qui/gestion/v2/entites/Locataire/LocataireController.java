@@ -1,4 +1,5 @@
 package fr.qui.gestion.v2.entites.Locataire;
+import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocationDTO;
 import fr.qui.gestion.v2.exception.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,14 @@ public class LocataireController {
             @PathVariable String locataireMasqueId) {
         LocataireDTO locataire = locataireService.obtenirLocatairePourPeriodeDeLocation(logementMasqueId, periodeMasqueId, locataireMasqueId);
         return ResponseEntity.ok(locataire);
+    }
+
+    @GetMapping("/{locataireMasqueId}/periode-de-location/obtenir")
+    public ResponseEntity<PeriodeDeLocationDTO> obtenirPeriodeDeLocationPourLocataire(
+            @PathVariable String logementMasqueId,
+            @PathVariable String locataireMasqueId) {
+        PeriodeDeLocationDTO periodeDeLocation = locataireService.obtenirPeriodeDeLocationPourLocataire(logementMasqueId, locataireMasqueId);
+        return ResponseEntity.ok(periodeDeLocation);
     }
 
     @PatchMapping("/{locataireMasqueId}/periodes-de-location/{periodeMasqueId}/modifier")

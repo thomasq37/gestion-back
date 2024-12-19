@@ -2,6 +2,8 @@ package fr.qui.gestion.v2.entites.Locataire;
 import fr.qui.gestion.v2.entites.Logement.Logement;
 import fr.qui.gestion.v2.entites.Logement.LogementRepository;
 import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocation;
+import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocationDTO;
+import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocationMapper;
 import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocationRepository;
 import fr.qui.gestion.v2.entites.Utilisateur.Utilisateur;
 import fr.qui.gestion.v2.entites.Utilisateur.UtilisateurRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LocataireService {
@@ -20,18 +23,21 @@ public class LocataireService {
     private final PeriodeDeLocationRepository periodeDeLocationRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final LocataireMapper locataireMapper;
+    private final PeriodeDeLocationMapper periodeDeLocationMapper;
 
     public LocataireService(
             LocataireRepository locataireRepository,
             LogementRepository logementRepository,
             PeriodeDeLocationRepository periodeDeLocationRepository,
             UtilisateurRepository utilisateurRepository,
-            LocataireMapper locataireMapper) {
+            LocataireMapper locataireMapper,
+            PeriodeDeLocationMapper periodeDeLocationMapper) {
         this.locataireRepository = locataireRepository;
         this.logementRepository = logementRepository;
         this.periodeDeLocationRepository = periodeDeLocationRepository;
         this.utilisateurRepository = utilisateurRepository;
         this.locataireMapper = locataireMapper;
+        this.periodeDeLocationMapper = periodeDeLocationMapper;
     }
     public List<LocataireDTO> listerLocatairesPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId) {
         // Valider que le logement appartient bien à l'utilisateur connecté
@@ -94,6 +100,24 @@ public class LocataireService {
 
         return locataireMapper.toDto(locataire);
     }
+    @Transactional(readOnly = true)
+    public PeriodeDeLocationDTO obtenirPeriodeDeLocationPourLocataire(String logementMasqueId, String locataireMasqueId) {
+        Logement logement = validerLogementPourUtilisateur(logementMasqueId);
+        Optional<Locataire> optionalLocataire = locataireRepository.findByMasqueId(locataireMasqueId);
+        if(optionalLocataire.isPresent()){
+            Optional<PeriodeDeLocation> optionalPeriodeDeLocation = periodeDeLocationRepository.findByLocataires(optionalLocataire.get());
+            if(optionalPeriodeDeLocation.isPresent()){
+                return periodeDeLocationMapper.toDto(optionalPeriodeDeLocation.get());
+            }
+            else{
+                throw new SecurityException("Acces interdit ou periode de location introuvable.");
+            }
+        }
+        else{
+            throw new SecurityException("Acces interdit ou locataire introuvable.");
+        }
+    }
+
     @Transactional
     public LocataireDTO modifierLocatairePourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId, String locataireMasqueId, LocataireDTO locataireModifieeDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
@@ -102,11 +126,8 @@ public class LocataireService {
                 .filter(periode -> periode.getMasqueId().equals(periodeMasqueId))
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Accès interdit ou période introuvable pour ce logement."));
-
-        Locataire locataire = periodeDeLocation.getLocataires().stream()
-                .filter(c -> c.getMasqueId().equals(locataireMasqueId))
-                .findFirst()
-                .orElseThrow(() -> new SecurityException("Acces interdit ou frais introuvable."));
+        Locataire locataire = locataireRepository.findByMasqueId(locataireMasqueId)
+                .orElseThrow(() -> new SecurityException("Acces interdit ou locataire introuvable."));
         if (locataireModifieeDTO.getNom() == null || locataireModifieeDTO.getNom().isEmpty()) {
             throw new IllegalArgumentException("Le nom du locataire est obligatoire.");
         }
@@ -124,6 +145,7 @@ public class LocataireService {
         locataire.setPrenom(locataireModifieeDTO.getPrenom());
         locataire.setEmail(locataireModifieeDTO.getEmail());
         locataire.setTelephone(locataireModifieeDTO.getTelephone());
+        locataire.setPeriodeDeLocation(periodeDeLocation);
         Locataire savedLocataire = locataireRepository.save(locataire);
         return locataireMapper.toDto(savedLocataire);
     }
