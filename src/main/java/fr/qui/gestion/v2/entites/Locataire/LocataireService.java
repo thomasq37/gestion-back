@@ -60,6 +60,13 @@ public class LocataireService {
         if (locataireDTO.getPrenom() == null || locataireDTO.getPrenom().isEmpty()) {
             throw new IllegalArgumentException("Le prénom du locataire est obligatoire.");
         }
+        String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        if (locataireDTO.getEmail() != null && !locataireDTO.getEmail().isEmpty() && !locataireDTO.getEmail().matches(emailPattern)) {
+            throw new IllegalArgumentException("L'email du contact n'est pas valide.");
+        }
+        if (locataireDTO.getTelephone() != null && !locataireDTO.getTelephone().isEmpty() && !locataireDTO.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
+            throw new IllegalArgumentException("Numéro de téléphone invalide.");
+        }
         Locataire locataire = new Locataire();
         locataire.setNom(locataireDTO.getNom());
         locataire.setPrenom(locataireDTO.getPrenom());
@@ -105,6 +112,13 @@ public class LocataireService {
         }
         if (locataireModifieeDTO.getPrenom() == null || locataireModifieeDTO.getPrenom().isEmpty()) {
             throw new IllegalArgumentException("Le prénom du locataire est obligatoire.");
+        }
+        String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        if (locataireModifieeDTO.getEmail() != null && !locataireModifieeDTO.getEmail().isEmpty() && !locataireModifieeDTO.getEmail().matches(emailPattern)) {
+            throw new IllegalArgumentException("L'email du contact n'est pas valide.");
+        }
+        if (locataireModifieeDTO.getTelephone() != null && !locataireModifieeDTO.getTelephone().isEmpty() && !locataireModifieeDTO.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
+            throw new IllegalArgumentException("Numéro de téléphone invalide.");
         }
         locataire.setNom(locataireModifieeDTO.getNom());
         locataire.setPrenom(locataireModifieeDTO.getPrenom());

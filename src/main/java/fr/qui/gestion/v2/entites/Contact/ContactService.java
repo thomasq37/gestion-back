@@ -47,10 +47,10 @@ public class ContactService {
             throw new IllegalArgumentException("Le prénom du contact est obligatoire.");
         }
         String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-        if (contactDTO.getEmail() != null && !contactDTO.getEmail().matches(emailPattern)) {
+        if (contactDTO.getEmail() != null && !contactDTO.getEmail().isEmpty() && !contactDTO.getEmail().matches(emailPattern)) {
             throw new IllegalArgumentException("L'email du contact n'est pas valide.");
         }
-        if (contactDTO.getTelephone() != null && !contactDTO.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
+        if (contactDTO.getTelephone() != null && !contactDTO.getTelephone().isEmpty() && !contactDTO.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
             throw new IllegalArgumentException("Numéro de téléphone invalide.");
         }
         Contact contact = new Contact();
@@ -87,10 +87,10 @@ public class ContactService {
             throw new IllegalArgumentException("Le prénom du contact est obligatoire.");
         }
         String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
-        if (contactModifieeDTO.getEmail() != null && !contactModifieeDTO.getEmail().matches(emailPattern)) {
+        if (contactModifieeDTO.getEmail() != null && !contactModifieeDTO.getEmail().isEmpty() && !contactModifieeDTO.getEmail().matches(emailPattern)) {
             throw new IllegalArgumentException("L'email du contact n'est pas valide.");
         }
-        if (contactModifieeDTO.getTelephone() != null && !contactModifieeDTO.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
+        if (contactModifieeDTO.getTelephone() != null && !contactModifieeDTO.getTelephone().isEmpty() && !contactModifieeDTO.getTelephone().matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
             throw new IllegalArgumentException("Numéro de téléphone du contact invalide.");
         }
         contact.setNom(contactModifieeDTO.getNom());
