@@ -63,7 +63,7 @@ public class CaracteristiquesService {
                 if (caracteristiquesDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesDTO.getSurfaceBalconOuTerrasse() <= 0) {
                     throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
                 }
-            } else {
+            } else if(caracteristiquesDTO.getSurfaceBalconOuTerrasse() != 0){
                 throw new IllegalArgumentException("Si un balcon ou une terrasse est absent(e), la surface doit être égale à zéro.");
             }
         }
@@ -136,7 +136,7 @@ public class CaracteristiquesService {
                 if (caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() <= 0) {
                     throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
                 }
-            } else {
+            } else if(caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() != 0){
                 throw new IllegalArgumentException("Si un balcon ou une terrasse est absent(e), la surface doit être égale à zéro.");
             }
         }
