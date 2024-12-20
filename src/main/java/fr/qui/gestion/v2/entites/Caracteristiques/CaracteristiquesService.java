@@ -58,8 +58,14 @@ public class CaracteristiquesService {
         if (caracteristiquesDTO.getMeubleeOuNon() == null) {
             throw new IllegalArgumentException("Veuillez spécifier si le logement est meublé ou non.");
         }
-        if (caracteristiquesDTO.getBalconOuTerrasse() != null && caracteristiquesDTO.getBalconOuTerrasse() && (caracteristiquesDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesDTO.getSurfaceBalconOuTerrasse() <= 0)) {
-            throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
+        if (caracteristiquesDTO.getBalconOuTerrasse() != null) {
+            if (caracteristiquesDTO.getBalconOuTerrasse()) {
+                if (caracteristiquesDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesDTO.getSurfaceBalconOuTerrasse() <= 0) {
+                    throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
+                }
+            } else {
+                throw new IllegalArgumentException("Si un balcon ou une terrasse est absent(e), la surface doit être égale à zéro.");
+            }
         }
         if (caracteristiquesDTO.getDpeLettre() == null) {
             throw new IllegalArgumentException("La lettre DPE est obligatoire.");
@@ -125,8 +131,14 @@ public class CaracteristiquesService {
         if (caracteristiquesModifieeDTO.getMeubleeOuNon() == null) {
             throw new IllegalArgumentException("Veuillez spécifier si le logement est meublé ou non.");
         }
-        if (caracteristiquesModifieeDTO.getBalconOuTerrasse() != null && caracteristiquesModifieeDTO.getBalconOuTerrasse() && (caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() <= 0)) {
-            throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
+        if (caracteristiquesModifieeDTO.getBalconOuTerrasse() != null) {
+            if (caracteristiquesModifieeDTO.getBalconOuTerrasse()) {
+                if (caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() == null || caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse() <= 0) {
+                    throw new IllegalArgumentException("Si un balcon ou une terrasse est présent(e), la surface doit être supérieure à zéro.");
+                }
+            } else {
+                throw new IllegalArgumentException("Si un balcon ou une terrasse est absent(e), la surface doit être égale à zéro.");
+            }
         }
         if (caracteristiquesModifieeDTO.getDpeLettre() == null) {
             throw new IllegalArgumentException("La lettre DPE est obligatoire.");
