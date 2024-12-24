@@ -45,10 +45,8 @@ public class PhotoService {
         }
 
         if (Boolean.TRUE.equals(photoDTO.getIsPrincipal())) {
-            // Vérifier s'il existe déjà une photo principale
             Photo photoPrincipaleExistante = photoRepository.findFirstByLogementAndIsPrincipalTrue(logement);
             if (photoPrincipaleExistante != null) {
-                // Définir l'ancienne photo principale comme non principale
                 photoPrincipaleExistante.setIsPrincipal(false);
                 photoRepository.save(photoPrincipaleExistante);
             }
@@ -97,10 +95,8 @@ public class PhotoService {
         }
 
         if (Boolean.TRUE.equals(photoModifieeDTO.getIsPrincipal()) && !Boolean.TRUE.equals(photo.getIsPrincipal())) {
-            // Vérifier s'il existe déjà une photo principale
             Photo photoPrincipaleExistante = photoRepository.findFirstByLogementAndIsPrincipalTrue(logement);
             if (photoPrincipaleExistante != null) {
-                // Définir l'ancienne photo principale comme non principale
                 photoPrincipaleExistante.setIsPrincipal(false);
                 photoRepository.save(photoPrincipaleExistante);
             }

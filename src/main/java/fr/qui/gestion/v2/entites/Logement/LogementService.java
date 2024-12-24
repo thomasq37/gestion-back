@@ -32,7 +32,7 @@ public class LogementService {
         Logement nouveauLogement = new Logement();
         nouveauLogement.setProprietaire(utilisateur);
         nouveauLogement.setAdresse(null);
-        nouveauLogement.setCaracteristiques(null); // Si nécessaire, initialisez aussi à vide
+        nouveauLogement.setCaracteristiques(null);
         nouveauLogement.setContacts(new ArrayList<>());
         nouveauLogement.setFrais(new ArrayList<>());
         nouveauLogement.setPeriodesDeLocation(new ArrayList<>());

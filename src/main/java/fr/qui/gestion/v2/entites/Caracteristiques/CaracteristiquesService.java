@@ -67,6 +67,9 @@ public class CaracteristiquesService {
                 throw new IllegalArgumentException("Si un balcon ou une terrasse est absent(e), la surface doit être égale à zéro.");
             }
         }
+        if (caracteristiquesDTO.getParkingOuNon() == null) {
+            throw new IllegalArgumentException("Veuillez spécifier si le logement est doté d'une place de parking.");
+        }
         if (caracteristiquesDTO.getDpeLettre() == null) {
             throw new IllegalArgumentException("La lettre DPE est obligatoire.");
         }
@@ -81,6 +84,7 @@ public class CaracteristiquesService {
         caracteristiques.setMeubleeOuNon(caracteristiquesDTO.getMeubleeOuNon());
         caracteristiques.setBalconOuTerrasse(caracteristiquesDTO.getBalconOuTerrasse());
         caracteristiques.setSurfaceBalconOuTerrasse(caracteristiquesDTO.getSurfaceBalconOuTerrasse());
+        caracteristiques.setParkingOuNon(caracteristiquesDTO.getParkingOuNon());
         caracteristiques.setDpeLettre(caracteristiquesDTO.getDpeLettre());
         caracteristiques.setDpeFichier(caracteristiquesDTO.getDpeFichier());
         caracteristiques.setLogement(logement);
@@ -140,6 +144,10 @@ public class CaracteristiquesService {
                 throw new IllegalArgumentException("Si un balcon ou une terrasse est absent(e), la surface doit être égale à zéro.");
             }
         }
+
+        if (caracteristiquesModifieeDTO.getParkingOuNon() == null) {
+            throw new IllegalArgumentException("Veuillez spécifier si le logement est doté d'une place de parking.");
+        }
         if (caracteristiquesModifieeDTO.getDpeLettre() == null) {
             throw new IllegalArgumentException("La lettre DPE est obligatoire.");
         }
@@ -153,6 +161,7 @@ public class CaracteristiquesService {
         caracteristiques.setMeubleeOuNon(caracteristiquesModifieeDTO.getMeubleeOuNon());
         caracteristiques.setBalconOuTerrasse(caracteristiquesModifieeDTO.getBalconOuTerrasse());
         caracteristiques.setSurfaceBalconOuTerrasse(caracteristiquesModifieeDTO.getSurfaceBalconOuTerrasse());
+        caracteristiques.setParkingOuNon(caracteristiquesModifieeDTO.getParkingOuNon());
         caracteristiques.setDpeLettre(caracteristiquesModifieeDTO.getDpeLettre());
         caracteristiques.setDpeFichier(caracteristiquesModifieeDTO.getDpeFichier());
 

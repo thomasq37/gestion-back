@@ -25,6 +25,7 @@ public class Caracteristiques extends AbstractEntityWithMasqueId {
     private Boolean meubleeOuNon;
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
+    private Boolean parkingOuNon;
     private DpeLettre dpeLettre;
     @Column(columnDefinition = "LONGTEXT")
     private String dpeFichier;

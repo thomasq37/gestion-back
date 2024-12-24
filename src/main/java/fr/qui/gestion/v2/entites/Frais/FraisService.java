@@ -136,14 +136,11 @@ public class FraisService {
     }
 
     public List<FraisDTO> listerFraisPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId) {
-        // Valider que le logement appartient bien à l'utilisateur connecté
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        // Vérifier si la période est bien associée au logement
         PeriodeDeLocation periodeDeLocation = logement.getPeriodesDeLocation().stream()
                 .filter(periode -> periode.getMasqueId().equals(periodeMasqueId))
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Accès interdit ou période introuvable pour ce logement."));
-        // Récupérer les frais associés à la période
         List<Frais> frais = fraisRepository.findByPeriodeDeLocation(periodeDeLocation);
         return frais.stream()
                 .map(fraisMapper::toDto)

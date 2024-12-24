@@ -40,14 +40,11 @@ public class LocataireService {
         this.periodeDeLocationMapper = periodeDeLocationMapper;
     }
     public List<LocataireDTO> listerLocatairesPourPeriodeDeLocation(String logementMasqueId, String periodeMasqueId) {
-        // Valider que le logement appartient bien à l'utilisateur connecté
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        // Vérifier si la période est bien associée au logement
         PeriodeDeLocation periodeDeLocation = logement.getPeriodesDeLocation().stream()
                 .filter(periode -> periode.getMasqueId().equals(periodeMasqueId))
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Accès interdit ou période introuvable pour ce logement."));
-        // Récupérer les locataires associés à la période
         List<Locataire> locataires = locataireRepository.findByPeriodeDeLocation(periodeDeLocation);
         return locataires.stream()
                 .map(locataireMapper::toDto)

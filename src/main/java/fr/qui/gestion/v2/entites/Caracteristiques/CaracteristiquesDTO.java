@@ -19,6 +19,7 @@ public class CaracteristiquesDTO {
     private Boolean meubleeOuNon;
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
+    private Boolean parkingOuNon;
     private DpeLettre dpeLettre;
     private String dpeFichier;
 }
