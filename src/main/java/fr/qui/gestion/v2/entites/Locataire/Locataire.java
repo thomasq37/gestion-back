@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
@@ -14,6 +16,8 @@ public class Locataire extends AbstractEntityWithMasqueId {
     private String prenom;
     private String telephone;
     private String email;
+    private LocalDate dateDeNaissance;
+
     @ManyToOne
     private PeriodeDeLocation periodeDeLocation;
 }

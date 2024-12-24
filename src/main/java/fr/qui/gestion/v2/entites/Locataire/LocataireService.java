@@ -75,6 +75,7 @@ public class LocataireService {
         locataire.setPrenom(locataireDTO.getPrenom());
         locataire.setEmail(locataireDTO.getEmail());
         locataire.setTelephone(locataireDTO.getTelephone());
+        locataire.setDateDeNaissance(locataireDTO.getDateDeNaissance());
         locataire.setPeriodeDeLocation(periodeDeLocation);
         Locataire savedLocataire = locataireRepository.save(locataire);
         periodeDeLocation.getLocataires().add(savedLocataire);
@@ -142,6 +143,7 @@ public class LocataireService {
         locataire.setPrenom(locataireModifieeDTO.getPrenom());
         locataire.setEmail(locataireModifieeDTO.getEmail());
         locataire.setTelephone(locataireModifieeDTO.getTelephone());
+        locataire.setDateDeNaissance(locataireModifieeDTO.getDateDeNaissance());
         locataire.setPeriodeDeLocation(periodeDeLocation);
         Locataire savedLocataire = locataireRepository.save(locataire);
         return locataireMapper.toDto(savedLocataire);
