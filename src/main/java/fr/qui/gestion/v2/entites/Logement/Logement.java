@@ -1,6 +1,7 @@
 package fr.qui.gestion.v2.entites.Logement;
 
 import fr.qui.gestion.v2.entites.Adresse.Adresse;
+import fr.qui.gestion.v2.entites.Alerte.Alerte;
 import fr.qui.gestion.v2.entites.Caracteristiques.Caracteristiques;
 import fr.qui.gestion.v2.entites.Contact.Contact;
 import fr.qui.gestion.v2.entites.Frais.Frais;
@@ -31,6 +32,9 @@ public class Logement  extends AbstractEntityWithMasqueId {
 
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contact> contacts;
+
+    @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Alerte> alertes;
 
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Frais> frais;

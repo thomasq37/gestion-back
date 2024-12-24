@@ -1,6 +1,7 @@
 package fr.qui.gestion.v2.entites.Logement;
 
 import fr.qui.gestion.v2.entites.Adresse.AdresseDTO;
+import fr.qui.gestion.v2.entites.Alerte.AlerteDTO;
 import fr.qui.gestion.v2.entites.Caracteristiques.CaracteristiquesDTO;
 import fr.qui.gestion.v2.entites.Contact.ContactDTO;
 import fr.qui.gestion.v2.entites.Frais.FraisDTO;
@@ -20,6 +21,7 @@ public class LogementDTO {
     private AdresseDTO adresse;
     private CaracteristiquesDTO caracteristiques;
     private List<ContactDTO> contacts;
+    private List<AlerteDTO> alertes;
     private List<FraisDTO> frais;
     private List<PeriodeDeLocationDTO> periodesDeLocation;
     private List<PhotoDTO> photos;
