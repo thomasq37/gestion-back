@@ -26,9 +26,9 @@ public class PeriodeDeLocation extends AbstractEntityWithMasqueId {
     @ManyToOne
     private Logement logement;
 
-    @OneToMany(mappedBy = "periodeDeLocation")
+    @OneToMany(mappedBy = "periodeDeLocation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Frais> frais;
 
-    @OneToMany(mappedBy = "periodeDeLocation")
+    @OneToMany(mappedBy = "periodeDeLocation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Locataire> locataires;
 }
