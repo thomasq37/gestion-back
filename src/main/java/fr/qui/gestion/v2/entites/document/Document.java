@@ -19,7 +19,6 @@ public class Document extends AbstractEntityWithMasqueId {
     private String fichier;
 
     @ManyToMany(mappedBy = "documents")
-    @JsonIgnore
     private List<Logement> logements;
 }
 
