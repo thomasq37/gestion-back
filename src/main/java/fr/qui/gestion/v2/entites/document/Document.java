@@ -17,8 +17,5 @@ public class Document extends AbstractEntityWithMasqueId {
 
     @Column(columnDefinition = "LONGTEXT")
     private String fichier;
-
-    @ManyToMany(mappedBy = "documents")
-    private List<Logement> logements;
 }
 

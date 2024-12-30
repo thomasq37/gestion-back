@@ -46,7 +46,7 @@ public class Logement  extends AbstractEntityWithMasqueId {
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "logement_document",
             joinColumns = @JoinColumn(name = "logement_id"),
