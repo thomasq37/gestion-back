@@ -9,6 +9,7 @@ import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocationDTO;
 import fr.qui.gestion.v2.entites.Photo.PhotoDTO;
 import fr.qui.gestion.v2.entites.Utilisateur.Utilisateur;
 import fr.qui.gestion.v2.entites.Utilisateur.UtilisateurDTO;
+import fr.qui.gestion.v2.entites.document.DocumentDTO;
 import lombok.Data;
 
 import java.util.List;
@@ -25,5 +26,6 @@ public class LogementDTO {
     private List<FraisDTO> frais;
     private List<PeriodeDeLocationDTO> periodesDeLocation;
     private List<PhotoDTO> photos;
+    private List<DocumentDTO> documents;
     private List<Utilisateur> gestionnaires;
 }

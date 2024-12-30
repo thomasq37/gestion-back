@@ -8,6 +8,7 @@ import fr.qui.gestion.v2.entites.Frais.Frais;
 import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocation;
 import fr.qui.gestion.v2.entites.Photo.Photo;
 import fr.qui.gestion.v2.entites.Utilisateur.Utilisateur;
+import fr.qui.gestion.v2.entites.document.Document;
 import fr.qui.gestion.v2.util.AbstractEntityWithMasqueId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -44,6 +45,14 @@ public class Logement  extends AbstractEntityWithMasqueId {
 
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "logement_document",
+            joinColumns = @JoinColumn(name = "logement_id"),
+            inverseJoinColumns = @JoinColumn(name = "document_id")
+    )
+    private List<Document> documents;
 
     @ManyToMany
     private List<Utilisateur> gestionnaires;
