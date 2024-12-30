@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -18,7 +19,8 @@ public class Document extends AbstractEntityWithMasqueId {
     @Column(columnDefinition = "LONGTEXT")
     private String fichier;
 
-    @ManyToMany
-    private List<Logement> logements;
+    @ManyToMany(mappedBy = "documents", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Logement> logements = new ArrayList<>();
 }
 

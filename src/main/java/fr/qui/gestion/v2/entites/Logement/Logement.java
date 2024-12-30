@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -46,13 +47,13 @@ public class Logement  extends AbstractEntityWithMasqueId {
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "logement_document",
             joinColumns = @JoinColumn(name = "logement_id"),
             inverseJoinColumns = @JoinColumn(name = "document_id")
     )
-    private List<Document> documents;
+    private List<Document> documents = new ArrayList<>();
 
     @ManyToMany
     private List<Utilisateur> gestionnaires;
