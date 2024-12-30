@@ -13,10 +13,9 @@ import java.util.List;
 @Data
 @Entity
 public class Document extends AbstractEntityWithMasqueId {
-    @Column(nullable = false)
     private String nom;
 
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
+    @Column(columnDefinition = "LONGTEXT")
     private String fichier;
 
     @ManyToMany(mappedBy = "documents")
