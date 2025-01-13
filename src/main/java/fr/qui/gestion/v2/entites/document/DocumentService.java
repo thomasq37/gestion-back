@@ -1,6 +1,5 @@
 package fr.qui.gestion.v2.entites.document;
 
-import fr.qui.gestion.v2.entites.Alerte.Alerte;
 import fr.qui.gestion.v2.entites.Logement.Logement;
 import fr.qui.gestion.v2.entites.Logement.LogementRepository;
 import fr.qui.gestion.v2.entites.Utilisateur.Utilisateur;
@@ -88,11 +87,9 @@ public class DocumentService {
     public SuccessResponse supprimerDocument(String logementMasqueId, String documentMasqueId) {
         // Valider que le logement appartient à l'utilisateur
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-
         // Trouver le document par son ID
         Document document = documentRepository.findByMasqueId(documentMasqueId)
                 .orElseThrow(() -> new SecurityException("Document introuvable."));
-
         // Dissocier le document du logement actuel
         if (!logement.getDocuments().remove(document)) {
             throw new IllegalArgumentException("Le document n'est pas associé à ce logement.");
@@ -101,9 +98,8 @@ public class DocumentService {
 
         // Éviter les cycles en mettant à jour l'association inverse
         document.getLogements().remove(logement);
-
         // Vérifier si le document est encore utilisé par d'autres logements
-        long nombreUtilisations = documentRepository.countByLogementsContaining(document);
+        long nombreUtilisations = document.getLogements().size();
 
         if (nombreUtilisations == 0) {
             // Si aucun autre logement ne l'utilise, supprimer définitivement
@@ -113,6 +109,7 @@ public class DocumentService {
             // Si utilisé ailleurs, simplement dissocier
             return new SuccessResponse("Le document a été dissocié du logement.");
         }
+
     }
 
 

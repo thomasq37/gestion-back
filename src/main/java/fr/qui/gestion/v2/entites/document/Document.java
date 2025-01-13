@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 public class Document extends AbstractEntityWithMasqueId {
     private String nom;
-
+    @Column(columnDefinition = "LONGTEXT")
     private String fichier;
 
     @ManyToMany(mappedBy = "documents", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)

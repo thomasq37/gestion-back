@@ -10,7 +10,5 @@ import java.util.Optional;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findByLogementsContaining(Logement logement);
-    long countByLogementsContaining(Document document);
-
     Optional<Document> findByMasqueId(String masqueId);
 }
