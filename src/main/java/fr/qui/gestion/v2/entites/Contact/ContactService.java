@@ -40,9 +40,6 @@ public class ContactService {
     @Transactional
     public ContactDTO creerContactPourLogement(String logementMasqueId, ContactDTO contactDTO) {
         Logement logement = validerLogementPourUtilisateur(logementMasqueId);
-        if (contactDTO.getNom() == null || contactDTO.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du contact est obligatoire.");
-        }
         if (contactDTO.getPrenom() == null || contactDTO.getPrenom().isEmpty()) {
             throw new IllegalArgumentException("Le prénom du contact est obligatoire.");
         }
@@ -80,9 +77,6 @@ public class ContactService {
                 .filter(c -> c.getMasqueId().equals(contactMasqueId))
                 .findFirst()
                 .orElseThrow(() -> new SecurityException("Acces interdit ou contact introuvable."));
-        if (contactModifieeDTO.getNom() == null || contactModifieeDTO.getNom().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du contact est obligatoire.");
-        }
         if (contactModifieeDTO.getPrenom() == null || contactModifieeDTO.getPrenom().isEmpty()) {
             throw new IllegalArgumentException("Le prénom du contact est obligatoire.");
         }
