@@ -10,7 +10,15 @@ import java.util.Optional;
 
 @Repository
 public interface LogementRepository extends JpaRepository<Logement, Long> {
-    @Query("SELECT l FROM Logement l JOIN l.caracteristiques c WHERE l.proprietaire = :proprietaire ORDER BY c.dateAchat DESC")
+    @Query("""
+           SELECT l
+           FROM Logement l
+           LEFT JOIN l.caracteristiques c
+           WHERE l.proprietaire = :proprietaire
+           ORDER BY 
+               CASE WHEN c IS NULL THEN 1 ELSE 0 END, 
+               c.dateAchat DESC
+           """)
     List<Logement> findByProprietaire(Utilisateur proprietaire);
 
     Optional<Logement> findByMasqueId(String masqueId);
