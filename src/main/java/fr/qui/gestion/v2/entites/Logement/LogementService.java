@@ -49,6 +49,14 @@ public class LogementService {
         return logements.stream().map(logementMapper::toDto).toList();
     }
 
+    public List<LogementVueEnsembleDTO> listerLogementsVueEnsemble() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
+                .orElseThrow(() -> new SecurityException("Acces interdit ou utilisateur introuvable."));
+        List<Logement> logements = logementRepository.findByProprietaire(utilisateur);
+        return logements.stream().map(logementMapper::toVueEnsembleDto).toList();
+    }
+
     public LogementDTO obtenirLogement(String logementMasqueId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)

@@ -26,6 +26,11 @@ public class LogementController {
         List<LogementDTO> logements = logementService.listerLogements();
         return ResponseEntity.ok(logements);
     }
+    @GetMapping("/lister/vue-ensemble")
+    public ResponseEntity<List<LogementVueEnsembleDTO>> listerLogementsVueEnsemble() {
+        List<LogementVueEnsembleDTO> logements = logementService.listerLogementsVueEnsemble();
+        return ResponseEntity.ok(logements);
+    }
     @GetMapping("/{logementMasqueId}/obtenir")
     public ResponseEntity<LogementDTO> obtenirLogement(@PathVariable String logementMasqueId) {
         LogementDTO logement = logementService.obtenirLogement(logementMasqueId);
