@@ -16,13 +16,19 @@ public interface LogementRepository extends JpaRepository<Logement, Long> {
            FROM Logement l
            LEFT JOIN l.caracteristiques c
            WHERE l.proprietaire = :proprietaire
-           ORDER BY 
-               CASE WHEN c IS NULL THEN 1 ELSE 0 END, 
-               c.dateAchat DESC
+           ORDER BY CASE WHEN c IS NULL THEN 1 ELSE 0 END, c.dateAchat DESC
            """)
     List<Logement> findByProprietaire(Utilisateur proprietaire);
-    // Dans votre LogementRepository
-    @Query("SELECT l FROM Logement l LEFT JOIN FETCH l.photos p WHERE l.proprietaire = :proprietaire AND (p.isPrincipal = true OR p IS NULL)")
+
+    @Query("""
+    SELECT l FROM Logement l 
+    LEFT JOIN FETCH l.photos p 
+    WHERE l.proprietaire = :proprietaire 
+    AND (p.isPrincipal = true OR p IS NULL) 
+    ORDER BY 
+        CASE WHEN p IS NULL THEN 1 ELSE 0 END, 
+        l.id DESC
+    """)
     List<Logement> findByProprietaireWithPhotoPrincipale(@Param("proprietaire") Utilisateur proprietaire);
     Optional<Logement> findByMasqueId(String masqueId);
 }
