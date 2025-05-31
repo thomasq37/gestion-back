@@ -2,6 +2,7 @@ package fr.qui.gestion.v2.entites.Caracteristiques;
 
 import fr.qui.gestion.v2.entites.Logement.Logement;
 import fr.qui.gestion.v2.enumeration.DpeLettre.DpeLettre;
+import fr.qui.gestion.v2.enumeration.TypeDeLocation.TypeDeResidence;
 import fr.qui.gestion.v2.enumeration.TypeDeLogement.TypeDeLogement;
 import fr.qui.gestion.v2.util.AbstractEntityWithMasqueId;
 import jakarta.persistence.*;
@@ -22,6 +23,8 @@ public class Caracteristiques extends AbstractEntityWithMasqueId {
     private Double surfaceLogement;
     @Enumerated(EnumType.STRING)
     private TypeDeLogement typeDeLogement;
+    @Enumerated(EnumType.STRING)
+    private TypeDeResidence typeDeResidence;
     private Boolean meubleeOuNon;
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
@@ -31,4 +34,5 @@ public class Caracteristiques extends AbstractEntityWithMasqueId {
     private String dpeFichier;
     @OneToOne(mappedBy = "caracteristiques")
     private Logement logement;
+
 }

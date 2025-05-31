@@ -1,6 +1,7 @@
 package fr.qui.gestion.v2.entites.Caracteristiques;
 
 import fr.qui.gestion.v2.enumeration.DpeLettre.DpeLettre;
+import fr.qui.gestion.v2.enumeration.TypeDeLocation.TypeDeResidence;
 import fr.qui.gestion.v2.enumeration.TypeDeLogement.TypeDeLogement;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class CaracteristiquesDTO {
     private Integer nombreDePieces;
     private Double surfaceLogement;
     private TypeDeLogement typeDeLogement;
+    private TypeDeResidence typeDeResidence;
     private Boolean meubleeOuNon;
     private Boolean balconOuTerrasse;
     private Double surfaceBalconOuTerrasse;
