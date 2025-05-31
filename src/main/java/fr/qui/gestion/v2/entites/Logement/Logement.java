@@ -9,8 +9,6 @@ import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocation;
 import fr.qui.gestion.v2.entites.Photo.Photo;
 import fr.qui.gestion.v2.entites.Utilisateur.Utilisateur;
 import fr.qui.gestion.v2.entites.document.Document;
-import fr.qui.gestion.v2.enumeration.TypeDeLocation.TypeDeLocation;
-import fr.qui.gestion.v2.enumeration.TypeDeLocation.TypeDeResidence;
 import fr.qui.gestion.v2.util.AbstractEntityWithMasqueId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

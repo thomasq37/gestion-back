@@ -1,7 +1,7 @@
 package fr.qui.gestion.v2.entites.Caracteristiques;
 
 import fr.qui.gestion.v2.enumeration.DpeLettre.DpeLettre;
-import fr.qui.gestion.v2.enumeration.TypeDeLocation.TypeDeResidence;
+import fr.qui.gestion.v2.enumeration.TypeDeReseidence.TypeDeResidence;
 import fr.qui.gestion.v2.enumeration.TypeDeLogement.TypeDeLogement;
 import lombok.Data;
 
