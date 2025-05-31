@@ -1,4 +1,4 @@
-package fr.qui.gestion.v2.enumeration.TypeDeReseidence;
+package fr.qui.gestion.v2.enumeration.TypeDeResidence;
 
 public enum TypeDeResidence {
     PRINCIPALE,
