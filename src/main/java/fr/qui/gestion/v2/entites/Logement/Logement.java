@@ -4,6 +4,7 @@ import fr.qui.gestion.v2.entites.Adresse.Adresse;
 import fr.qui.gestion.v2.entites.Alerte.Alerte;
 import fr.qui.gestion.v2.entites.Caracteristiques.Caracteristiques;
 import fr.qui.gestion.v2.entites.Contact.Contact;
+import fr.qui.gestion.v2.entites.Credit.Credit;
 import fr.qui.gestion.v2.entites.Frais.Frais;
 import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocation;
 import fr.qui.gestion.v2.entites.Photo.Photo;
@@ -56,4 +57,8 @@ public class Logement  extends AbstractEntityWithMasqueId {
     private List<Document> documents = new ArrayList<>();
     @ManyToMany
     private List<Utilisateur> gestionnaires;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Credit credit;
 }
+
