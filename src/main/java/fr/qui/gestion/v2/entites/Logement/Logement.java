@@ -33,6 +33,9 @@ public class Logement  extends AbstractEntityWithMasqueId {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Caracteristiques caracteristiques;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Credit credit;
+
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contact> contacts;
 
@@ -57,8 +60,5 @@ public class Logement  extends AbstractEntityWithMasqueId {
     private List<Document> documents = new ArrayList<>();
     @ManyToMany
     private List<Utilisateur> gestionnaires;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Credit credit;
 }
 

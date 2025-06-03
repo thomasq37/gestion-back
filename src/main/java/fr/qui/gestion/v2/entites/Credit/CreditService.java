@@ -85,9 +85,6 @@ public class CreditService {
         if (credit == null) {
             throw new IllegalArgumentException("Aucun credit à modifier pour le logement.");
         }
-        if (logement.getCredit() != null) {
-            throw new IllegalStateException("Un credit existe déjà pour ce logement. Veuillez le modifier.");
-        }
         if (creditModifieeDTO.getMontantEmprunte() == null || creditModifieeDTO.getMontantEmprunte() <= 0) {
             throw new IllegalArgumentException("Le montant emprunté est obligatoire et doit être supérieur à zéro.");
         }
@@ -146,11 +143,25 @@ public class CreditService {
         }
         return logement;
     }
-    private Double calculerCoutTotal(Credit credit) {
-        return null;
+    private Double calculerMensualite(Credit credit) {
+        double montant = credit.getMontantEmprunte();
+        double tauxAnnuel = credit.getTauxAnnuelEffectifGlobal() / 100.0;
+        // Taux mensuel proportionnel (méthode standard des banques)
+        double tauxMensuel = tauxAnnuel / 12.0;
+        int dureeMois = credit.getDureeMois();
+
+        if (tauxMensuel == 0) {
+            return montant / dureeMois;
+        }
+
+        double mensualite = montant * tauxMensuel / (1 - Math.pow(1 + tauxMensuel, -dureeMois));
+        // Arrondi à 2 décimales comme les banques
+        return Math.round(mensualite * 100.0) / 100.0;
     }
 
-    private Double calculerMensualite(Credit credit) {
-        return null;
+    private Double calculerCoutTotal(Credit credit) {
+        double mensualite = calculerMensualite(credit);
+        int dureeMois = credit.getDureeMois();
+        return mensualite * dureeMois;
     }
 }

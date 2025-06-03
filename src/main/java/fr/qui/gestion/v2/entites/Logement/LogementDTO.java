@@ -4,6 +4,7 @@ import fr.qui.gestion.v2.entites.Adresse.AdresseDTO;
 import fr.qui.gestion.v2.entites.Alerte.AlerteDTO;
 import fr.qui.gestion.v2.entites.Caracteristiques.CaracteristiquesDTO;
 import fr.qui.gestion.v2.entites.Contact.ContactDTO;
+import fr.qui.gestion.v2.entites.Credit.CreditDTO;
 import fr.qui.gestion.v2.entites.Frais.FraisDTO;
 import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocationDTO;
 import fr.qui.gestion.v2.entites.Photo.PhotoDTO;
@@ -21,6 +22,7 @@ public class LogementDTO {
     private UtilisateurDTO proprietaire;
     private AdresseDTO adresse;
     private CaracteristiquesDTO caracteristiques;
+    private CreditDTO credit;
     private List<ContactDTO> contacts;
     private List<AlerteDTO> alertes;
     private List<FraisDTO> frais;
