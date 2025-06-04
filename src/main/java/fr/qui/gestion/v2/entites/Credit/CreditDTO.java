@@ -1,5 +1,6 @@
 package fr.qui.gestion.v2.entites.Credit;
 
+import fr.qui.gestion.v2.entites.Frais.FraisDTO;
 import fr.qui.gestion.v2.entites.Logement.Logement;
 import fr.qui.gestion.v2.enumeration.DpeLettre.DpeLettre;
 import fr.qui.gestion.v2.enumeration.TypeDeLogement.TypeDeLogement;
@@ -9,6 +10,7 @@ import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class CreditDTO {
@@ -21,4 +23,5 @@ public class CreditDTO {
     private TypeDeTaux typeDeTaux;
     private Integer jourDePaiementEcheance;
     private LocalDate dateDebut;
+    private List<FraisDTO> frais;
 }

@@ -1,5 +1,6 @@
 package fr.qui.gestion.v2.entites.Frais;
 
+import fr.qui.gestion.v2.entites.Credit.Credit;
 import fr.qui.gestion.v2.entites.Logement.Logement;
 import fr.qui.gestion.v2.entites.PeriodeDeLocation.PeriodeDeLocation;
 import fr.qui.gestion.v2.enumeration.CategorieFrais.CategorieFrais;
@@ -27,4 +28,6 @@ public class Frais extends AbstractEntityWithMasqueId {
     private Logement logement;
     @ManyToOne
     private PeriodeDeLocation periodeDeLocation;
+    @ManyToOne
+    private Credit credit;
 }

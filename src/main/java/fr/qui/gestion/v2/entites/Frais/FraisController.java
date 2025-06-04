@@ -16,6 +16,10 @@ public class FraisController {
         this.fraisService = fraisService;
     }
 
+    // ----------------------------------------------- //
+    // Debut des frais concernant logement             //
+    // ----------------------------------------------- //
+
     @GetMapping("/lister")
     public ResponseEntity<List<FraisDTO>> listerFraisPourLogement(@PathVariable String logementMasqueId) {
         List<FraisDTO> frais = fraisService.listerFraisPourLogement(logementMasqueId);
@@ -92,5 +96,49 @@ public class FraisController {
             @PathVariable String periodeMasqueId,
             @PathVariable String fraisMasqueId) {
         return ResponseEntity.ok(fraisService.supprimerFraisPourPeriodeDeLocation(logementMasqueId, periodeMasqueId, fraisMasqueId));
+    }
+
+    // ----------------------------------------------- //
+    // Debut des frais concernant credit               //
+    // ----------------------------------------------- //
+
+    @GetMapping("/credit/{creditMasqueId}/lister")
+    public ResponseEntity<List<FraisDTO>> listerFraisPourCredit(
+            @PathVariable String logementMasqueId,
+            @PathVariable String creditMasqueId) {
+        List<FraisDTO> frais = fraisService.listerFraisPourCredit(logementMasqueId, creditMasqueId);
+        return ResponseEntity.ok(frais);
+    }
+    @PostMapping("/credit/{creditMasqueId}/ajouter")
+    public ResponseEntity<FraisDTO> creerFraisPourCredit(
+            @PathVariable String logementMasqueId,
+            @PathVariable String creditMasqueId,
+            @Valid @RequestBody FraisDTO fraisDTO) {
+        FraisDTO nouveauFrais = fraisService.creerFraisPourCredit(logementMasqueId, creditMasqueId, fraisDTO);
+        return ResponseEntity.ok(nouveauFrais);
+    }
+    @GetMapping("/{fraisMasqueId}/credit/{creditMasqueId}/obtenir")
+    public ResponseEntity<FraisDTO> obtenirFraisPourCredit(
+            @PathVariable String logementMasqueId,
+            @PathVariable String creditMasqueId,
+            @PathVariable String fraisMasqueId) {
+        FraisDTO frais = fraisService.obtenirFraisPourCredit(logementMasqueId, creditMasqueId, fraisMasqueId);
+        return ResponseEntity.ok(frais);
+    }
+    @PatchMapping("/{fraisMasqueId}/credit/{creditMasqueId}/modifier")
+    public ResponseEntity<FraisDTO> modifierFraisPourCredit(
+            @PathVariable String logementMasqueId,
+            @PathVariable String creditMasqueId,
+            @PathVariable String fraisMasqueId,
+            @Valid @RequestBody FraisDTO fraisDTO) {
+        FraisDTO fraisModifie = fraisService.modifierFraisPourCredit(logementMasqueId, creditMasqueId, fraisMasqueId, fraisDTO);
+        return ResponseEntity.ok(fraisModifie);
+    }
+    @DeleteMapping("/{fraisMasqueId}/credit/{creditMasqueId}/supprimer")
+    public ResponseEntity<SuccessResponse> supprimerFraisPourCredit(
+            @PathVariable String logementMasqueId,
+            @PathVariable String creditMasqueId,
+            @PathVariable String fraisMasqueId) {
+        return ResponseEntity.ok(fraisService.supprimerFraisPourCredit(logementMasqueId, creditMasqueId, fraisMasqueId));
     }
 }
