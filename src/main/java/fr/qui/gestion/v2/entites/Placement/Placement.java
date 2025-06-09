@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class Placement extends AbstractEntityWithMasqueId {
     private String nom;
-    private String capital;
+    private Double capital;
 
     @ManyToOne
     private Utilisateur utilisateur;

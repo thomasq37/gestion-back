@@ -6,6 +6,6 @@ import lombok.Data;
 public class PlacementVueEnsembleDTO {
     private String masqueId;
     private String nom;
-    private String capital;
+    private Double capital;
 }
 
