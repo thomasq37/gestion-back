@@ -1,5 +1,6 @@
 package fr.qui.gestion.v2.entites.Placement;
 
+import fr.qui.gestion.v2.entites.Logement.Logement;
 import fr.qui.gestion.v2.entites.Utilisateur.Utilisateur;
 import fr.qui.gestion.v2.entites.Utilisateur.UtilisateurRepository;
 import fr.qui.gestion.v2.exception.SuccessResponse;
@@ -63,9 +64,15 @@ public class PlacementService {
         return placementMapper.toVueEnsembleDTO(placementRepository.save(placement));
     }
 
-    public SuccessResponse supprimerPlacement(String masqueId) {
-        Placement placement = placementRepository.findByMasqueId(masqueId)
-                .orElseThrow(() -> new SecurityException("Accès interdit ou placement introuvable."));
+    public SuccessResponse supprimerPlacement(String placementMasqueId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
+                .orElseThrow(() -> new SecurityException("Acces interdit ou utilisateur introuvable."));
+        Placement placement = placementRepository.findByMasqueId(placementMasqueId)
+                .orElseThrow(() -> new SecurityException("Acces interdit ou placemeent introuvable."));
+        if (!placement.getUtilisateur().equals(utilisateur)) {
+            throw new SecurityException("Acces interdit ou placement introuvable.");
+        }
         placementRepository.delete(placement);
         return new SuccessResponse("Le placement a été supprimé avec succès.");
     }
