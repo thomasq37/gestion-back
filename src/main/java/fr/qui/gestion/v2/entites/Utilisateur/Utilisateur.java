@@ -1,6 +1,7 @@
 package fr.qui.gestion.v2.entites.Utilisateur;
 
 import fr.qui.gestion.v2.entites.Logement.Logement;
+import fr.qui.gestion.v2.entites.Placement.Placement;
 import fr.qui.gestion.v2.entites.Role.Role;
 import fr.qui.gestion.v2.util.AbstractEntityWithMasqueId;
 import jakarta.persistence.*;
@@ -23,6 +24,10 @@ public class Utilisateur extends AbstractEntityWithMasqueId {
     private List<Logement> logementsProprietaire;
     @ManyToMany(mappedBy = "gestionnaires")
     private List<Logement> logementsGestionnaire;
+
+    @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Placement> placements;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 }
